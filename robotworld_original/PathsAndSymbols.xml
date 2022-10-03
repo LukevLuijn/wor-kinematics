@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cdtprojectproperties>
+<section name="org.eclipse.cdt.internal.ui.wizards.settingswizards.IncludePaths">
+<language name="C++ Source File">
+<includepath>/usr/lib/x86_64-linux-gnu/wx/include/gtk2-unicode-3.0</includepath>
+<includepath>/usr/include/wx-3.0</includepath>
+
+</language>
+<language name="C Source File">
+<includepath>/usr/lib/x86_64-linux-gnu/wx/include/gtk2-unicode-3.0</includepath>
+<includepath>/usr/include/wx-3.0</includepath>
+
+</language>
+<language name="Object File">
+
+</language>
+<language name="Assembly Source File">
+<includepath>/usr/lib/x86_64-linux-gnu/wx/include/gtk2-unicode-3.0</includepath>
+<includepath>/usr/include/wx-3.0</includepath>
+
+</language>
+</section>
+<section name="org.eclipse.cdt.internal.ui.wizards.settingswizards.Macros">
+<language name="C++ Source File">
+<macro>
+<name>_FILE_OFFSET_BITS</name><value>64</value>
+</macro>
+<macro>
+<name>WXUSINGDLL</name><value/>
+</macro>
+<macro>
+<name>__WXGTK__</name><value/>
+</macro>
+
+</language>
+<language name="C Source File">
+<macro>
+<name>_FILE_OFFSET_BITS</name><value>64</value>
+</macro>
+<macro>
+<name>WXUSINGDLL</name><value/>
+</macro>
+<macro>
+<name>__WXGTK__</name><value/>
+</macro>
+
+</language>
+<language name="Object File">
+
+</language>
+<language name="Assembly Source File">
+
+</language>
+</section>
+</cdtprojectproperties>

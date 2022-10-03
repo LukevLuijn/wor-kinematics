@@ -1,0 +1,8 @@
+/.settings/
+/.autotools
+/.cproject
+/.project
+/gmon.out
+/autom4te.cache/
+/docs/
+/configure~

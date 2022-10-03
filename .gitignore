@@ -1,3 +1,5 @@
+# Original
+
 /.settings/
 /.autotools
 /.cproject
@@ -6,3 +8,12 @@
 /autom4te.cache/
 /docs/
 /configure~
+
+# Added
+
+cmake-build-debug/*
+build/*
+linux-build/*
+.idea
+.vscode
+

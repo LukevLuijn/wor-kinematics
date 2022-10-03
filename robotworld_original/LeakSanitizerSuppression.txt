@@ -1,4 +1,0 @@
-leak:Messaging::Server::handleAccept
-leak:Messaging::Message::setHeader
-leak:Messaging::Session::handleHeaderRead
-leak:ServerMain(int, char**)

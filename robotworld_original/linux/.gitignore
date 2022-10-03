@@ -1,8 +1,0 @@
-/src/
-/.deps/
-/config.log
-/config.status
-/libtool
-/Makefile
-
-/compile_commands.json

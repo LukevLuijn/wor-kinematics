@@ -30,7 +30,7 @@ make -j4 2>$1 | tee build.log
 |#|Beschrijving|Voldaan|
 |:---:|:---|:---:|
 |01|Ga uit van de basisversie van Robotwereld. In de huidige master zijn heel veel warnings opgelost in RobotWorld zelf. Als je bovendien gebruik maakt van het bijgeleverde autotools build systeem dan heb je vrijwel geen last van allerlei Boost en wxWidgets warnings bij het compileren of het gebruik van CPPCheck.|:heavy_check_mark:|
-|02|Vergroot de wereld tot 1024x1024 pixels.|:x:|
+|02|Vergroot de wereld tot 1024x1024 pixels.|:heavy_check_mark:|
 |03|Voeg ten minste 4 muren van tenminste 100 pixels toe aan de wereld.|:x:|
 |04|De robot heeft kennis van de kaart van de wereld.|:x:|
 |05|De robot heeft een positie en oriëntatie die gebruikt wordt voor het bepalen van de route, het rijden en als input voor de sensoren (van waaruit ergemeten moet worden). Daarnaast moet de robot een ’belief’ positie en oriëntatie krijgen.|:x:|

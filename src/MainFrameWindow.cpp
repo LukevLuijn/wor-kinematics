@@ -39,7 +39,8 @@ namespace Application
 	 *
 	 */
 	MainFrameWindow::MainFrameWindow( const std::string& aTitle) :
-								Frame( nullptr, DEFAULT_ID, WXSTRING( aTitle), DefaultPosition, Size( 1200, 600)),
+//TODO//            Frame( nullptr, DEFAULT_ID, WXSTRING( aTitle), DefaultPosition, Size( 1200, 600)),
+            Frame( nullptr, DEFAULT_ID, WXSTRING( aTitle), DefaultPosition, Size( 1200+524, 600+524)),
 								clientPanel( nullptr),
 								menuBar( nullptr),
 								splitterWindow( nullptr),
@@ -174,7 +175,10 @@ namespace Application
 			sizer->Add( robotWorldCanvas = new View::RobotWorldCanvas( lhsPanel),
 						GBPosition( 1, 1),
 						GBSpan( 1, 1)/*, EXPAND*/);
-			robotWorldCanvas->SetMinSize( wxSize( 500, 500));
+// TODO
+//            robotWorldCanvas->SetMinSize( wxSize( 500, 500));
+            robotWorldCanvas->SetMinSize( wxSize( 500+524, 500+524));
+
 
 			sizer->Add( 5, 5,
 						GBPosition( 2, 2),

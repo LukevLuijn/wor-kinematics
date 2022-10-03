@@ -460,7 +460,7 @@ namespace Model
 			}
 
 			unsigned pathPoint = 0;
-			while (position.x > 0 && position.x < 500 && position.y > 0 && position.y < 500 && pathPoint < path.size()) // @suppress("Avoid magic numbers")
+			while (position.x > 0 && position.x < 1024 && position.y > 0 && position.y < 1024 && pathPoint < path.size()) // @suppress("Avoid magic numbers")
 			{
 				const PathAlgorithm::Vertex& vertex = path[pathPoint+=static_cast<unsigned int>(speed)];
 				front = BoundedVector( vertex.asPoint(), position);
@@ -477,7 +477,7 @@ namespace Model
 				notifyObservers();
 
 				// If there is no sleep_for here the robot will immediately be on its destination....
-				std::this_thread::sleep_for( std::chrono::milliseconds( 100)); // @suppress("Avoid magic numbers")
+				std::this_thread::sleep_for( std::chrono::milliseconds( 50)); // @suppress("Avoid magic numbers")
 
 				// this should be the last thing in the loop
 				if(driving == false)
@@ -485,8 +485,7 @@ namespace Model
 					return;
 				}
 			} // while
-
-			for (std::shared_ptr< AbstractSensor > sensor : sensors)
+            for (std::shared_ptr< AbstractSensor > sensor : sensors)
 			{
 				// sensor->setOff();
 			}

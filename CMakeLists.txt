@@ -11,6 +11,8 @@ set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wconversion -Wpedantic")
 set(CMAKE_CXX_FLAGS_DEBUG "-g")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
+set(Boost_USE_MULTITHREADED TRUE)
+
 find_package(Threads REQUIRED)
 find_package(wxWidgets REQUIRED)
 find_package(Boost REQUIRED)

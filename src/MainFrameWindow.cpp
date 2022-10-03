@@ -39,8 +39,7 @@ namespace Application
 	 *
 	 */
 	MainFrameWindow::MainFrameWindow( const std::string& aTitle) :
-//TODO//            Frame( nullptr, DEFAULT_ID, WXSTRING( aTitle), DefaultPosition, Size( 1200, 600)),
-            Frame( nullptr, DEFAULT_ID, WXSTRING( aTitle), DefaultPosition, Size( 1200+524, 600+524)),
+            Frame( nullptr, DEFAULT_ID, WXSTRING( aTitle), DefaultPosition, Size( 1200, 600)),
 								clientPanel( nullptr),
 								menuBar( nullptr),
 								splitterWindow( nullptr),
@@ -340,7 +339,8 @@ namespace Application
 	 */
 	void MainFrameWindow::OnPopulate( CommandEvent& UNUSEDPARAM(anEvent))
 	{
-		robotWorldCanvas->populate( 2);
+		robotWorldCanvas->populate( 4);
+
 	}
 	/**
 	 *

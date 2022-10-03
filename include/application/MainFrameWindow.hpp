@@ -89,9 +89,13 @@ namespace Application
 			void OnStopRobot( CommandEvent& anEvent);
 			void OnPopulate( CommandEvent& anEvent);
 			void OnUnpopulate( CommandEvent& anEvent);
-			void OnStartListening( CommandEvent& anEvent);
-			void OnSendMessage( CommandEvent& anEvent);
-			void OnStopListening( CommandEvent& anEvent);
+            void OnKalman(CommandEvent& anEvent);
+            void OnParticle(CommandEvent& anEvent);
+
+//          TODO remove
+//			void OnStartListening( CommandEvent& anEvent);
+//			void OnSendMessage( CommandEvent& anEvent);
+//			void OnStopListening( CommandEvent& anEvent);
 	};
 	//	class MainFrameWindow
 } //namespace Application

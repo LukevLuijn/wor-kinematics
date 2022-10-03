@@ -211,7 +211,7 @@ namespace Application
 
 			sizer->Add( buttonPanel = initialiseButtonPanel(),
 						GBPosition( 2, 1),
-						GBSpan( 1, 1), SHRINK);
+						GBSpan( 1, 1), EXPAND);
 			sizer->AddGrowableRow( 2);
 
 			sizer->Add( 5, 5,
@@ -228,51 +228,25 @@ namespace Application
 	 */
 	Panel* MainFrameWindow::initialiseButtonPanel()
 	{
-		Panel* panel = new Panel( rhsPanel);
+		auto* panel = new Panel(rhsPanel, DEFAULT_ID, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
+        auto* sizer = new wxFlexGridSizer( 3, 2, 0, 0 );
 
-		GridBagSizer* sizer = new GridBagSizer();
+//        sizer->AddGrowableCol( 0 );
+//        sizer->AddGrowableCol( 1 );
+//        sizer->AddGrowableRow( 0 );
+//        sizer->AddGrowableRow( 1 );
+//        sizer->AddGrowableRow( 2 );
+        sizer->SetFlexibleDirection( wxBOTH );
+        sizer->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
+        sizer->Add(makeButton(panel, "Populate", [this](CommandEvent &anEvent){this->OnPopulate(anEvent);}), 1, wxALL|wxEXPAND, 5);
+        sizer->Add(makeButton(panel, "Clear", [this](CommandEvent &anEvent){this->OnUnpopulate(anEvent);}), 1, wxALL|wxEXPAND, 5);
+        sizer->Add(makeButton(panel, "Start robot", [this](CommandEvent &anEvent){this->OnStartRobot(anEvent);}), 1, wxALL|wxEXPAND, 5);
+        sizer->Add(makeButton(panel, "Stop robot", [this](CommandEvent &anEvent){this->OnStopRobot(anEvent);}), 1, wxALL|wxEXPAND, 5);
+        sizer->Add(makeButton(panel, "Kalman", [this](CommandEvent &anEvent){this->OnKalman(anEvent);}), 1, wxALL|wxEXPAND, 5);
+        sizer->Add(makeButton(panel, "Particle", [this](CommandEvent &anEvent){this->OnParticle(anEvent);}), 1, wxALL|wxEXPAND, 5);
 
-		sizer->Add( makeButton( panel,
-								"Populate",
-								[this](CommandEvent &anEvent){this->OnPopulate(anEvent);}),
-					GBPosition( 0, 0),
-					GBSpan( 1, 1), EXPAND);
-		sizer->Add( makeButton( panel,
-								"Unpopulate",
-								[this](CommandEvent &anEvent){this->OnUnpopulate(anEvent);}),
-					GBPosition( 0, 1),
-					GBSpan( 1, 1), EXPAND);
-
-		sizer->Add( makeButton( panel,
-								"Start robot",
-								[this](CommandEvent &anEvent){this->OnStartRobot(anEvent);}),
-					GBPosition( 1, 0),
-					GBSpan( 1, 1), EXPAND);
-		sizer->Add( makeButton( panel,
-								"Stop robot",
-								[this](CommandEvent &anEvent){this->OnStopRobot(anEvent);}),
-					GBPosition( 1, 1),
-					GBSpan( 1, 1), EXPAND);
-
-
-		sizer->Add( makeButton( panel,
-								"Start listening",
-								[this](CommandEvent &anEvent){this->OnStartListening(anEvent);}),
-					GBPosition( 2, 0),
-					GBSpan( 1, 1), EXPAND);
-		sizer->Add( makeButton( panel,
-								"Send message",
-								[this](CommandEvent &anEvent){this->OnSendMessage(anEvent);}),
-					GBPosition( 2, 1),
-					GBSpan( 1, 1), EXPAND);
-		sizer->Add( makeButton( panel,
-								"Stop listening",
-								[this](CommandEvent &anEvent){this->OnStopListening(anEvent);}),
-					GBPosition( 2, 2),
-					GBSpan( 1, 1), EXPAND);
-
-		panel->SetSizerAndFit( sizer);
+        panel->SetSizerAndFit(sizer);
 
 		return panel;
 	}
@@ -322,6 +296,7 @@ namespace Application
 		{
 			robot->startActing();
 		}
+
 	}
 	/**
 	 *
@@ -339,8 +314,12 @@ namespace Application
 	 */
 	void MainFrameWindow::OnPopulate( CommandEvent& UNUSEDPARAM(anEvent))
 	{
-		robotWorldCanvas->populate( 4);
+        Application::Logger::log("hello");
 
+        LOG("Hallo test", std::vector<uint16_t>({1123, 123, 123, 123}));
+
+
+		robotWorldCanvas->populate( 4);
 	}
 	/**
 	 *
@@ -349,55 +328,70 @@ namespace Application
 	{
 		robotWorldCanvas->unpopulate();
 	}
-	/**
-	 *
-	 */
-	void MainFrameWindow::OnStartListening( CommandEvent& UNUSEDPARAM(anEvent))
-	{
-		Model::RobotPtr robot = Model::RobotWorld::getRobotWorld().getRobot( "Robot");
-		if (robot)
-		{
-			robot->startCommunicating();
-		}
-	}
-	/**
-	 *
-	 */
-	void MainFrameWindow::OnSendMessage( CommandEvent& UNUSEDPARAM(anEvent))
-	{
-		Model::RobotPtr robot = Model::RobotWorld::getRobotWorld().getRobot( "Robot");
-		if (robot)
-		{
-			std::string remoteIpAdres = "localhost";
-			std::string remotePort = "12345";
-
-			if (MainApplication::isArgGiven( "-remote_ip"))
-			{
-				remoteIpAdres = MainApplication::getArg( "-remote_ip").value;
-			}
-			if (MainApplication::isArgGiven( "-remote_port"))
-			{
-				remotePort = MainApplication::getArg( "-remote_port").value;
-			}
-
-			// We will request an echo message. The response will be "Hello World", if all goes OK,
-			// "Goodbye cruel world!" if something went wrong.
-			Messaging::Client c1ient( remoteIpAdres,
-									  static_cast<unsigned short>(std::stoi(remotePort)),
-									  robot);
-			Messaging::Message message( Messaging::EchoRequest, "Hello world!");
-			c1ient.dispatchMessage( message);
-		}
-	}
-	/**
-	 *
-	 */
-	void MainFrameWindow::OnStopListening( CommandEvent& UNUSEDPARAM(anEvent))
-	{
-		Model::RobotPtr robot = Model::RobotWorld::getRobotWorld().getRobot( "Robot");
-		if (robot)
-		{
-			robot->stopCommunicating();
-		}
-	}
+    /**
+     *
+     */
+    void MainFrameWindow::OnKalman(CommandEvent& UNUSEDPARAM(anEvent))
+    {
+        Application::Logger::log(__PRETTY_FUNCTION__ + std::string("TODO: unimplemented"));
+    }
+    /**
+     *
+     */
+    void MainFrameWindow::OnParticle(CommandEvent& UNUSEDPARAM(anEvent))
+    {
+        Application::Logger::log(__PRETTY_FUNCTION__ + std::string("TODO: unimplemented"));
+    }
+    // TODO remove
+//	/**
+//	 *
+//	 */
+//	void MainFrameWindow::OnStartListening( CommandEvent& UNUSEDPARAM(anEvent))
+//	{
+//		Model::RobotPtr robot = Model::RobotWorld::getRobotWorld().getRobot( "Robot");
+//		if (robot)
+//		{
+//			robot->startCommunicating();
+//		}
+//	}
+//	/**
+//	 *
+//	 */
+//	void MainFrameWindow::OnSendMessage( CommandEvent& UNUSEDPARAM(anEvent))
+//	{
+//		Model::RobotPtr robot = Model::RobotWorld::getRobotWorld().getRobot( "Robot");
+//		if (robot)
+//		{
+//			std::string remoteIpAdres = "localhost";
+//			std::string remotePort = "12345";
+//
+//			if (MainApplication::isArgGiven( "-remote_ip"))
+//			{
+//				remoteIpAdres = MainApplication::getArg( "-remote_ip").value;
+//			}
+//			if (MainApplication::isArgGiven( "-remote_port"))
+//			{
+//				remotePort = MainApplication::getArg( "-remote_port").value;
+//			}
+//
+//			// We will request an echo message. The response will be "Hello World", if all goes OK,
+//			// "Goodbye cruel world!" if something went wrong.
+//			Messaging::Client c1ient( remoteIpAdres,
+//									  static_cast<unsigned short>(std::stoi(remotePort)),
+//									  robot);
+//			Messaging::Message message( Messaging::EchoRequest, "Hello world!");
+//			c1ient.dispatchMessage( message);
+//		}
+//	}
+//	/**
+//	 *
+//	 */
+//	void MainFrameWindow::OnStopListening( CommandEvent& UNUSEDPARAM(anEvent))
+//	{
+//		Model::RobotPtr robot = Model::RobotWorld::getRobotWorld().getRobot( "Robot");
+//		if (robot)
+//		{
+//			robot->stopCommunicating();
+//		}
+//	}
 } // namespace Application

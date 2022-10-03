@@ -17,8 +17,8 @@ namespace Base
 
 	/* static */ bool Trace::traceOn = true;
 	/* static */ bool Trace::traceWithTimeStamp = false;
-	/* static */ bool Trace::traceLineNumber = true;
-	/* static */ bool Trace::traceThreadId = true;
+	/* static */ bool Trace::traceLineNumber = false;
+	/* static */ bool Trace::traceThreadId = false;
 	/* static */ bool Trace::traceExceptions = true;
 
 	/**

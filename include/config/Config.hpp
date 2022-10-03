@@ -17,6 +17,7 @@
 
 #endif
 
+#include "config.h.in"
 
 // Additional macros that suppress un-used argument compiler warnings
 #define UNUSEDPARAM(parameter) /* parameter */

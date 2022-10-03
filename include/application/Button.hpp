@@ -25,7 +25,7 @@ namespace Application
 							const std::string& aLabel,
 							const ActionFunction anActionFunction)
 	{
-		Button* button = new Button( aParent, DEFAULT_ID, WXSTRING(aLabel));
+        Button* button = new Button( aParent, DEFAULT_ID, WXSTRING(aLabel));
 		button->Bind(wxEVT_COMMAND_BUTTON_CLICKED, anActionFunction);
 		return button;
 	}

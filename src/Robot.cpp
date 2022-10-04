@@ -3,7 +3,6 @@
 #include "Client.hpp"
 #include "CommunicationService.hpp"
 #include "Goal.hpp"
-#include "LaserDistanceSensor.hpp"
 #include "Logger.hpp"
 #include "MainApplication.hpp"
 #include "MathUtils.hpp"
@@ -14,6 +13,9 @@
 #include "Shape2DUtils.hpp"
 #include "Wall.hpp"
 #include "WayPoint.hpp"
+
+#include "LaserDistanceSensor.hpp"
+#include "CompassSensor.h"
 
 #include <chrono>
 #include <ctime>
@@ -450,7 +452,7 @@ namespace Model
 		{
 			for (std::shared_ptr< AbstractSensor > sensor : sensors)
 			{
-				// sensor->setOn();
+				 sensor->setOn();
 			}
 
 			// Compare a float/double with another float/double: use epsilon...
@@ -467,9 +469,24 @@ namespace Model
 				position.x = vertex.x;
 				position.y = vertex.y;
 
+
+                while (perceptQueue.size() != 0)
+                {
+                    std::shared_ptr<AbstractPercept> percept = perceptQueue.dequeue().value();
+                    auto* orientationPercept = dynamic_cast<OrientationPercept*>(percept.get());
+
+                    if (orientationPercept)
+                    {
+                        double degrees = orientationPercept->orientation * 180/M_PI;
+
+                        LOG("current orientation", degrees);
+                    }
+                }
+
+
 				if (arrived(goal) || collision())
 				{
-					Application::Logger::log(__PRETTY_FUNCTION__ + std::string(": arrived or collision"));
+                    LOG("Arrived at goal location or collision with world objects");
 					notifyObservers();
 					break;
 				}
@@ -477,7 +494,7 @@ namespace Model
 				notifyObservers();
 
 				// If there is no sleep_for here the robot will immediately be on its destination....
-				std::this_thread::sleep_for( std::chrono::milliseconds( 50)); // @suppress("Avoid magic numbers")
+				std::this_thread::sleep_for( std::chrono::milliseconds( 100)); // @suppress("Avoid magic numbers")
 
 				// this should be the last thing in the loop
 				if(driving == false)
@@ -487,7 +504,7 @@ namespace Model
 			} // while
             for (std::shared_ptr< AbstractSensor > sensor : sensors)
 			{
-				// sensor->setOff();
+				 sensor->setOff();
 			}
 		}
 		catch (std::exception& e)

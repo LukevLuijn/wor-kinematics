@@ -91,11 +91,6 @@ namespace Application
 			void OnUnpopulate( CommandEvent& anEvent);
             void OnKalman(CommandEvent& anEvent);
             void OnParticle(CommandEvent& anEvent);
-
-//          TODO remove
-//			void OnStartListening( CommandEvent& anEvent);
-//			void OnSendMessage( CommandEvent& anEvent);
-//			void OnStopListening( CommandEvent& anEvent);
 	};
 	//	class MainFrameWindow
 } //namespace Application

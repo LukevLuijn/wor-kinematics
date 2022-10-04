@@ -79,6 +79,10 @@ set(HEADERS_MODEL
         include/model/SteeringActuator.hpp
         include/model/Wall.hpp
         include/model/WayPoint.hpp
+
+        include/model/NoisySensor.h
+        include/model/CompassSensor.h
+
         )
 set(HEADERS_PATH_ALGORITHM
         include/pathAlgorithm/AStar.hpp)
@@ -157,6 +161,9 @@ set(SOURCES
         src/WayPointShape.cpp
         src/Widgets.cpp
         src/WidgetTraceFunction.cpp
+
+        src/NoisySensor.cpp
+        src/CompassSensor.cpp
         )
 
 add_executable(${EXE} ${SOURCES} ${HEADERS})

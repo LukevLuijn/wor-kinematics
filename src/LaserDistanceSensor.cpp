@@ -36,7 +36,7 @@ namespace Model
 	/**
 	 *
 	 */
-	std::shared_ptr< AbstractPercept > LaserDistanceSensor::getPerceptFor( std::shared_ptr< AbstractStimulus > anAbstractStimulus) const
+	std::shared_ptr< AbstractPercept > LaserDistanceSensor::getPerceptFor( std::shared_ptr< AbstractStimulus > anAbstractStimulus)
 	{
 		DistanceStimulus* distanceStimulus = dynamic_cast< DistanceStimulus* >( anAbstractStimulus.get());
 		return std::shared_ptr< AbstractPercept >( new DistancePercept( distanceStimulus->angle,distanceStimulus->distance));

@@ -74,7 +74,7 @@ namespace Model
 			/**
 			 *
 			 */
-			virtual std::shared_ptr< AbstractPercept > getPerceptFor( std::shared_ptr< AbstractStimulus > anAbstractStimulus) const override;
+			virtual std::shared_ptr< AbstractPercept > getPerceptFor( std::shared_ptr< AbstractStimulus > anAbstractStimulus) override;
 			/**
 			 * @name Debug functions
 			 */

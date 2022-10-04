@@ -6,7 +6,10 @@
 #include "Wall.hpp"
 #include "WayPoint.hpp"
 
+#include "CompassSensor.h"
+
 #include <algorithm>
+#include <memory>
 
 namespace Model
 {
@@ -25,11 +28,18 @@ namespace Model
                                   bool aNotifyObservers /*= true*/)
     {
         RobotPtr robot(new Robot(aName, aPosition));
+
+        robot->attachSensor(std::make_shared<CompassSensor>(robot.get()));
+
         robots.push_back(robot);
         if (aNotifyObservers == true)
         {
             notifyObservers();
         }
+
+
+
+
         return robot;
     }
     /**
@@ -331,6 +341,7 @@ namespace Model
 //        const Point goalLocation (max - max/10, max - max/10); // actual
         Point goalLocation = robotLocation; // testing
         goalLocation.y += max/5*1;
+
 
         RobotWorld::getRobotWorld().newRobot("Robot", robotLocation, false);// @suppress("Avoid magic numbers")
         RobotWorld::getRobotWorld().newGoal( "Goal", goalLocation, false); // @suppress("Avoid magic numbers")

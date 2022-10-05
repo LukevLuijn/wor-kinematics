@@ -19,8 +19,11 @@
 #include "LidarSensor.h"
 #include "OdometerSensor.h"
 
+#include "SteeringActuator.hpp"
+
 #include <chrono>
 #include <ctime>
+#include <memory>
 #include <sstream>
 #include <thread>
 
@@ -34,6 +37,7 @@ namespace Model
           driving(false), communicating(false)
     {
         attachSensors();
+        attachActuators();
     }
     /**
 	 *
@@ -43,6 +47,7 @@ namespace Model
           driving(false), communicating(false)
     {
         attachSensors();
+        attachActuators();
     }
     /**
 	 *
@@ -52,6 +57,7 @@ namespace Model
           communicating(false)
     {
         attachSensors();
+        attachActuators();
     }
     /**
 	 *
@@ -138,7 +144,7 @@ namespace Model
         return speed;
     }
     /**
-	 *
+	 * TODO odometer needs speed parameter for error.
 	 */
     void Robot::setSpeed(float aNewSpeed, bool aNotifyObservers /*= true*/)
     {
@@ -449,7 +455,6 @@ namespace Model
             {
                 sensor->setOn();
             }
-
             // Compare a float/double with another float/double: use epsilon...
             if (std::fabs(speed - 0.0) <= std::numeric_limits<float>::epsilon())
             {
@@ -461,9 +466,17 @@ namespace Model
                    pathPoint < path.size())// @suppress("Avoid magic numbers")
             {
                 const PathAlgorithm::Vertex& vertex = path[pathPoint += static_cast<unsigned int>(speed)];
-                front = BoundedVector(vertex.asPoint(), position);
-                position.x = vertex.x;
-                position.y = vertex.y;
+
+                Point newPosition = vertex.asPoint();
+
+                SteeringCommand command(newPosition);
+                steeringActuator->handleCommand(command);
+
+                front = BoundedVector(command.positionRequest, position);
+                position.x = command.positionRequest.x;
+                position.y = command.positionRequest.y;
+
+                LOG("Current position", std::to_string(position.x) + ", " + std::to_string(position.y));
 
                 double distance = 0, orientation = 0;
                 while (perceptQueue.size() != 0)
@@ -487,7 +500,7 @@ namespace Model
                     }
                 }
 
-                LOG("[DISTANCE: " + std::to_string(distance) + ", ORIENTATION: " + std::to_string(orientation) + "]");
+//                LOG("[DISTANCE: " + std::to_string(distance) + ", ORIENTATION: " + std::to_string(orientation) + "]");
 
 
                 if (arrived(goal) || collision())
@@ -532,35 +545,35 @@ namespace Model
         path.clear();
         if (aGoal)
         {
-//            isSearching = true;
-//            std::thread newPathSearchingThread([this] {
-//                uint16_t counter = 0;
-//                while (isSearching)
-//                {
-//                    if (counter >= 5000)
-//                    {
-//                        LOG("searching for path to goal.. ");
-//                    }
-//
-//                    std::this_thread::sleep_for(std::chrono::milliseconds(1));
-//                    ++counter;
-//                }
-//            });
-//            pathSearchingThread.swap(newPathSearchingThread);
+            //            isSearching = true;
+            //            std::thread newPathSearchingThread([this] {
+            //                uint16_t counter = 0;
+            //                while (isSearching)
+            //                {
+            //                    if (counter >= 5000)
+            //                    {
+            //                        LOG("searching for path to goal.. ");
+            //                    }
+            //
+            //                    std::this_thread::sleep_for(std::chrono::milliseconds(1));
+            //                    ++counter;
+            //                }
+            //            });
+            //            pathSearchingThread.swap(newPathSearchingThread);
 
 
             front = BoundedVector(aGoal->getPosition(), position);
 
             auto start = std::chrono::high_resolution_clock::now();
 
-            path = astar.search(position, aGoal->getPosition(), size);
+            path = astar.search(position, aGoal->getPosition(), size + Size(size.x/2, size.y/2));
 
             auto stop = std::chrono::high_resolution_clock::now();
             auto time = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
             LOG("path found in: " + std::to_string(time.count()) + " milliseconds");
 
-//            isSearching = false;
-//            pathSearchingThread.join();
+            //            isSearching = false;
+            //            pathSearchingThread.join();
         }
     }
     /**
@@ -611,21 +624,6 @@ namespace Model
     }
     void Robot::attachSensors()
     {
-        // TODO might be redundant, check later.
-        std::shared_ptr<AbstractSensor> laserSensor(new LaserDistanceSensor(this));
-        attachSensor(laserSensor);
-
-        //        std::shared_ptr<AbstractSensor> compassSensor(new CompassSensor(this));
-        //        attachSensor(compassSensor);
-        //
-        //        std::shared_ptr<AbstractSensor> lidarSensor(new LidarSensor(this));
-        //        attachSensor(lidarSensor);
-        //
-        //        std::shared_ptr<AbstractSensor> odometerSensor(new OdometerSensor(this));
-        //        attachSensor(odometerSensor);
-
-        // TODO
-
         std::array<std::shared_ptr<AbstractSensor>, 3> robotSensors{
                 std::shared_ptr<AbstractSensor>(new CompassSensor(this)),
                 std::shared_ptr<AbstractSensor>(new LidarSensor(this)),
@@ -637,6 +635,15 @@ namespace Model
             attachSensor(sensor);
         }
     }
+    void Robot::attachActuators()
+    {
+        steeringActuator = std::make_shared<SteeringActuator>(this);
+        std::array<std::shared_ptr<AbstractActuator>, 1> robotActuators{steeringActuator};
 
+        for (const std::shared_ptr<AbstractActuator>& actuator : robotActuators)
+        {
+            attachActuator(actuator);
+        }
+    }
 
 }// namespace Model

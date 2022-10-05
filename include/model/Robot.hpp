@@ -3,15 +3,16 @@
 
 #include "Config.hpp"
 
-#include "AbstractAgent.hpp"
 #include "AStar.hpp"
+#include "AbstractAgent.hpp"
 #include "BoundedVector.hpp"
 #include "Message.hpp"
 #include "MessageHandler.hpp"
 #include "Observer.hpp"
 #include "Point.hpp"
-#include "Size.hpp"
 #include "Region.hpp"
+#include "Size.hpp"
+#include "SteeringActuator.hpp"
 
 #include <iostream>
 #include <memory>
@@ -266,6 +267,7 @@ namespace Model
 
         private:
             void attachSensors();
+            void attachActuators();
 		private:
 			/**
 			 *
@@ -327,6 +329,8 @@ namespace Model
              * TODO remove.
              */
             Base::Queue< std::shared_ptr< AbstractPercept > > tempLidarPercepts;
+
+            std::shared_ptr<SteeringActuator> steeringActuator;
 	};
 } // namespace Model
 #endif // ROBOT_HPP_

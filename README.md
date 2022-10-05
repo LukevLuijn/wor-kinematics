@@ -44,7 +44,7 @@ make -j4 2>$1 | tee build.log
 |10|De controlupdate gaat gepaard met onzekerheid. Bij een snelheid van 10 pixels per stap is de kans 0.7 dat deze uitkomt in een van de pixels in het 3x3 vierkant rondom de doelpixel. De kans is 0.3 dat deze uitkomt in één van de overige pixels in het 5x5 vierkant rondom de doelpixel.|:x:|
 |11|Het kompas van de robot bepaalt de rijrichting van de robot met een configureerbare standaardeviatie. De uitgangswaarde van de standaardeviatie is 2 graden.|:heavy_check_mark:|
 |12|De odometer van de robot meet de afgelegde weg van de robot met een configureerbare standaardeviatie. De uitgangswaarde van deze standaardeviatie is 1 pixel per stap van 10 pixels.|:x:|
-|13|De lidar van de robot meet per ronde 180 keer (dat is iedere 2 graden). De afstandsmeting van iedere “beam” heeft een configureerbare standaardeviatie. De uitgangswaarde van deze standaardeviatie is 10 pixels.|:x:|
+|13|De lidar van de robot meet per ronde 180 keer (dat is iedere 2 graden). De afstandsmeting van iedere “beam” heeft een configureerbare standaardeviatie. De uitgangswaarde van deze standaardeviatie is 10 pixels.|:heavy_check_mark:|
 |14|Laat de robot naar een willekeurig doel in de wereld rijden. Plot in de robotwereld de werkelijk afgelegde weg, de overtuiging van de afgelegde weg volgens het Kalmanfilter, en de overtuiging van de afgelegde weg volgens het Particlefilter.|:x:|
 
 </details>

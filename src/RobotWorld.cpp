@@ -29,16 +29,11 @@ namespace Model
     {
         RobotPtr robot(new Robot(aName, aPosition));
 
-        robot->attachSensor(std::make_shared<CompassSensor>(robot.get()));
-
         robots.push_back(robot);
         if (aNotifyObservers == true)
         {
             notifyObservers();
         }
-
-
-
 
         return robot;
     }
@@ -338,9 +333,9 @@ namespace Model
         // add robot and goal.
 
         const Point robotLocation (min + max/10, min + max/10);
-//        const Point goalLocation (max - max/10, max - max/10); // actual
-        Point goalLocation = robotLocation; // testing
-        goalLocation.y += max/5*1;
+        const Point goalLocation (max - max/10, max - max/10); // actual
+//        Point goalLocation = robotLocation; // TODO testing
+//        goalLocation.y += max/5*1;
 
 
         RobotWorld::getRobotWorld().newRobot("Robot", robotLocation, false);// @suppress("Avoid magic numbers")

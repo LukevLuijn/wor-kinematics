@@ -3,11 +3,8 @@
 //
 
 #include "CompassSensor.h"
-#include "Logger.hpp"
 #include "Robot.hpp"
 #include "Shape2DUtils.hpp"
-
-#include "Logger.hpp"
 
 namespace Model
 {
@@ -22,14 +19,12 @@ namespace Model
         double orientation = Utils::Shape2DUtils::getAngle(dynamic_cast<Robot*>(agent)->getFront());
         std::shared_ptr<AbstractStimulus> stimulus (new OrientationStimulus(orientation));
 
-//        LOG("Orientiation stimulus", orientation);
-
         return stimulus;
     }
     std::shared_ptr<AbstractPercept>
-    CompassSensor::getPerceptFor(std::shared_ptr<AbstractStimulus> anStimulus)
+    CompassSensor::getPerceptFor(std::shared_ptr<AbstractStimulus> aStimulus)
     {
-        auto* stimulus = dynamic_cast<OrientationStimulus*>(anStimulus.get());
+        auto* stimulus = dynamic_cast<OrientationStimulus*>(aStimulus.get());
         return std::shared_ptr< AbstractPercept >(new OrientationPercept(noisify(stimulus->orientation)));
     }
     std::string CompassSensor::asString() const

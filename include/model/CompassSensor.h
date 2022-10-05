@@ -38,13 +38,10 @@ namespace Model
         ~CompassSensor() override = default;
 
         std::shared_ptr<AbstractStimulus> getStimulus () const override;
-        std::shared_ptr<AbstractPercept> getPerceptFor (std::shared_ptr< AbstractStimulus > anAbstractPercepts) override;
+        std::shared_ptr<AbstractPercept> getPerceptFor (std::shared_ptr< AbstractStimulus > aStimulus) override;
 
         std::string asString() const override;
         std::string asDebugString() const override;
-
-    private:
-
     };
 }
 

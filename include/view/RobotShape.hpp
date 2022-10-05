@@ -118,6 +118,9 @@ namespace View
 			}
 		protected:
 
+        private:
+            void visualiseSensors(wxDC& dc);
+
 		private:
 			RobotWorldCanvas* robotWorldCanvas;
 	};

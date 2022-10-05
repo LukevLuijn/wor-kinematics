@@ -159,6 +159,10 @@ namespace Model
 			 *
 			 */
 			void stopCommunicating();
+            /**
+             *
+             */
+			void stopSearching();
 			/**
 			 *
 			 */
@@ -241,6 +245,11 @@ namespace Model
 			virtual std::string asDebugString() const override;
 			//@}
 
+            /**
+             * TODO only for visualising lidar, should be removed.
+             */
+            bool getLidarPercepts(std::shared_ptr<AbstractPercept>& percept);
+
 		protected:
 			/**
 			 *
@@ -258,6 +267,9 @@ namespace Model
 			 *
 			 */
 			bool collision();
+
+        private:
+            void attachSensors();
 		private:
 			/**
 			 *
@@ -307,6 +319,9 @@ namespace Model
 			 *
 			 */
 			std::thread robotThread;
+
+            bool isSearching;
+            std::thread pathSearchingThread;
 			/**
 			 *
 			 */
@@ -315,6 +330,10 @@ namespace Model
 			 *
 			 */
 			Messaging::ServerPtr server;
+            /**
+             * TODO remove.
+             */
+            Base::Queue< std::shared_ptr< AbstractPercept > > tempLidarPercepts;
 	};
 } // namespace Model
 #endif // ROBOT_HPP_

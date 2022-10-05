@@ -83,6 +83,7 @@ set(HEADERS_MODEL
         include/model/NoisySensor.h
         include/model/CompassSensor.h
         include/model/LidarSensor.h
+        include/model/OdometerSensor.h
 
         )
 set(HEADERS_PATH_ALGORITHM
@@ -166,6 +167,7 @@ set(SOURCES
         src/NoisySensor.cpp
         src/CompassSensor.cpp
         src/LidarSensor.cpp
+        src/OdometerSensor.cpp
         )
 
 add_executable(${EXE} ${SOURCES} ${HEADERS})

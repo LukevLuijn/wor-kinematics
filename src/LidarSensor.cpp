@@ -64,12 +64,12 @@ namespace Model
     {
         auto* stimulus = dynamic_cast<LidarStimulus*>(aStimulus.get());
 
-//        for(LidarReading& reading : stimulus->measurements)
-//        {
-//            reading.distance = noisify(reading.distance);
-//        }
+        for(LidarReading& reading : stimulus->measurements)
+        {
+            reading.distance = noisify(reading.distance);
+        }
 
-        return std::shared_ptr<AbstractPercept>(new LidarPercept(stimulus->measurements));
+        return std::shared_ptr<AbstractPercept>(new LidarPercept(*stimulus));
     }
     std::string LidarSensor::asString() const
     {

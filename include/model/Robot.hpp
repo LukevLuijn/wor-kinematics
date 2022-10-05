@@ -159,10 +159,6 @@ namespace Model
 			 *
 			 */
 			void stopCommunicating();
-            /**
-             *
-             */
-			void stopSearching();
 			/**
 			 *
 			 */
@@ -319,9 +315,6 @@ namespace Model
 			 *
 			 */
 			std::thread robotThread;
-
-            bool isSearching;
-            std::thread pathSearchingThread;
 			/**
 			 *
 			 */

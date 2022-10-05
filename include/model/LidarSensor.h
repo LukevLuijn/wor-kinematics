@@ -11,6 +11,9 @@
 
 namespace Model
 {
+    class Robot;
+    typedef std::shared_ptr<Robot> RobotPtr;
+
     struct LidarReading
     {
         double angle = 0, distance = 0;
@@ -32,8 +35,7 @@ namespace Model
         LidarData measurements;
     };
 
-    class Robot;
-    typedef std::shared_ptr<Robot> RobotPtr;
+
 
     class LidarSensor : public AbstractSensor, NoisySensor
     {
@@ -48,11 +50,6 @@ namespace Model
 
         std::string asString() const override;
         std::string asDebugString() const override;
-    private:
-//        LidarReading TakeReading(const Point& location, double angle);
-//        LidarData TakeMeasurement(const Point& location, double startAngle);
-    private:
-
     };
 }
 

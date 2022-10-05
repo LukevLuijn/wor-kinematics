@@ -25,7 +25,10 @@ namespace Model
     CompassSensor::getPerceptFor(std::shared_ptr<AbstractStimulus> aStimulus)
     {
         auto* stimulus = dynamic_cast<OrientationStimulus*>(aStimulus.get());
-        return std::shared_ptr< AbstractPercept >(new OrientationPercept(noisify(stimulus->orientation)));
+
+        stimulus->orientation = noisify(stimulus->orientation);
+
+        return std::shared_ptr< AbstractPercept >(new OrientationPercept(*stimulus));
     }
     std::string CompassSensor::asString() const
     {

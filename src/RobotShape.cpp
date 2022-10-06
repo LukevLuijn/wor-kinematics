@@ -84,9 +84,6 @@ namespace View
 	 */
 	void RobotShape::draw( wxDC& dc)
 	{
-        // TODO remove.
-        visualiseSensors(dc);
-
 		// The minimum size of the RectangleShape is the size of the title
 		titleSize = dc.GetTextExtent( WXSTRING( title));
 		if (size.x < (titleSize.x + 2 * spacing + 2 * borderWidth))
@@ -200,33 +197,4 @@ namespace View
 
 		return os.str();
 	}
-    /**
-     * TODO remove
-     */
-    void RobotShape::visualiseSensors(wxDC& dc)
-    {
-        std::shared_ptr<Model::AbstractPercept> abstractPercept;
-
-        if (getRobot()->getLidarPercepts(abstractPercept))
-        {
-            auto* percept = dynamic_cast<Model::LidarPercept*>(abstractPercept.get());
-
-            for(Model::LidarReading reading : percept->measurements)
-            {
-                Point start (getRobot()->getPosition());
-
-                auto xx = static_cast<int32_t>(start.x + (reading.distance * std::cos(Utils::MathUtils::toRadians(reading.angle))));
-                auto yy = static_cast<int32_t>(start.y + (reading.distance * std::sin(Utils::MathUtils::toRadians(reading.angle))));
-
-                Point end (xx,yy);
-
-
-                dc.SetPen( wxPen( wxColor(255,0,0), 2, wxPENSTYLE_SOLID));
-                dc.DrawCircle(end, 3);
-                dc.SetPen( wxPen( wxColor(0,255,255), 1, wxPENSTYLE_SOLID));
-                dc.DrawLine(start, end);
-            }
-        }
-    }
-
 } // namespace View

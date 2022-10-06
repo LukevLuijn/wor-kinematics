@@ -225,7 +225,7 @@ namespace Application
     Panel* MainFrameWindow::initialiseButtonPanel()
     {
         auto* panel = new Panel(rhsPanel, DEFAULT_ID, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
-        auto* sizer = new wxFlexGridSizer(3, 2, 0, 0);
+        auto* sizer = new wxFlexGridSizer(4, 2, 0, 0);
 
         sizer->SetFlexibleDirection(wxBOTH);
         sizer->SetNonFlexibleGrowMode(wxFLEX_GROWMODE_SPECIFIED);
@@ -263,7 +263,15 @@ namespace Application
                    wxALL | wxEXPAND,
                    5);
         sizer->Add(makeButton(panel,
-                              "Kalman",
+                              "No filter",
+                              [this](CommandEvent& anEvent) {
+                                  this->OnNoFilter(anEvent);
+                              }),
+                   1,
+                   wxALL | wxEXPAND,
+                   5);
+        sizer->Add(makeButton(panel,
+                              "Kalman filter",
                               [this](CommandEvent& anEvent) {
                                   this->OnKalman(anEvent);
                               }),
@@ -271,9 +279,9 @@ namespace Application
                    wxALL | wxEXPAND,
                    5);
         sizer->Add(makeButton(panel,
-                              "Particle",
+                              "Particle filter",
                               [this](CommandEvent& anEvent) {
-                                  this->OnParticle(anEvent);
+                                this->OnParticle(anEvent);
                               }),
                    1,
                    wxALL | wxEXPAND,
@@ -387,19 +395,48 @@ namespace Application
     /**
      *
      */
+    void MainFrameWindow::OnNoFilter(CommandEvent& UNUSEDPARAM(anEvent))
+    {
+        Model::RobotPtr robot = Model::RobotWorld::getRobotWorld().getRobot("Robot");
+
+        if (robot)
+        {
+            robot->setDrivingStrategy(Model::DrivingStrategy_e::NO_FILTER);
+        }
+        else
+        {
+            LOG("There is no robot available");
+        }
+    }
+    /**
+     *
+     */
     void MainFrameWindow::OnKalman(CommandEvent& UNUSEDPARAM(anEvent))
     {
-        LOG("Using kalman filter");
-
-        LOG("TODO");
+        Model::RobotPtr robot = Model::RobotWorld::getRobotWorld().getRobot("Robot");
+        if (robot)
+        {
+            robot->setDrivingStrategy(Model::DrivingStrategy_e::KALMAN_FILTER);
+        }
+        else
+        {
+            LOG("There is no robot available");
+        }
     }
     /**
      *
      */
     void MainFrameWindow::OnParticle(CommandEvent& UNUSEDPARAM(anEvent))
     {
-        LOG("Using particle filter");
+        Model::RobotPtr robot = Model::RobotWorld::getRobotWorld().getRobot("Robot");
+        if (robot)
+        {
+            robot->setDrivingStrategy(Model::DrivingStrategy_e::PARTICLE_FILTER);
+        }
+        else
+        {
+            LOG("There is no robot available");
+        }
 
-        LOG("TODO");
     }
 }// namespace Application

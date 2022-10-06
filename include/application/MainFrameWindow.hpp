@@ -89,6 +89,7 @@ namespace Application
 			void OnStopRobot( CommandEvent& anEvent);
 			void OnPopulate( CommandEvent& anEvent);
 			void OnUnpopulate( CommandEvent& anEvent);
+            void OnNoFilter(CommandEvent& anEvent);
             void OnKalman(CommandEvent& anEvent);
             void OnParticle(CommandEvent& anEvent);
 	};

@@ -19,6 +19,7 @@
 #include "LidarSensor.h"
 #include "OdometerSensor.h"
 
+#include "ConcreteDrivers.h"
 #include "SteeringActuator.hpp"
 
 #include <chrono>
@@ -34,30 +35,33 @@ namespace Model
 	 */
     Robot::Robot()
         : name(""), size(DefaultSize), position(DefaultPosition), front(0, 0), speed(0.0), acting(false),
-          driving(false), communicating(false)
+          driving(false), communicating(false), drivingStrategy(DrivingStrategy_e::NO_FILTER)
     {
         attachSensors();
         attachActuators();
+        setDrivingStrategy(drivingStrategy);
     }
     /**
 	 *
 	 */
     Robot::Robot(const std::string& aName)
         : name(aName), size(DefaultSize), position(DefaultPosition), front(0, 0), speed(0.0), acting(false),
-          driving(false), communicating(false)
+          driving(false), communicating(false), drivingStrategy(DrivingStrategy_e::NO_FILTER)
     {
         attachSensors();
         attachActuators();
+        setDrivingStrategy(drivingStrategy);
     }
     /**
 	 *
 	 */
     Robot::Robot(const std::string& aName, const Point& aPosition)
         : name(aName), size(DefaultSize), position(aPosition), front(0, 0), speed(0.0), acting(false), driving(false),
-          communicating(false)
+          communicating(false), drivingStrategy(DrivingStrategy_e::NO_FILTER)
     {
         attachSensors();
         attachActuators();
+        setDrivingStrategy(drivingStrategy);
     }
     /**
 	 *
@@ -80,6 +84,163 @@ namespace Model
     /**
 	 *
 	 */
+    bool Robot::intersects(const Region& aRegion) const
+    {
+        Region region = getRegion();
+        region.Intersect(aRegion);
+        return !region.IsEmpty();
+    }
+    /**
+	 *
+	 */
+    bool Robot::arrived(GoalPtr aGoal)
+    {
+        if (aGoal && intersects(aGoal->getRegion()))
+        {
+            return true;
+        }
+        return false;
+    }
+    /**
+	 *
+	 */
+    bool Robot::collision()
+    {
+        Point frontLeft = getFrontLeft();
+        Point frontRight = getFrontRight();
+        Point backLeft = getBackLeft();
+        Point backRight = getBackRight();
+
+        const std::vector<WallPtr>& walls = RobotWorld::getRobotWorld().getWalls();
+        for (WallPtr wall : walls)
+        {
+            if (Utils::Shape2DUtils::intersect(frontLeft, frontRight, wall->getPoint1(), wall->getPoint2()) ||
+                Utils::Shape2DUtils::intersect(frontLeft, backLeft, wall->getPoint1(), wall->getPoint2()) ||
+                Utils::Shape2DUtils::intersect(frontRight, backRight, wall->getPoint1(), wall->getPoint2()))
+            // cppcheck-suppress useStlAlgorithm
+            {
+                return true;
+            }
+        }
+        const std::vector<RobotPtr>& robots = RobotWorld::getRobotWorld().getRobots();
+        for (RobotPtr robot : robots)
+        {
+            if (getObjectId() == robot->getObjectId())
+            {
+                continue;
+            }
+            if (intersects(robot->getRegion()))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    /**
+     *
+     */
+    bool Robot::outOfBounds(uint32_t pathPoint)
+    {
+        return (position.x <= 0) || (position.x >= 1024) || (position.y <= 0) || (position.y >= 1024) ||
+               (pathPoint > path.size());
+    }
+    /**
+     *
+     */
+    void Robot::activateSensors(bool activate)
+    {
+        for (const std::shared_ptr<AbstractSensor>& sensor : sensors)
+        {
+            (activate) ? sensor->setOn() : sensor->setOff();
+        }
+    }
+    /**
+     *
+     */
+    void Robot::startActing()
+    {
+        acting = true;
+        std::thread newRobotThread([this] {
+          startDriving();
+        });
+        robotThread.swap(newRobotThread);
+    }
+    /**
+	 *
+	 */
+    void Robot::stopActing()
+    {
+        acting = false;
+        //        driving = false;
+        driver->stop();
+        robotThread.join();
+    }
+    /**
+     *
+     */
+    void Robot::startDriving()
+    {
+        driving = true;
+
+        goal = RobotWorld::getRobotWorld().getGoal("Goal");
+
+        calculateRoute(goal);
+
+        try
+        {
+            // Compare a float/double with another float/double: use epsilon...
+            if (std::fabs(speed - 0.0) <= std::numeric_limits<float>::epsilon())
+            {
+                setSpeed(10.0, false);// @suppress("Avoid magic numbers")
+            }
+
+            driver->drive(goal, path);
+        }
+        catch (std::exception& e)
+        {
+            LOG(e.what());
+            std::cerr << __PRETTY_FUNCTION__ << ": " << e.what() << std::endl;
+        }
+        catch (...)
+        {
+            LOG("unknown exception");
+            std::cerr << __PRETTY_FUNCTION__ << ": unknown exception" << std::endl;
+        }
+    }
+    /**
+	 *
+	 */
+    void Robot::stopDriving()
+    {
+        driver->stop();
+    }
+    /**
+     *
+     */
+    std::string Robot::asString() const
+    {
+        std::ostringstream os;
+
+        os << "Robot " << name << " at (" << position.x << "," << position.y << ")";
+
+        return os.str();
+    }
+    /**
+	 *
+	 */
+    std::string Robot::asDebugString() const
+    {
+        std::ostringstream os;
+
+        os << "Robot:\n";
+        os << AbstractAgent::asDebugString();
+        os << "Robot " << name << " at (" << position.x << "," << position.y << ")\n";
+
+        return os.str();
+    }
+    /**
+     *
+     */
     void Robot::setName(const std::string& aName, bool aNotifyObservers /*= true*/)
     {
         name = aName;
@@ -87,13 +248,6 @@ namespace Model
         {
             notifyObservers();
         }
-    }
-    /**
-	 *
-	 */
-    Size Robot::getSize() const
-    {
-        return size;
     }
     /**
 	 *
@@ -120,13 +274,6 @@ namespace Model
     /**
 	 *
 	 */
-    BoundedVector Robot::getFront() const
-    {
-        return front;
-    }
-    /**
-	 *
-	 */
     void Robot::setFront(const BoundedVector& aVector, bool aNotifyObservers /*= true*/)
     {
         front = aVector;
@@ -134,14 +281,6 @@ namespace Model
         {
             notifyObservers();
         }
-    }
-    /**
-	 *
-	 */
-    // cppcheck-suppress unusedFunction
-    float Robot::getSpeed() const
-    {
-        return speed;
     }
     /**
 	 * TODO odometer needs speed parameter for error.
@@ -155,110 +294,40 @@ namespace Model
         }
     }
     /**
-	 *
-	 */
-    void Robot::startActing()
+     *
+     */
+    void Robot::setDrivingStrategy(DrivingStrategy_e newStrategy)
     {
-        acting = true;
-        std::thread newRobotThread([this] {
-            startDriving();
-        });
-        robotThread.swap(newRobotThread);
-    }
-    /**
-	 *
-	 */
-    void Robot::stopActing()
-    {
-        acting = false;
-        driving = false;
-        robotThread.join();
-    }
-    /**
-	 *
-	 */
-    void Robot::startDriving()
-    {
-        driving = true;
-
-        goal = RobotWorld::getRobotWorld().getGoal("Goal");
-
-        calculateRoute(goal);
-        drive();
-    }
-    /**
-	 *
-	 */
-    void Robot::stopDriving()
-    {
-        driving = false;
-    }
-    /**
-	 *
-	 */
-    void Robot::startCommunicating()
-    {
-        if (!communicating)
+        switch (newStrategy)
         {
-            communicating = true;
-
-            std::string localPort = "12345";
-            if (Application::MainApplication::isArgGiven("-local_port"))
-            {
-                localPort = Application::MainApplication::getArg("-local_port").value;
-            }
-
-            if (Messaging::CommunicationService::getCommunicationService().isStopped())
-            {
-                TRACE_DEVELOP("Restarting the Communication service");
-                Messaging::CommunicationService::getCommunicationService().restart();
-            }
-
-            server = std::make_shared<Messaging::Server>(static_cast<unsigned short>(std::stoi(localPort)),
-                                                         toPtr<Robot>());
-            Messaging::CommunicationService::getCommunicationService().registerServer(server);
+            case DrivingStrategy_e::NO_FILTER:
+                driver = new DefaultDriver(this);
+                break;
+            case DrivingStrategy_e::KALMAN_FILTER:
+                //                driver = new KalmanDriver(this);
+                LOG("unimplemented", "Kalman filter");
+                break;
+            case DrivingStrategy_e::PARTICLE_FILTER:
+                //                driver = new ParticleDriver(this);
+                LOG("unimplemented", "Particle filter");
+                break;
+            default:
+                LOG("undefined driver strategy, no change", driver->asString());
+                return;
         }
+        LOG("new driver strategy set", driver->asString());
     }
     /**
-	 *
-	 */
-    void Robot::stopCommunicating()
-    {
-        if (communicating)
-        {
-            communicating = false;
-
-            std::string localPort = "12345";
-            if (Application::MainApplication::isArgGiven("-local_port"))
-            {
-                localPort = Application::MainApplication::getArg("-local_port").value;
-            }
-
-            Messaging::Client c1ient("localhost", static_cast<unsigned short>(std::stoi(localPort)), toPtr<Robot>());
-            Messaging::Message message(Messaging::StopCommunicatingRequest, "stop");
-            c1ient.dispatchMessage(message);
-        }
-    }
-    /**
-	 *
-	 */
+     *
+     */
     Region Robot::getRegion() const
     {
         Point translatedPoints[] = {getFrontRight(), getFrontLeft(), getBackLeft(), getBackRight()};
         return Region(4, translatedPoints);// @suppress("Avoid magic numbers")
     }
     /**
-	 *
-	 */
-    bool Robot::intersects(const Region& aRegion) const
-    {
-        Region region = getRegion();
-        region.Intersect(aRegion);
-        return !region.IsEmpty();
-    }
-    /**
-	 *
-	 */
+     *
+     */
     Point Robot::getFrontLeft() const
     {
         // x and y are pointing to top left now
@@ -335,6 +404,52 @@ namespace Model
         return backRight;
     }
     /**
+     *
+     */
+    void Robot::startCommunicating()
+    {
+        if (!communicating)
+        {
+            communicating = true;
+
+            std::string localPort = "12345";
+            if (Application::MainApplication::isArgGiven("-local_port"))
+            {
+                localPort = Application::MainApplication::getArg("-local_port").value;
+            }
+
+            if (Messaging::CommunicationService::getCommunicationService().isStopped())
+            {
+                TRACE_DEVELOP("Restarting the Communication service");
+                Messaging::CommunicationService::getCommunicationService().restart();
+            }
+
+            server = std::make_shared<Messaging::Server>(static_cast<unsigned short>(std::stoi(localPort)),
+                                                         toPtr<Robot>());
+            Messaging::CommunicationService::getCommunicationService().registerServer(server);
+        }
+    }
+    /**
+	 *
+	 */
+    void Robot::stopCommunicating()
+    {
+        if (communicating)
+        {
+            communicating = false;
+
+            std::string localPort = "12345";
+            if (Application::MainApplication::isArgGiven("-local_port"))
+            {
+                localPort = Application::MainApplication::getArg("-local_port").value;
+            }
+
+            Messaging::Client c1ient("localhost", static_cast<unsigned short>(std::stoi(localPort)), toPtr<Robot>());
+            Messaging::Message message(Messaging::StopCommunicatingRequest, "stop");
+            c1ient.dispatchMessage(message);
+        }
+    }
+    /**
 	 *
 	 */
     void Robot::handleNotification()
@@ -409,219 +524,27 @@ namespace Model
         }
     }
     /**
-	 *
-	 */
-    std::string Robot::asString() const
-    {
-        std::ostringstream os;
-
-        os << "Robot " << name << " at (" << position.x << "," << position.y << ")";
-
-        return os.str();
-    }
-    /**
-	 *
-	 */
-    std::string Robot::asDebugString() const
-    {
-        std::ostringstream os;
-
-        os << "Robot:\n";
-        os << AbstractAgent::asDebugString();
-        os << "Robot " << name << " at (" << position.x << "," << position.y << ")\n";
-
-        return os.str();
-    }
-    /**
-     * TODO remove
+     *
      */
-    bool Robot::getLidarPercepts(std::shared_ptr<AbstractPercept>& percept)
-    {
-        if (tempLidarPercepts.size() != 0)
-        {
-            percept = tempLidarPercepts.dequeue().value();
-            return true;
-        }
-        return false;
-    }
-    /**
-	 *
-	 */
-    void Robot::drive()
-    {
-        try
-        {
-            for (std::shared_ptr<AbstractSensor> sensor : sensors)
-            {
-                sensor->setOn();
-            }
-            // Compare a float/double with another float/double: use epsilon...
-            if (std::fabs(speed - 0.0) <= std::numeric_limits<float>::epsilon())
-            {
-                setSpeed(10.0, false);// @suppress("Avoid magic numbers")
-            }
-
-            unsigned pathPoint = 0;
-            while (position.x > 0 && position.x < 1024 && position.y > 0 && position.y < 1024 &&
-                   pathPoint < path.size())// @suppress("Avoid magic numbers")
-            {
-                const PathAlgorithm::Vertex& vertex = path[pathPoint += static_cast<unsigned int>(speed)];
-
-                Point newPosition = vertex.asPoint();
-
-                SteeringCommand command(newPosition);
-                steeringActuator->handleCommand(command);
-
-                front = BoundedVector(command.positionRequest, position);
-                position.x = command.positionRequest.x;
-                position.y = command.positionRequest.y;
-
-                LOG("Current position", std::to_string(position.x) + ", " + std::to_string(position.y));
-
-                double distance = 0, orientation = 0;
-                while (perceptQueue.size() != 0)
-                {
-                    std::shared_ptr<AbstractPercept> percept = perceptQueue.dequeue().value();
-
-                    if (dynamic_cast<OrientationPercept*>(percept.get()))
-                    {
-                        auto* orientationPercept = dynamic_cast<OrientationPercept*>(percept.get());
-                        orientation = orientationPercept->orientation * 180 / M_PI;
-                    }
-                    else if (dynamic_cast<OdometerPercept*>(percept.get()))
-                    {
-                        auto* odometerPercept = dynamic_cast<OdometerPercept*>(percept.get());
-                        distance = odometerPercept->distanceTravelled;
-                    }
-                    else if (dynamic_cast<LidarPercept*>(percept.get()))
-                    {
-                        // TODO only for visualisation.
-                        tempLidarPercepts.enqueue(percept);
-                    }
-                }
-
-//                LOG("[DISTANCE: " + std::to_string(distance) + ", ORIENTATION: " + std::to_string(orientation) + "]");
-
-
-                if (arrived(goal) || collision())
-                {
-                    LOG("Arrived at goal location or collision with world objects");
-                    notifyObservers();
-                    break;
-                }
-
-                notifyObservers();
-
-                // If there is no sleep_for here the robot will immediately be on its destination....
-                std::this_thread::sleep_for(std::chrono::milliseconds(100));// @suppress("Avoid magic numbers")
-
-                // this should be the last thing in the loop
-                if (driving == false)
-                {
-                    return;
-                }
-            }// while
-            for (std::shared_ptr<AbstractSensor> sensor : sensors)
-            {
-                sensor->setOff();
-            }
-        }
-        catch (std::exception& e)
-        {
-            Application::Logger::log(__PRETTY_FUNCTION__ + std::string(": ") + e.what());
-            std::cerr << __PRETTY_FUNCTION__ << ": " << e.what() << std::endl;
-        }
-        catch (...)
-        {
-            Application::Logger::log(__PRETTY_FUNCTION__ + std::string(": unknown exception"));
-            std::cerr << __PRETTY_FUNCTION__ << ": unknown exception" << std::endl;
-        }
-    }
-    /**
-	 *
-	 */
     void Robot::calculateRoute(GoalPtr aGoal)
     {
         path.clear();
         if (aGoal)
         {
-            //            isSearching = true;
-            //            std::thread newPathSearchingThread([this] {
-            //                uint16_t counter = 0;
-            //                while (isSearching)
-            //                {
-            //                    if (counter >= 5000)
-            //                    {
-            //                        LOG("searching for path to goal.. ");
-            //                    }
-            //
-            //                    std::this_thread::sleep_for(std::chrono::milliseconds(1));
-            //                    ++counter;
-            //                }
-            //            });
-            //            pathSearchingThread.swap(newPathSearchingThread);
-
-
             front = BoundedVector(aGoal->getPosition(), position);
 
             auto start = std::chrono::high_resolution_clock::now();
 
-            path = astar.search(position, aGoal->getPosition(), size + Size(size.x/2, size.y/2));
+            path = astar.search(position, aGoal->getPosition(), size + Size(size.x / 2, size.y / 2));
 
             auto stop = std::chrono::high_resolution_clock::now();
             auto time = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
             LOG("path found in: " + std::to_string(time.count()) + " milliseconds");
-
-            //            isSearching = false;
-            //            pathSearchingThread.join();
         }
     }
     /**
-	 *
-	 */
-    bool Robot::arrived(GoalPtr aGoal)
-    {
-        if (aGoal && intersects(aGoal->getRegion()))
-        {
-            return true;
-        }
-        return false;
-    }
-    /**
-	 *
-	 */
-    bool Robot::collision()
-    {
-        Point frontLeft = getFrontLeft();
-        Point frontRight = getFrontRight();
-        Point backLeft = getBackLeft();
-        Point backRight = getBackRight();
-
-        const std::vector<WallPtr>& walls = RobotWorld::getRobotWorld().getWalls();
-        for (WallPtr wall : walls)
-        {
-            if (Utils::Shape2DUtils::intersect(frontLeft, frontRight, wall->getPoint1(), wall->getPoint2()) ||
-                Utils::Shape2DUtils::intersect(frontLeft, backLeft, wall->getPoint1(), wall->getPoint2()) ||
-                Utils::Shape2DUtils::intersect(frontRight, backRight, wall->getPoint1(), wall->getPoint2()))
-            // cppcheck-suppress useStlAlgorithm
-            {
-                return true;
-            }
-        }
-        const std::vector<RobotPtr>& robots = RobotWorld::getRobotWorld().getRobots();
-        for (RobotPtr robot : robots)
-        {
-            if (getObjectId() == robot->getObjectId())
-            {
-                continue;
-            }
-            if (intersects(robot->getRegion()))
-            {
-                return true;
-            }
-        }
-        return false;
-    }
+     *
+     */
     void Robot::attachSensors()
     {
         std::array<std::shared_ptr<AbstractSensor>, 3> robotSensors{
@@ -635,6 +558,9 @@ namespace Model
             attachSensor(sensor);
         }
     }
+    /**
+     *
+     */
     void Robot::attachActuators()
     {
         steeringActuator = std::make_shared<SteeringActuator>(this);
@@ -645,5 +571,4 @@ namespace Model
             attachActuator(actuator);
         }
     }
-
 }// namespace Model

@@ -14,6 +14,8 @@
 #include "Size.hpp"
 #include "SteeringActuator.hpp"
 
+#include "DriveStrategy.h"
+
 #include <iostream>
 #include <memory>
 #include <mutex>
@@ -22,315 +24,138 @@
 
 namespace Messaging
 {
-	class Message;
-	class Server;
-	typedef std::shared_ptr< Server > ServerPtr;
-}
+    class Message;
+    class Server;
+    typedef std::shared_ptr<Server> ServerPtr;
+}// namespace Messaging
 
 namespace Model
 {
-	class Robot;
-	typedef std::shared_ptr<Robot> RobotPtr;
+    class Robot;
+    typedef std::shared_ptr<Robot> RobotPtr;
 
-	class Goal;
-	typedef std::shared_ptr<Goal> GoalPtr;
+    class Goal;
+    typedef std::shared_ptr<Goal> GoalPtr;
 
-	class Robot :	public AbstractAgent,
-					public Messaging::MessageHandler,
-					public Base::Observer
-	{
-		public:
-			/**
-			 *
-			 */
-			Robot();
-			/**
-			 *
-			 */
-			explicit Robot( const std::string& aName);
-			/**
-			 *
-			 */
-			Robot(	const std::string& aName,
-					const Point& aPosition);
-			/**
-			 *
-			 */
-			virtual ~Robot();
-			/**
-			 *
-			 */
-			std::string getName() const
-			{
-				return name;
-			}
-			/**
-			 *
-			 */
-			void setName( const std::string& aName,
-						  bool aNotifyObservers = true);
-			/**
-			 *
-			 */
-			Size getSize() const;
-			/**
-			 *
-			 */
-			void setSize(	const Size& aSize,
-							bool aNotifyObservers = true);
-			/**
-			 *
-			 */
-			Point getPosition() const
-			{
-				return position;
-			}
-			/**
-			 *
-			 */
-			void setPosition(	const Point& aPosition,
-								bool aNotifyObservers = true);
-			/**
-			 *
-			 */
-			BoundedVector getFront() const;
-			/**
-			 *
-			 */
-			void setFront(	const BoundedVector& aVector,
-							bool aNotifyObservers = true);
-			/**
-			 *
-			 */
-			float getSpeed() const;
-			/**
-			 *
-			 */
-			void setSpeed( float aNewSpeed,
-						   bool aNotifyObservers = true);
-			/**
-			 *
-			 * @return true if the robot is acting, i.e. either planning or driving
-			 */
-			bool isActing() const
-			{
-				return acting;
-			}
-			/**
-			 *
-			 */
-			virtual void startActing() override;
-			/**
-			 *
-			 */
-			virtual void stopActing() override;
-			/**
-			 *
-			 * @return true if the robot is driving
-			 */
-			bool isDriving() const
-			{
-				return driving;
-			}
-			/**
-			 *
-			 */
-			virtual void startDriving();
-			/**
-			 *
-			 */
-			virtual void stopDriving();
-			/**
-			 *
-			 * @return true if the robot is communicating, i.e. listens with an active ServerConnection
-			 */
-			bool isCommunicating() const
-			{
-				return communicating;
-			}
-			/**
-			 * Starts a ServerConnection that listens at port 12345 unless given
-			 * an other port by specifying a command line argument -local_port=port
-			 */
-			void startCommunicating();
-			/**
-			 * Connects to the ServerConnection that listens at port 12345 unless given
-			 * an other port by specifying a command line argument -local_port=port
-			 * and sends a message with messageType "1" and a body with "stop"
-			 *
-			 */
-			void stopCommunicating();
-			/**
-			 *
-			 */
-			Region getRegion() const;
-			/**
-			 *
-			 */
-			bool intersects( const Region& aRegion) const;
-			/**
-			 *
-			 */
-			Point getFrontLeft() const;
-			/**
-			 *
-			 */
-			Point getFrontRight() const;
-			/**
-			 *
-			 */
-			Point getBackLeft() const;
-			/**
-			 *
-			 */
-			Point getBackRight() const;
-			/**
-			 * @name Observer functions
-			 */
-			//@{
-			/**
-			 * A Notifier will call this function if this Observer will handle the notifications of that
-			 * Notifier. It is the responsibility of the Observer to filter any events it is interested in.
-			 *
-			 */
-			virtual void handleNotification() override;
-			//@}
-			/**
-			 *
-			 */
-			PathAlgorithm::OpenSet getOpenSet() const
-			{
-				return astar.getOpenSet();
-			}
-			/**
-			 *
-			 */
-			PathAlgorithm::Path getPath() const
-			{
-				return path;
-			}
-			/**
-			 * @name Messaging::MessageHandler functions
-			 */
-			//@{
-			/**
-			 * This function is called by a ServerSesssion whenever a message is received. If the request is handled,
-			 * any response *must* be set in the Message argument. The message argument is then echoed back to the
-			 * requester, probably a ClientSession.
-			 *
-			 * @see Messaging::RequestHandler::handleRequest( Messaging::Message& aMessage)
-			 */
-			virtual void handleRequest( Messaging::Message& aMessage);
-			/**
-			 * This function is called by a ClientSession whenever a response to a previous request is received.
-			 *
-			 * @see Messaging::ResponseHandler::handleResponse( const Messaging::Message& aMessage)
-			 */
-			virtual void handleResponse( const Messaging::Message& aMessage);
-			//@}
-			/**
-			 * @name Debug functions
-			 */
-			//@{
-			/**
-			 * Returns a 1-line description of the object
-			 */
-			virtual std::string asString() const override;
-			/**
-			 * Returns a description of the object with all data of the object usable for debugging
-			 */
-			virtual std::string asDebugString() const override;
-			//@}
+    enum class DrivingStrategy_e : uint8_t;
 
-            /**
-             * TODO only for visualising lidar, should be removed.
-             */
-            bool getLidarPercepts(std::shared_ptr<AbstractPercept>& percept);
+    class Robot : public AbstractAgent, public Messaging::MessageHandler, public Base::Observer
+    {
+    public:
+        Robot();
+        explicit Robot(const std::string& aName);
+        Robot(const std::string& aName, const Point& aPosition);
+        ~Robot() override;
 
-		protected:
-			/**
-			 *
-			 */
-			void drive();
-			/**
-			 *
-			 */
-			void calculateRoute(GoalPtr aGoal);
-			/**
-			 *
-			 */
-			bool arrived(GoalPtr aGoal);
-			/**
-			 *
-			 */
-			bool collision();
+        bool intersects(const Region& aRegion) const;
+        bool arrived(GoalPtr aGoal);
+        bool collision();
+        bool outOfBounds(uint32_t pathPoint);
+        void activateSensors(bool activate);
 
-        private:
-            void attachSensors();
-            void attachActuators();
-		private:
-			/**
-			 *
-			 */
-			std::string name;
-			/**
-			 *
-			 */
-			Size size;
-			/**
-			 *
-			 */
-			Point position;
-			/**
-			 *
-			 */
-			BoundedVector front;
-			/**
-			 *
-			 */
-			float speed;
-			/**
-			 *
-			 */
-			GoalPtr goal;
-			/**
-			 *
-			 */
-			PathAlgorithm::AStar astar;
-			/**
-			 *
-			 */
-			PathAlgorithm::Path path;
-			/**
-			 *
-			 */
-			bool acting;
-			/**
-			 *
-			 */
-			bool driving;
-			/**
-			 *
-			 */
-			bool communicating;
-			/**
-			 *
-			 */
-			std::thread robotThread;
-			/**
-			 *
-			 */
-			mutable std::recursive_mutex robotMutex;
-			/**
-			 *
-			 */
-			Messaging::ServerPtr server;
-            /**
+        virtual void startActing() override;
+        virtual void stopActing() override;
+
+        virtual void startDriving();
+        virtual void stopDriving();
+
+        std::string asString() const override;
+        std::string asDebugString() const override;
+
+        void setName(const std::string& aName, bool aNotifyObservers = true);
+        void setSize(const Size& aSize, bool aNotifyObservers = true);
+        void setPosition(const Point& aPosition, bool aNotifyObservers = true);
+        void setFront(const BoundedVector& aVector, bool aNotifyObservers = true);
+        void setSpeed(float aNewSpeed, bool aNotifyObservers = true);
+        void setDrivingStrategy(DrivingStrategy_e newStrategy);
+
+        Region getRegion() const;
+        Point getFrontLeft() const;
+        Point getFrontRight() const;
+        Point getBackLeft() const;
+        Point getBackRight() const;
+
+        void startCommunicating();
+        void stopCommunicating();
+
+        void handleNotification() override;
+        void handleRequest(Messaging::Message& aMessage) override;
+        void handleResponse(const Messaging::Message& aMessage) override;
+
+        std::string getName() const
+        {
+            return name;
+        }
+        Point getPosition() const
+        {
+            return position;
+        }
+        bool isActing() const
+        {
+            return acting;
+        }
+        bool isDriving() const
+        {
+            return driving;
+        }
+        bool isCommunicating() const
+        {
+            return communicating;
+        }
+        PathAlgorithm::OpenSet getOpenSet() const
+        {
+            return astar.getOpenSet();
+        }
+        PathAlgorithm::Path getPath() const
+        {
+            return path;
+        }
+        float getSpeed() const
+        {
+            return speed;
+        }
+        Size getSize() const
+        {
+            return size;
+        }
+        BoundedVector getFront() const
+        {
+            return front;
+        }
+
+    protected:
+        void calculateRoute(GoalPtr aGoal);
+    private:
+        void attachSensors();
+        void attachActuators();
+
+    private:
+        std::string name;
+        Size size;
+        Point position;
+        BoundedVector front;
+        float speed;
+        GoalPtr goal;
+        PathAlgorithm::AStar astar;
+        PathAlgorithm::Path path;
+        bool acting;
+        bool driving;
+        bool communicating;
+        DrivingStrategy_e drivingStrategy;
+        std::thread robotThread;
+        mutable std::recursive_mutex robotMutex;
+        Messaging::ServerPtr server;
+        /**
              * TODO remove.
              */
-            Base::Queue< std::shared_ptr< AbstractPercept > > tempLidarPercepts;
+        Base::Queue<std::shared_ptr<AbstractPercept>> tempLidarPercepts;
+        std::shared_ptr<SteeringActuator> steeringActuator;
+        DriveStrategy* driver;
+    };
 
-            std::shared_ptr<SteeringActuator> steeringActuator;
-	};
-} // namespace Model
-#endif // ROBOT_HPP_
+    enum class DrivingStrategy_e : uint8_t
+    {
+        NO_FILTER,KALMAN_FILTER,PARTICLE_FILTER
+    };
+}// namespace Model
+#endif// ROBOT_HPP_

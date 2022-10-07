@@ -38,7 +38,7 @@ make -j4 2>$1 | tee build.log
 |04|De robot heeft kennis van de kaart van de wereld.|:x:|
 |05|De robot heeft een positie en oriëntatie die gebruikt wordt voor het bepalen van de route, het rijden en als input voor de sensoren (van waaruit ergemeten moet worden). Daarnaast moet de robot een ’belief’ positie en oriëntatie krijgen.|:x:|
 |06|Het bepalen van de route met A-star en het automatisch rijden naar het doel kan beschout worden als het handmatig besturen / laten rijden van de robot.|:x:|
-|07|De robot maakt gebruik van de Kalmanfilter op basis van kompas en odometer om een overtuiging van zijn positie en oriëntatie te vormen.|:x:|
+|07|De robot maakt gebruik van de Kalmanfilter op basis van kompas en odometer om een overtuiging van zijn positie en oriëntatie te vormen.|:heavy_check_mark:|
 |08|De robot maakt gebruik van het Particlefilter op basis van kompas en lidar omeen overtuiging van zijn positie en oriëntatie te vormen.|:x:|
 |09|De robot ontwikkelt een overtuiging van de werkelijkheid volgens twee methodes (zie voorgaande twee items). Voeg aan de GUI van robotwereld een optie toe waarmee de gebruiker kan selecteren of de robot gebruik maakt van de overtuiging verkregen met Kalmanfilter of die uit het Particlefilter om een keuze te maken voor de control update.|:x:|
 |10|De controlupdate gaat gepaard met onzekerheid. Bij een snelheid van 10 pixels per stap is de kans 0.7 dat deze uitkomt in een van de pixels in het 3x3 vierkant rondom de doelpixel. De kans is 0.3 dat deze uitkomt in één van de overige pixels in het 5x5 vierkant rondom de doelpixel.|:heavy_check_mark:|

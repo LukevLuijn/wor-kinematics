@@ -7,9 +7,9 @@
 
 namespace Utils
 {
-	/**
-	 *
-	 */
+    /**
+     * Get angle in radians.
+     */
 	double GetAngle(	const Point& aStartpoint,
 						const Point& anEndPoint)
 	{
@@ -27,16 +27,16 @@ namespace Utils
 		return angle;
 	}
 
-	/**
-	 *
-	 */
+    /**
+     * Get angle in radians.
+     */
 	/* static */double Shape2DUtils::getAngle( const Model::BoundedVector& aVector)
 	{
 		return GetAngle( Point( 0, 0), Point( static_cast<int>(aVector.x), static_cast<int>(aVector.y)));
 	}
-	/**
-	 *
-	 */
+    /**
+     * Get angle in radians.
+     */
 	/* static */double Shape2DUtils::getAngle(	const Point& aStartpoint,
 												const Point& anEndPoint)
 	{

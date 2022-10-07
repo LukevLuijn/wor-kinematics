@@ -315,31 +315,29 @@ namespace Model
 
         // set maze wall coordinates.
 
-        const std::vector<std::pair<Point, Point>> wallCoordinates =
-                {
-                        {Point(min, max/5*1),Point(max/5*3, max/5*1)},
-                        {Point(min + max/5*2,max/5*2), Point(max, max/5*2)},
-                        {Point(min,max/5*3),Point(max/5*3, max/5*3)},
-                        {Point(min + max/5*2,max/5*4), Point(max, max/5*4)},
-                };
+        const std::vector<std::pair<Point, Point>> wallCoordinates = {
+                {Point(min, max / 5 * 1), Point(max / 5 * 3, max / 5 * 1)},
+                {Point(min + max / 5 * 2, max / 5 * 2), Point(max, max / 5 * 2)},
+                {Point(min, max / 5 * 3), Point(max / 5 * 3, max / 5 * 3)},
+                {Point(min + max / 5 * 2, max / 5 * 4), Point(max, max / 5 * 4)},
+        };
 
         // add maze walls.
 
-        for(std::size_t i = 0; i < static_cast<std::size_t>(aNumberOfWalls); ++i)
+        for (std::size_t i = 0; i < static_cast<std::size_t>(aNumberOfWalls); ++i)
         {
             RobotWorld::getRobotWorld().newWall(wallCoordinates[i].first, wallCoordinates[i].second, false);
         }
 
         // add robot and goal.
 
-        const Point robotLocation (min + max/10, min + max/10);
-//        const Point goalLocation (max - max/10, max - max/10); // actual
-        Point goalLocation = robotLocation; // TODO testing
-        goalLocation.y += max/5*1;
-
+        const Point robotLocation(min + max / 10, min + max / 10);
+        //        const Point goalLocation (max - max/10, max - max/10); // actual
+        Point goalLocation = robotLocation;// TODO testing
+        goalLocation.y += max / 5 * 1;
 
         RobotWorld::getRobotWorld().newRobot("Robot", robotLocation, false);// @suppress("Avoid magic numbers")
-        RobotWorld::getRobotWorld().newGoal( "Goal", goalLocation, false); // @suppress("Avoid magic numbers")
+        RobotWorld::getRobotWorld().newGoal("Goal", goalLocation, false);   // @suppress("Avoid magic numbers")
 
         notifyObservers();
     }

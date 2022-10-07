@@ -5,8 +5,8 @@
 #ifndef WOR_WORLD_KINEMATICA_COMPASSSENSOR_H
 #define WOR_WORLD_KINEMATICA_COMPASSSENSOR_H
 
-#include "Config.hpp"
 #include "AbstractSensor.hpp"
+#include "Config.hpp"
 #include "NoisySensor.h"
 
 namespace Model
@@ -19,7 +19,10 @@ namespace Model
     public:
         explicit CompassStimulus(double anOrientation) : orientation(anOrientation){};
 
-        std::string asString() override { return "CompassStimulus";}
+        std::string asString() override
+        {
+            return "CompassStimulus";
+        }
 
         double orientation;
     };
@@ -27,10 +30,15 @@ namespace Model
     class CompassPercept : public AbstractPercept
     {
     public:
-        explicit CompassPercept(double anOrientation) : orientation(anOrientation) {};
-        explicit CompassPercept(const CompassStimulus& aStimulus) : orientation(aStimulus.orientation) {}
+        explicit CompassPercept(double anOrientation) : orientation(anOrientation){};
+        explicit CompassPercept(const CompassStimulus& aStimulus) : orientation(aStimulus.orientation)
+        {
+        }
 
-        std::string asString() override { return "CompassPercept";}
+        std::string asString() override
+        {
+            return "CompassPercept";
+        }
 
         double orientation;
     };
@@ -43,12 +51,12 @@ namespace Model
 
         ~CompassSensor() override = default;
 
-        std::shared_ptr<AbstractStimulus> getStimulus () const override;
-        std::shared_ptr<AbstractPercept> getPerceptFor (std::shared_ptr< AbstractStimulus > aStimulus) override;
+        AbstractStimulusPtr getStimulus() const override;
+        AbstractPerceptPtr getPerceptFor(AbstractStimulusPtr aStimulus) override;
 
         std::string asString() const override;
         std::string asDebugString() const override;
     };
-}
+}// namespace Model
 
 #endif//WOR_WORLD_KINEMATICA_COMPASSSENSOR_H

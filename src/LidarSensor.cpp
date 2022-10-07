@@ -19,11 +19,13 @@ namespace Model
     LidarSensor::LidarSensor(Robot* robot) : AbstractSensor(robot), NoisySensor(0, 10)
     {
     }
-    std::shared_ptr<AbstractStimulus> LidarSensor::getStimulus() const
+    AbstractStimulusPtr LidarSensor::getStimulus() const
     {
+        // TODO remove labmda
+
         auto takeReading = [](const Point& location, double angleInRads) -> LidarReading
         {
-          double minimalMeasuredDistance = 1450; //std::numeric_limits<double>::max();
+          double minimalMeasuredDistance = 1500; //std::numeric_limits<double>::max();
           const Point BEAM_END_POINT(
                   static_cast<int32_t>(location.x + minimalMeasuredDistance * std::cos(angleInRads)),
                   static_cast<int32_t>(location.y + minimalMeasuredDistance * std::sin(angleInRads)));
@@ -58,9 +60,9 @@ namespace Model
 
             data[i] = reading;
         }
-        return std::shared_ptr<AbstractStimulus> (new LidarStimulus(data));
+        return AbstractStimulusPtr(new LidarStimulus(data));
     }
-    std::shared_ptr<AbstractPercept> LidarSensor::getPerceptFor(std::shared_ptr<AbstractStimulus> aStimulus)
+    AbstractPerceptPtr LidarSensor::getPerceptFor(AbstractStimulusPtr aStimulus)
     {
         auto* stimulus = dynamic_cast<LidarStimulus*>(aStimulus.get());
 
@@ -69,7 +71,7 @@ namespace Model
             reading.distance = noisify(reading.distance);
         }
 
-        return std::shared_ptr<AbstractPercept>(new LidarPercept(*stimulus));
+        return AbstractPerceptPtr(new LidarPercept(*stimulus));
     }
     std::string LidarSensor::asString() const
     {

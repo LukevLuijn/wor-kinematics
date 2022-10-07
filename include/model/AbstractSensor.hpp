@@ -29,9 +29,11 @@ namespace Model
 
             virtual std::string asString() = 0;
             virtual std::string asDebugString() { return asString();}
-	};
-	// class AbstractStimulus
-	/**
+	}; // class AbstractStimulus
+
+    typedef std::shared_ptr<AbstractStimulus> AbstractStimulusPtr;
+
+    /**
 	 *
 	 */
 	class AbstractPercept
@@ -49,6 +51,8 @@ namespace Model
 
     };
 	// class AbstractPercept
+
+    typedef std::shared_ptr<AbstractPercept> AbstractPerceptPtr;
 
 	class AbstractSensor : public ModelObject
 	{
@@ -76,17 +80,17 @@ namespace Model
 			/**
 			 *
 			 */
-			virtual std::shared_ptr< AbstractStimulus > getStimulus() const = 0;
+			virtual AbstractStimulusPtr getStimulus() const = 0;
 			/**
 			 * @note
 			 * removed const modifier because noise is generated when the stimulus is interpreted by the controller when converting
 			 * it to a percept. So when the stimulus is converted the noise should be added, meaning the const qualifier is impossible.
 			 */
-			virtual std::shared_ptr< AbstractPercept > getPerceptFor( std::shared_ptr< AbstractStimulus > anAbstractPercepts) = 0;
+			virtual AbstractPerceptPtr getPerceptFor( AbstractStimulusPtr anAbstractPercepts) = 0;
 			/**
 			 *
 			 */
-			virtual void sendPercept( std::shared_ptr< AbstractPercept > anAbstractPercept);
+			virtual void sendPercept( AbstractPerceptPtr anAbstractPercept);
 			/**
 			 *
 			 */

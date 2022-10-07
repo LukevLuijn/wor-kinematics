@@ -14,7 +14,7 @@ namespace Model
         : AbstractSensor(robot), NoisySensor(0, 1), previousPosition(robot->getPosition())
     {
     }
-    std::shared_ptr<AbstractStimulus> OdometerSensor::getStimulus() const
+    AbstractStimulusPtr OdometerSensor::getStimulus() const
     {
         Point robotPosition = dynamic_cast<Robot*>(agent)->getPosition();
 
@@ -23,16 +23,16 @@ namespace Model
 
         double distance = (std::sqrt(std::pow(distanceX, 2) + std::pow(distanceY, 2)));
 
-        return std::shared_ptr<AbstractStimulus>(new OdometerStimulus(previousPosition, robotPosition, distance));
+        return AbstractStimulusPtr(new OdometerStimulus(previousPosition, robotPosition, distance));
     }
-    std::shared_ptr<AbstractPercept> OdometerSensor::getPerceptFor(std::shared_ptr<AbstractStimulus> aStimulus)
+    AbstractPerceptPtr OdometerSensor::getPerceptFor(AbstractStimulusPtr aStimulus)
     {
         auto* stimulus = dynamic_cast<OdometerStimulus*>(aStimulus.get());
 
         previousPosition = stimulus->currentPosition;
         stimulus->distanceTravelled += (noisify(0) * stimulus->distanceTravelled / 10);
 
-        return std::shared_ptr<AbstractPercept>(new OdometerPercept(*stimulus));
+        return AbstractPerceptPtr(new OdometerPercept(*stimulus));
     }
     std::string OdometerSensor::asString() const
     {

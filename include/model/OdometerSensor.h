@@ -18,28 +18,43 @@ namespace Model
     {
     public:
         OdometerStimulus(Point previous, Point current, double aDistanceTravelled)
-            : previousPosition(previous), currentPosition(current), distanceTravelled(aDistanceTravelled) {}
+            : previousPosition(previous), currentPosition(current), distanceTravelled(aDistanceTravelled)
+        {
+        }
 
-        std::string asString() override { return "OdometerStimulus";}
-
+        std::string asString() override
+        {
+            return "OdometerStimulus";
+        }
+        // TODO maybe remove
         Point previousPosition;
         Point currentPosition;
+
         double distanceTravelled;
     };
     class OdometerPercept : public AbstractPercept
     {
     public:
         OdometerPercept(Point previous, Point current, double aDistanceTravelled)
-            : previousPosition(previous), currentPosition(current), distanceTravelled(aDistanceTravelled) {}
+            : previousPosition(previous), currentPosition(current), distanceTravelled(aDistanceTravelled)
+        {
+        }
 
         explicit OdometerPercept(const OdometerStimulus& aStimulus)
             : previousPosition(aStimulus.previousPosition), currentPosition(aStimulus.currentPosition),
-              distanceTravelled(aStimulus.distanceTravelled) {}
+              distanceTravelled(aStimulus.distanceTravelled)
+        {
+        }
 
-        std::string asString() override { return "OdometerPercept";}
+        std::string asString() override
+        {
+            return "OdometerPercept";
+        }
 
+        // TODO maybe remove
         Point previousPosition;
         Point currentPosition;
+
         double distanceTravelled;
     };
     class OdometerSensor : public AbstractSensor, NoisySensor
@@ -50,8 +65,8 @@ namespace Model
 
         ~OdometerSensor() override = default;
 
-        std::shared_ptr<AbstractStimulus> getStimulus() const override;
-        std::shared_ptr<AbstractPercept> getPerceptFor(std::shared_ptr<AbstractStimulus> aStimulus) override;
+        AbstractStimulusPtr getStimulus() const override;
+        AbstractPerceptPtr getPerceptFor(AbstractStimulusPtr aStimulus) override;
 
         std::string asString() const override;
         std::string asDebugString() const override;

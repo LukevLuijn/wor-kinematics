@@ -14,18 +14,24 @@ namespace Model
     class Robot;
     typedef std::shared_ptr<Robot> RobotPtr;
 
-    class OrientationStimulus : public AbstractStimulus
+    class CompassStimulus : public AbstractStimulus
     {
     public:
-        explicit OrientationStimulus(double anOrientation) : orientation(anOrientation){};
+        explicit CompassStimulus(double anOrientation) : orientation(anOrientation){};
+
+        std::string asString() override { return "CompassStimulus";}
+
         double orientation;
     };
 
-    class OrientationPercept : public AbstractPercept
+    class CompassPercept : public AbstractPercept
     {
     public:
-        explicit OrientationPercept(double anOrientation) : orientation(anOrientation) {};
-        explicit OrientationPercept(const OrientationStimulus& aStimulus) : orientation(aStimulus.orientation) {}
+        explicit CompassPercept(double anOrientation) : orientation(anOrientation) {};
+        explicit CompassPercept(const CompassStimulus& aStimulus) : orientation(aStimulus.orientation) {}
+
+        std::string asString() override { return "CompassPercept";}
+
         double orientation;
     };
 

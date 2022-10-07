@@ -397,16 +397,18 @@ namespace Application
      */
     void MainFrameWindow::OnNoFilter(CommandEvent& UNUSEDPARAM(anEvent))
     {
-        Model::RobotPtr robot = Model::RobotWorld::getRobotWorld().getRobot("Robot");
+        LOG("unimplemented");
 
-        if (robot)
-        {
-            robot->setDrivingStrategy(Model::DrivingStrategy_e::NO_FILTER);
-        }
-        else
-        {
-            LOG("There is no robot available");
-        }
+//        Model::RobotPtr robot = Model::RobotWorld::getRobotWorld().getRobot("Robot");
+//
+//        if (robot)
+//        {
+//            robot->setDrivingStrategy(Model::DrivingStrategy_e::NO_FILTER);
+//        }
+//        else
+//        {
+//            LOG("There is no robot available");
+//        }
     }
     /**
      *
@@ -416,7 +418,7 @@ namespace Application
         Model::RobotPtr robot = Model::RobotWorld::getRobotWorld().getRobot("Robot");
         if (robot)
         {
-            robot->setDrivingStrategy(Model::DrivingStrategy_e::KALMAN_FILTER);
+            robot->setFilter(Model::Filters_e::KALMAN_FILTER);
         }
         else
         {
@@ -431,7 +433,8 @@ namespace Application
         Model::RobotPtr robot = Model::RobotWorld::getRobotWorld().getRobot("Robot");
         if (robot)
         {
-            robot->setDrivingStrategy(Model::DrivingStrategy_e::PARTICLE_FILTER);
+            LOG("unimplemented");
+//            robot->setFilter(Model::Filters_e::PARTICLE_FILTER);
         }
         else
         {

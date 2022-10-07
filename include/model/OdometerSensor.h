@@ -20,6 +20,8 @@ namespace Model
         OdometerStimulus(Point previous, Point current, double aDistanceTravelled)
             : previousPosition(previous), currentPosition(current), distanceTravelled(aDistanceTravelled) {}
 
+        std::string asString() override { return "OdometerStimulus";}
+
         Point previousPosition;
         Point currentPosition;
         double distanceTravelled;
@@ -33,6 +35,8 @@ namespace Model
         explicit OdometerPercept(const OdometerStimulus& aStimulus)
             : previousPosition(aStimulus.previousPosition), currentPosition(aStimulus.currentPosition),
               distanceTravelled(aStimulus.distanceTravelled) {}
+
+        std::string asString() override { return "OdometerPercept";}
 
         Point previousPosition;
         Point currentPosition;

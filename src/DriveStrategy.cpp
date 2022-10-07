@@ -4,49 +4,53 @@
 
 #include "DriveStrategy.h"
 
-#include <utility>
-#include "Robot.hpp"
+#include "AbstractSensor.hpp"
 #include "Logger.hpp"
+#include "Robot.hpp"
+
+#include "LidarSensor.h"
+#include "OdometerSensor.h"
+#include "CompassSensor.h"
 
 namespace Model
 {
-    DriveStrategy::DriveStrategy() : isDriving(false)
+    DriveStrategy::DriveStrategy()
     {
     }
-    DriveStrategy::DriveStrategy(Robot* robot) : agent(robot), actuator(new SteeringActuator(robot)), isDriving(false)
+    DriveStrategy::DriveStrategy(Robot* robot) : agent(robot), actuator(new SteeringActuator(robot))
     {
     }
-    void DriveStrategy::drive(const GoalPtr& goal, const PathAlgorithm::Path& path)
-    {
-        getAsRobot()->activateSensors(true);
-
-        uint32_t pathPoint = 0;
-
-        isDriving = true;
-        while(isDriving)
-        {
-            steer(goal, path, pathPoint);
-
-            if (getAsRobot()->outOfBounds(pathPoint))
-            {
-                LOG("robot out of bounds");
-                break;
-            }
-        }
-
-        getAsRobot()->activateSensors(false);
-    }
-    void DriveStrategy::stop()
-    {
-        isDriving = false;
-    }
-    bool DriveStrategy::checkCurrentPosition(GoalPtr aGoal)
-    {
-        return getAsRobot()->arrived(std::move(aGoal)) || getAsRobot()->collision();
-    }
-    Robot* DriveStrategy::getAsRobot()
+    Robot* DriveStrategy::getRobotPtr()
     {
         return dynamic_cast<Robot*>(agent);
     }
+    void DriveStrategy::sortPercepts(Base::Queue<std::shared_ptr<AbstractPercept>>& queue)
+    {
+//        compassPercepts.clear();
+//        odometerPercepts.clear();
+//        lidarPercepts.clear();
+
+        while (queue.size() != 0)
+        {
+            std::shared_ptr<AbstractPercept> percept = queue.dequeue().value();
+
+            if (percept->asString() == "CompassPercept")
+            {
+                auto* compassPercept = castPercept<CompassPercept>(percept);
+                compassPercepts.emplace_back(compassPercept);
+            }
+            else if (percept->asString() == "OdometerPercept")
+            {
+                auto* odometerPercept = castPercept<OdometerPercept>(percept);
+                odometerPercepts.emplace_back(odometerPercept);
+            }
+            else // if (percept->asString() == "OdometerPercept")
+            {
+                auto* lidarPercept = castPercept<LidarPercept>(percept);
+                lidarPercepts.emplace_back(lidarPercept);
+            }
+        }
+    }
+
 
 }// namespace Model

@@ -26,6 +26,9 @@ namespace Model
 			virtual ~AbstractStimulus()
 			{
 			}
+
+            virtual std::string asString() = 0;
+            virtual std::string asDebugString() { return asString();}
 	};
 	// class AbstractStimulus
 	/**
@@ -40,7 +43,11 @@ namespace Model
 			virtual ~AbstractPercept()
 			{
 			}
-	};
+
+        virtual std::string asString() = 0;
+        virtual std::string asDebugString() { return asString();}
+
+    };
 	// class AbstractPercept
 
 	class AbstractSensor : public ModelObject

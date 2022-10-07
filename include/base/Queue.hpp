@@ -58,7 +58,6 @@ namespace Base
 			{
 				stop.store(true);
 			}
-
 		private:
 			std::queue< QueueContentType > queue;
 			std::mutex queueBusy;

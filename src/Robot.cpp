@@ -19,7 +19,8 @@
 #include "LidarSensor.h"
 #include "OdometerSensor.h"
 
-#include "ConcreteDrivers.h"
+//#include "ConcreteDrivers.h"
+#include "ConcreteFilters.h"
 #include "SteeringActuator.hpp"
 
 #include <chrono>
@@ -35,33 +36,36 @@ namespace Model
 	 */
     Robot::Robot()
         : name(""), size(DefaultSize), position(DefaultPosition), front(0, 0), speed(0.0), acting(false),
-          driving(false), communicating(false), drivingStrategy(DrivingStrategy_e::NO_FILTER)
+          driving(false), communicating(false)
     {
         attachSensors();
         attachActuators();
-        setDrivingStrategy(drivingStrategy);
+
+        setFilter(Filters_e::KALMAN_FILTER);
     }
     /**
 	 *
 	 */
     Robot::Robot(const std::string& aName)
         : name(aName), size(DefaultSize), position(DefaultPosition), front(0, 0), speed(0.0), acting(false),
-          driving(false), communicating(false), drivingStrategy(DrivingStrategy_e::NO_FILTER)
+          driving(false), communicating(false)
     {
         attachSensors();
         attachActuators();
-        setDrivingStrategy(drivingStrategy);
+
+        setFilter(Filters_e::KALMAN_FILTER);
     }
     /**
 	 *
 	 */
     Robot::Robot(const std::string& aName, const Point& aPosition)
         : name(aName), size(DefaultSize), position(aPosition), front(0, 0), speed(0.0), acting(false), driving(false),
-          communicating(false), drivingStrategy(DrivingStrategy_e::NO_FILTER)
+          communicating(false)
     {
         attachSensors();
         attachActuators();
-        setDrivingStrategy(drivingStrategy);
+
+        setFilter(Filters_e::KALMAN_FILTER);
     }
     /**
 	 *
@@ -79,6 +83,92 @@ namespace Model
         if (communicating)
         {
             stopCommunicating();
+        }
+    }
+    void Robot::drive()
+    {
+        auto getTarget = [=](Point step) -> Point {
+            BoundedVector direction = BoundedVector(step, position);
+
+            double angleX = std::cos(Utils::Shape2DUtils::getAngle(direction));
+            double angleY = std::sin(Utils::Shape2DUtils::getAngle(direction));
+
+            auto x = static_cast<int32_t>(speed * angleX + position.x);
+            auto y = static_cast<int32_t>(speed * angleY + position.y);
+            return Point(x, y);
+        };
+
+        auto pointToString = [](const Point& point) -> std::string
+        {
+            return std::to_string(point.x )+ ", " + std::to_string(point.y);
+        };
+
+        try
+        {
+            if (std::fabs(speed - 0.0) <= std::numeric_limits<float>::epsilon())
+            {
+                setSpeed(10.0, false);// @suppress("Avoid magic numbers")
+            }
+
+            uint32_t pathPoint = 0;
+
+            Point previousPosition = position;
+
+//            activateSensors(true);
+
+            while (!outOfBounds(pathPoint))
+            {
+                if (arrived(goal))
+                {
+                    LOG("arrived at goal");
+                    notifyObservers();
+                    driving = false;
+                }
+                else if (collision())
+                {
+                    LOG("collision with world object");
+                    notifyObservers();
+                    driving = false;
+                }
+                else
+                {
+                    position = previousPosition;
+
+                    const PathAlgorithm::Vertex& vertex = path[pathPoint += static_cast<unsigned int>(getSpeed())];
+                    const Point target = vertex.asPoint();
+
+                    RelativeMovementCommand command(target);
+                    steeringActuator->handleCommand(command);
+
+                    const Point actualTarget = command.relativePositionRequest;
+
+
+                    filter->iterate(previousPosition, actualTarget, filter->getMeasuredPosition(position, sensors));
+
+                    notifyObservers();
+
+                    front = BoundedVector(actualTarget, position);
+
+
+                    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                }
+
+                if (!driving)
+                {
+                    return;
+                }
+            }
+            activateSensors(false);
+        }
+        catch (std::exception& e)
+        {
+            LOG("exception caught", e.what());
+            std::cerr << __PRETTY_FUNCTION__ << ": " << e.what() << std::endl;
+        }
+        catch (...)
+        {
+            LOG("unknown exception caught");
+            std::cerr << __PRETTY_FUNCTION__ << ": unknown exception" << std::endl;
         }
     }
     /**
@@ -141,6 +231,16 @@ namespace Model
      */
     bool Robot::outOfBounds(uint32_t pathPoint)
     {
+        if ((position.x <= 0) || (position.x >= 1024) || (position.y <= 0) || (position.y >= 1024))
+        {
+            LOG("Robot out of bounds");
+        }
+        if (pathPoint > path.size())
+        {
+            LOG("Path point of of bounds");
+        }
+
+
         return (position.x <= 0) || (position.x >= 1024) || (position.y <= 0) || (position.y >= 1024) ||
                (pathPoint > path.size());
     }
@@ -161,7 +261,7 @@ namespace Model
     {
         acting = true;
         std::thread newRobotThread([this] {
-          startDriving();
+            startDriving();
         });
         robotThread.swap(newRobotThread);
     }
@@ -171,8 +271,7 @@ namespace Model
     void Robot::stopActing()
     {
         acting = false;
-        //        driving = false;
-        driver->stop();
+        driving = false;
         robotThread.join();
     }
     /**
@@ -185,34 +284,14 @@ namespace Model
         goal = RobotWorld::getRobotWorld().getGoal("Goal");
 
         calculateRoute(goal);
-
-        try
-        {
-            // Compare a float/double with another float/double: use epsilon...
-            if (std::fabs(speed - 0.0) <= std::numeric_limits<float>::epsilon())
-            {
-                setSpeed(10.0, false);// @suppress("Avoid magic numbers")
-            }
-
-            driver->drive(goal, path);
-        }
-        catch (std::exception& e)
-        {
-            LOG(e.what());
-            std::cerr << __PRETTY_FUNCTION__ << ": " << e.what() << std::endl;
-        }
-        catch (...)
-        {
-            LOG("unknown exception");
-            std::cerr << __PRETTY_FUNCTION__ << ": unknown exception" << std::endl;
-        }
+        drive();
     }
     /**
 	 *
 	 */
     void Robot::stopDriving()
     {
-        driver->stop();
+        driving = false;
     }
     /**
      *
@@ -296,27 +375,47 @@ namespace Model
     /**
      *
      */
-    void Robot::setDrivingStrategy(DrivingStrategy_e newStrategy)
+    void Robot::setFilter(Filters_e newFilter)
     {
-        switch (newStrategy)
+        switch (newFilter)
         {
-            case DrivingStrategy_e::NO_FILTER:
-                driver = new DefaultDriver(this);
+            case Filters_e::KALMAN_FILTER:
+                filter = new KalmanFilter(getPosition());
                 break;
-            case DrivingStrategy_e::KALMAN_FILTER:
-                //                driver = new KalmanDriver(this);
-                LOG("unimplemented", "Kalman filter");
-                break;
-            case DrivingStrategy_e::PARTICLE_FILTER:
-                //                driver = new ParticleDriver(this);
-                LOG("unimplemented", "Particle filter");
+            case Filters_e::PARTICLE_FILTER:
+                filter = new ParticleFilter(getPosition());
                 break;
             default:
-                LOG("undefined driver strategy, no change", driver->asString());
+                LOG("undefined filter requested", static_cast<uint64_t>(newFilter));
+                std::cerr << "undefined filter requested" << std::endl;
                 return;
         }
-        LOG("new driver strategy set", driver->asString());
+        LOG("New filter set", filter->asString());
     }
+
+    //    /**
+    //     *
+    //     */
+    //    void Robot::setDrivingStrategy(DrivingStrategy_e newStrategy)
+    //    {
+    //        switch (newStrategy)
+    //        {
+    //            case DrivingStrategy_e::NO_FILTER:
+    //                driver = new DefaultDriver(this);
+    //                break;
+    //            case DrivingStrategy_e::KALMAN_FILTER:
+    //                driver = new KalmanDriver(this);
+    //                break;
+    //            case DrivingStrategy_e::PARTICLE_FILTER:
+    //                //                driver = new ParticleDriver(this);
+    //                LOG("unimplemented", "Particle filter");
+    //                break;
+    //            default:
+    //                LOG("undefined driver strategy, no change", driver->asString());
+    //                return;
+    //        }
+    //        LOG("new driver strategy set", driver->asString());
+    //    }
     /**
      *
      */
@@ -559,11 +658,12 @@ namespace Model
         }
     }
     /**
-     *
-     */
+         *
+         */
     void Robot::attachActuators()
     {
-        steeringActuator = std::make_shared<SteeringActuator>(this);
+        steeringActuator = std::make_shared<SteeringActuator>(this);// need local instance
+
         std::array<std::shared_ptr<AbstractActuator>, 1> robotActuators{steeringActuator};
 
         for (const std::shared_ptr<AbstractActuator>& actuator : robotActuators)

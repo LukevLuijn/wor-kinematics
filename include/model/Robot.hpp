@@ -14,7 +14,9 @@
 #include "Size.hpp"
 #include "SteeringActuator.hpp"
 
-#include "DriveStrategy.h"
+#include "AbstractFilter.h"
+
+//#include "DriveStrategy.h"
 
 #include <iostream>
 #include <memory>
@@ -37,8 +39,6 @@ namespace Model
     class Goal;
     typedef std::shared_ptr<Goal> GoalPtr;
 
-    enum class DrivingStrategy_e : uint8_t;
-
     class Robot : public AbstractAgent, public Messaging::MessageHandler, public Base::Observer
     {
     public:
@@ -47,11 +47,12 @@ namespace Model
         Robot(const std::string& aName, const Point& aPosition);
         ~Robot() override;
 
+        virtual void drive();
+
         bool intersects(const Region& aRegion) const;
         bool arrived(GoalPtr aGoal);
         bool collision();
         bool outOfBounds(uint32_t pathPoint);
-        void activateSensors(bool activate);
 
         virtual void startActing() override;
         virtual void stopActing() override;
@@ -67,7 +68,8 @@ namespace Model
         void setPosition(const Point& aPosition, bool aNotifyObservers = true);
         void setFront(const BoundedVector& aVector, bool aNotifyObservers = true);
         void setSpeed(float aNewSpeed, bool aNotifyObservers = true);
-        void setDrivingStrategy(DrivingStrategy_e newStrategy);
+        void setFilter(Filters_e newFilter);
+//        void setDrivingStrategy(DrivingStrategy_e newStrategy);
 
         Region getRegion() const;
         Point getFrontLeft() const;
@@ -126,6 +128,8 @@ namespace Model
     protected:
         void calculateRoute(GoalPtr aGoal);
     private:
+        void activateSensors(bool activate);
+
         void attachSensors();
         void attachActuators();
 
@@ -141,21 +145,19 @@ namespace Model
         bool acting;
         bool driving;
         bool communicating;
-        DrivingStrategy_e drivingStrategy;
         std::thread robotThread;
         mutable std::recursive_mutex robotMutex;
         Messaging::ServerPtr server;
-        /**
-             * TODO remove.
-             */
-        Base::Queue<std::shared_ptr<AbstractPercept>> tempLidarPercepts;
-        std::shared_ptr<SteeringActuator> steeringActuator;
-        DriveStrategy* driver;
-    };
 
-    enum class DrivingStrategy_e : uint8_t
-    {
-        NO_FILTER,KALMAN_FILTER,PARTICLE_FILTER
+        AbstractFilter* filter;
+        std::shared_ptr<SteeringActuator> steeringActuator;
+
+
+
+        //        std::shared_ptr<SteeringActuator> steeringActuator;
+//        DriveStrategy* driver;
+//        DrivingStrategy_e drivingStrategy;
+
     };
 }// namespace Model
 #endif// ROBOT_HPP_

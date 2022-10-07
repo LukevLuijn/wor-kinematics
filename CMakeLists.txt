@@ -84,6 +84,10 @@ set(HEADERS_MODEL
         include/model/CompassSensor.h
         include/model/LidarSensor.h
         include/model/OdometerSensor.h
+
+        include/model/AbstractFilter.h
+        include/model/ConcreteFilters.h
+
         include/model/DriveStrategy.h
         include/model/ConcreteDrivers.h
 
@@ -95,6 +99,7 @@ set(HEADERS_UTILS
         include/utils/Shape2DUtils.hpp
         include/utils/TimeStamp.hpp
         include/utils/TypeInfo.hpp
+        include/utils/Matrix.hpp
         )
 set(HEADERS_VIEW
         include/view/GoalShape.hpp
@@ -170,6 +175,11 @@ set(SOURCES
         src/CompassSensor.cpp
         src/LidarSensor.cpp
         src/OdometerSensor.cpp
+
+        src/Matrix.inc
+
+        src/ConcreteFilters.cpp
+
 
         src/DriveStrategy.cpp
         src/ConcreteDrivers.cpp

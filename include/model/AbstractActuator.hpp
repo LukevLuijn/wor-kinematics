@@ -9,60 +9,66 @@
 
 namespace Model
 {
-	class AbstractAgent;
+    class AbstractAgent;
 
-	class AbstractCommand
-	{
-		public:
-			/**
+    class AbstractCommand
+    {
+    public:
+        /**
 			 *
 			 */
-			virtual ~AbstractCommand()
-			{
-			}
-	};
-	//	class AbstractCommand
+        virtual ~AbstractCommand()
+        {
+        }
 
-	class AbstractActuator  : public ModelObject
-	{
-		public:
-			AbstractActuator();
-			/**
+        virtual std::string asString() = 0;
+        virtual std::string asDebugString()
+        {
+            return asString();
+        }
+    };
+    //	class AbstractCommand
+
+    class AbstractActuator : public ModelObject
+    {
+    public:
+        AbstractActuator();
+        /**
 			 *
 			 */
-			explicit AbstractActuator( AbstractAgent* anAgent);
-			/**
+        explicit AbstractActuator(AbstractAgent* anAgent);
+        /**
 			 *
 			 */
-			virtual ~AbstractActuator();
-			/**
+        virtual ~AbstractActuator();
+        /**
 			 *
 			 */
-			virtual void handleCommand( AbstractCommand& anAbstractCommand) = 0;
-			/**
+        virtual void handleCommand(AbstractCommand& anAbstractCommand) = 0;
+        /**
 			 *
 			 */
-			virtual void attachAgent( AbstractAgent* anAgent);
-			/**
+        virtual void attachAgent(AbstractAgent* anAgent);
+        /**
 			 *
 			 */
-			virtual void detachAgent();
-			/**
+        virtual void detachAgent();
+        /**
 			 * @name Debug functions
 			 */
-			//@{
-			/**
+        //@{
+        /**
 			 * Returns a 1-line description of the object
 			 */
-			virtual std::string asString() const override;
-			/**
+        virtual std::string asString() const override;
+        /**
 			 * Returns a description of the object with all data of the object usable for debugging
 			 */
-			virtual std::string asDebugString() const override;
-			//@}
-		protected:
-			AbstractAgent* agent;
-	};
-	//	class AbstractActuator
-} // namespace Model
-#endif // ABSTRACTACTUATOR_HPP_
+        virtual std::string asDebugString() const override;
+        //@}
+    protected:
+        AbstractAgent* agent;
+    };
+    //	class AbstractActuator
+}// namespace Model
+#endif// ABSTRACTACTUATOR_HPP_

@@ -19,6 +19,9 @@ namespace Model
 				distance( aDistance)
 		{
 		}
+
+        std::string asString() override { return "DistanceStimulus";}
+
 		double angle;
 		double distance;
 	};
@@ -41,6 +44,9 @@ namespace Model
 			distance( aDistance)
 		{
 		}
+
+        std::string asString() override { return "DistancePercept";}
+
 		double angle;
 		double distance;
 	};

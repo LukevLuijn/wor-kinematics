@@ -25,6 +25,9 @@ namespace Model
     {
     public:
         explicit LidarStimulus(const LidarData& lidarData) : measurements(lidarData) {}
+
+        std::string asString() override { return "LidarStimulus";}
+
         LidarData measurements;
     };
     class LidarPercept : public AbstractPercept
@@ -32,6 +35,9 @@ namespace Model
     public:
         explicit LidarPercept(const LidarData& lidarData) : measurements(lidarData) {}
         explicit LidarPercept(const LidarStimulus& stimulus) : measurements(stimulus.measurements) {}
+
+        std::string asString() override { return "LidarPercept";}
+
         LidarData measurements;
     };
 

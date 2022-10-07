@@ -30,7 +30,7 @@ namespace Model
         auto* stimulus = dynamic_cast<OdometerStimulus*>(aStimulus.get());
 
         previousPosition = stimulus->currentPosition;
-        stimulus->distanceTravelled = noisify(stimulus->distanceTravelled) * stimulus->distanceTravelled / 10;
+        stimulus->distanceTravelled += (noisify(0) * stimulus->distanceTravelled / 10);
 
         return std::shared_ptr<AbstractPercept>(new OdometerPercept(*stimulus));
     }

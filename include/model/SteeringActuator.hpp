@@ -13,11 +13,30 @@ namespace Model
     class Robot;
     typedef std::shared_ptr<Robot> RobotPtr;
 
-    class SteeringCommand : public AbstractCommand
+//    class SteeringCommand : public AbstractCommand
+//    {
+//
+//    };
+//
+//    class AbsoluteMovementCommand : public AbstractCommand
+//    {
+//    public:
+//        explicit AbsoluteMovementCommand(Point aAbsolutePositionRequest)
+//            : absolutePositionRequest(aAbsolutePositionRequest){}
+//
+//        std::string asString() override { return "AbsoluteMovementCommand";}
+//
+//        Point absolutePositionRequest;
+//    };
+    class RelativeMovementCommand : public AbstractCommand
     {
     public:
-        explicit SteeringCommand(Point aPositionRequest) : positionRequest(aPositionRequest) {}
-        Point positionRequest;
+        explicit RelativeMovementCommand(Point aRelativePositionRequest)
+            : relativePositionRequest(aRelativePositionRequest){}
+
+        std::string asString() override { return "RelativeMovementCommand";}
+
+        Point relativePositionRequest;
     };
 
     class SteeringActuator : public AbstractActuator

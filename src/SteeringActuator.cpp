@@ -17,15 +17,15 @@ namespace Model
     }
     void SteeringActuator::handleCommand(AbstractCommand& anAbstractCommand)
     {
-        auto* command = dynamic_cast<SteeringCommand*>(&anAbstractCommand);
+        auto* command = dynamic_cast<RelativeMovementCommand*>(&anAbstractCommand);
         std::uniform_real_distribution realDistribution(0.f, 1.f);
 
         Point actualPosition;
         if (realDistribution(generator) <= 0.7)
         {
             std::uniform_int_distribution distribution(-1, 1);
-            actualPosition.x = command->positionRequest.x + distribution(generator);
-            actualPosition.y = command->positionRequest.y + distribution(generator);
+            actualPosition.x = command->relativePositionRequest.x + distribution(generator);
+            actualPosition.y = command->relativePositionRequest.y + distribution(generator);
         }
         else
         {
@@ -52,15 +52,10 @@ namespace Model
 
             std::uniform_int_distribution distribution(0ul, targetList.size()-1);
             Point offsetPoint = targetList[distribution(generator)];
-            actualPosition.x = command->positionRequest.x + offsetPoint.x;
-            actualPosition.y = command->positionRequest.y + offsetPoint.y;
+            actualPosition.x = command->relativePositionRequest.x + offsetPoint.x;
+            actualPosition.y = command->relativePositionRequest.y + offsetPoint.y;
         }
-
-        command->positionRequest = actualPosition;
-
-//        auto* robot = dynamic_cast<Robot*>(agent);
-//        robot->setPosition(robot->getPosition() + actualPosition);
-//        robot->setFront(BoundedVector(Point(0,0), actualPosition));
+        command->relativePositionRequest = actualPosition;// + dynamic_cast<Robot*>(agent)->getPosition();
     }
     std::string SteeringActuator::asString() const
     {

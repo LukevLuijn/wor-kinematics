@@ -84,13 +84,9 @@ set(HEADERS_MODEL
         include/model/CompassSensor.h
         include/model/LidarSensor.h
         include/model/OdometerSensor.h
-
         include/model/AbstractFilter.h
-        include/model/ConcreteFilters.h
-
-        include/model/DriveStrategy.h
-        include/model/ConcreteDrivers.h
-
+        include/model/KalmanFilter.h
+        include/model/ParticleFilter.h
         )
 set(HEADERS_PATH_ALGORITHM
         include/pathAlgorithm/AStar.hpp)
@@ -175,14 +171,9 @@ set(SOURCES
         src/CompassSensor.cpp
         src/LidarSensor.cpp
         src/OdometerSensor.cpp
-
         src/Matrix.inc
-
-        src/ConcreteFilters.cpp
-
-
-        src/DriveStrategy.cpp
-        src/ConcreteDrivers.cpp
+        src/KalmanFilter.cpp
+        src/ParticleFilter.cpp
         )
 
 add_executable(${EXE} ${SOURCES} ${HEADERS})

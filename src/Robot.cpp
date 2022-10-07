@@ -19,9 +19,10 @@
 #include "LidarSensor.h"
 #include "OdometerSensor.h"
 
-//#include "ConcreteDrivers.h"
-#include "ConcreteFilters.h"
 #include "SteeringActuator.hpp"
+
+#include "KalmanFilter.h"
+#include "ParticleFilter.h"
 
 #include <chrono>
 #include <ctime>
@@ -87,22 +88,6 @@ namespace Model
     }
     void Robot::drive()
     {
-        auto getTarget = [=](Point step) -> Point {
-            BoundedVector direction = BoundedVector(step, position);
-
-            double angleX = std::cos(Utils::Shape2DUtils::getAngle(direction));
-            double angleY = std::sin(Utils::Shape2DUtils::getAngle(direction));
-
-            auto x = static_cast<int32_t>(speed * angleX + position.x);
-            auto y = static_cast<int32_t>(speed * angleY + position.y);
-            return Point(x, y);
-        };
-
-        auto pointToString = [](const Point& point) -> std::string
-        {
-            return std::to_string(point.x )+ ", " + std::to_string(point.y);
-        };
-
         try
         {
             if (std::fabs(speed - 0.0) <= std::numeric_limits<float>::epsilon())
@@ -111,24 +96,21 @@ namespace Model
             }
 
             uint32_t pathPoint = 0;
-
             Point previousPosition = position;
-
-//            activateSensors(true);
 
             while (!outOfBounds(pathPoint))
             {
                 if (arrived(goal))
                 {
-                    LOG("arrived at goal");
+                    LOG("robot arrived at goal position");
                     notifyObservers();
-                    driving = false;
+                    break;
                 }
                 else if (collision())
                 {
-                    LOG("collision with world object");
+                    LOG("robot collided with a world object");
                     notifyObservers();
-                    driving = false;
+                    break;
                 }
                 else
                 {
@@ -141,15 +123,11 @@ namespace Model
                     steeringActuator->handleCommand(command);
 
                     const Point actualTarget = command.relativePositionRequest;
-
+                    front = BoundedVector(actualTarget, position);
 
                     filter->iterate(previousPosition, actualTarget, filter->getMeasuredPosition(position, sensors));
 
                     notifyObservers();
-
-                    front = BoundedVector(actualTarget, position);
-
-
                     std::this_thread::sleep_for(std::chrono::milliseconds(100));
                 }
 
@@ -158,7 +136,7 @@ namespace Model
                     return;
                 }
             }
-            activateSensors(false);
+            driving = false;
         }
         catch (std::exception& e)
         {
@@ -392,30 +370,6 @@ namespace Model
         }
         LOG("New filter set", filter->asString());
     }
-
-    //    /**
-    //     *
-    //     */
-    //    void Robot::setDrivingStrategy(DrivingStrategy_e newStrategy)
-    //    {
-    //        switch (newStrategy)
-    //        {
-    //            case DrivingStrategy_e::NO_FILTER:
-    //                driver = new DefaultDriver(this);
-    //                break;
-    //            case DrivingStrategy_e::KALMAN_FILTER:
-    //                driver = new KalmanDriver(this);
-    //                break;
-    //            case DrivingStrategy_e::PARTICLE_FILTER:
-    //                //                driver = new ParticleDriver(this);
-    //                LOG("unimplemented", "Particle filter");
-    //                break;
-    //            default:
-    //                LOG("undefined driver strategy, no change", driver->asString());
-    //                return;
-    //        }
-    //        LOG("new driver strategy set", driver->asString());
-    //    }
     /**
      *
      */

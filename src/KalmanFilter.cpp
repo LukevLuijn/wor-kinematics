@@ -2,30 +2,22 @@
 // Created by luke on 07-10-22.
 //
 
-//
-// Created by luke on 07-10-22.
-//
+#include "KalmanFilter.h"
 
-#include "ConcreteFilters.h"
 #include "CompassSensor.h"
-#include "LidarSensor.h"
-#include "Logger.hpp"
 #include "OdometerSensor.h"
+#include "Logger.hpp"
 
 namespace Model
 {
-    /** =========================== */
-    /**        KALMAN FILTER        */
-    /** =========================== */
-
     KalmanFilter::KalmanFilter()
-        : belief(Utils::Matrix<double, 2, 1>{0.0, 0.0}), error(Utils::Matrix<double, 2, 2>{{100, 0}, {0, 100}})
+            : belief(Utils::Matrix<double, 2, 1>{0.0, 0.0}), error(Utils::Matrix<double, 2, 2>{{100, 0}, {0, 100}})
     {
     }
     KalmanFilter::KalmanFilter(const Point& aInitialPosition)
-        : belief(Utils::Matrix<double, 2, 1>{static_cast<double>(aInitialPosition.x),
-                                             static_cast<double>(aInitialPosition.y)}),
-          error(Utils::Matrix<double, 2, 2>{{100, 0}, {0, 100}})
+            : belief(Utils::Matrix<double, 2, 1>{static_cast<double>(aInitialPosition.x),
+                                                 static_cast<double>(aInitialPosition.y)}),
+              error(Utils::Matrix<double, 2, 2>{{100, 0}, {0, 100}})
     {
     }
     Point KalmanFilter::getMeasuredPosition(const Point& position, std::vector<AbstractSensorPtr>& sensors)
@@ -97,34 +89,4 @@ namespace Model
         return "KalmanFilter";
     }
 
-    /** =========================== */
-    /**       PARTICLE FILTER       */
-    /** =========================== */
-
-    ParticleFilter::ParticleFilter() = default;
-    ParticleFilter::ParticleFilter(const Point& aInitialPosition)
-    {
-        // TODO
-
-        UNUSEDCAST(aInitialPosition);
-    }
-    Point ParticleFilter::getMeasuredPosition(const Point& position, std::vector<AbstractSensorPtr>& sensors)
-    {
-        // TODO
-
-        UNUSEDCAST(sensors);
-    }
-    void ParticleFilter::iterate(Point& perceivedPosition, const Point& targetPosition, const Point& measuredPosition)
-    {
-        // TODO
-
-        UNUSEDCAST(perceivedPosition);
-        UNUSEDCAST(targetPosition);
-        UNUSEDCAST(measuredPosition);
-    }
-    std::string ParticleFilter::asString() const
-    {
-        return "ParticleFilter";
-    }
-
-}// namespace Model
+}

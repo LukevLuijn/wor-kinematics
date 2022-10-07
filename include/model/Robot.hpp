@@ -13,10 +13,7 @@
 #include "Region.hpp"
 #include "Size.hpp"
 #include "SteeringActuator.hpp"
-
 #include "AbstractFilter.h"
-
-//#include "DriveStrategy.h"
 
 #include <iostream>
 #include <memory>
@@ -69,7 +66,6 @@ namespace Model
         void setFront(const BoundedVector& aVector, bool aNotifyObservers = true);
         void setSpeed(float aNewSpeed, bool aNotifyObservers = true);
         void setFilter(Filters_e newFilter);
-//        void setDrivingStrategy(DrivingStrategy_e newStrategy);
 
         Region getRegion() const;
         Point getFrontLeft() const;
@@ -151,12 +147,6 @@ namespace Model
 
         AbstractFilter* filter;
         std::shared_ptr<SteeringActuator> steeringActuator;
-
-
-
-        //        std::shared_ptr<SteeringActuator> steeringActuator;
-//        DriveStrategy* driver;
-//        DrivingStrategy_e drivingStrategy;
 
     };
 }// namespace Model

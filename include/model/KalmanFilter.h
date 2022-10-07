@@ -2,8 +2,8 @@
 // Created by luke on 07-10-22.
 //
 
-#ifndef WOR_WORLD_KINEMATICA_CONCRETEFILTERS_H
-#define WOR_WORLD_KINEMATICA_CONCRETEFILTERS_H
+#ifndef WOR_WORLD_KINEMATICA_KALMANFILTER_H
+#define WOR_WORLD_KINEMATICA_KALMANFILTER_H
 
 #include "AbstractFilter.h"
 #include "Matrix.hpp"
@@ -29,21 +29,6 @@ namespace Model
         const Utils::Matrix<double, 2, 2> A = {{1, 0}, {0, 1}};
         const Utils::Matrix<double, 2, 2> R = {{1, 0}, {0, 1}};// sensor covariance matrix
     };
+}
 
-    class ParticleFilter : public AbstractFilter
-    {
-    public:
-        ParticleFilter();
-        explicit ParticleFilter(const Point& aInitialPosition);
-        ~ParticleFilter() override = default;
-
-        Point getMeasuredPosition(const Point& position,std::vector<AbstractSensorPtr>& sensors) override;
-        void iterate(Point& perceivedPosition, const Point& targetPosition, const Point& measuredPosition) override;
-
-        std::string asString() const override;
-    };
-
-
-}// namespace Model
-
-#endif//WOR_WORLD_KINEMATICA_CONCRETEFILTERS_H
+#endif//WOR_WORLD_KINEMATICA_KALMANFILTER_H

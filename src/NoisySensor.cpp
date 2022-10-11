@@ -9,15 +9,14 @@
 
 namespace Model
 {
-    NoisySensor::NoisySensor(double minDistribution, double maxDistribution)
-        : distribution(minDistribution, maxDistribution),
-          generator(uint32_t(std::chrono::system_clock::now().time_since_epoch().count()))
+    NoisySensor::NoisySensor(double mean, double deviation)
+        : normalDistribution(mean, deviation),
+          randomEngine(uint32_t(std::chrono::system_clock::now().time_since_epoch().count()))
     {
 
     }
     double NoisySensor::noisify(double value)
     {
-        // TODO
-        return value + distribution(generator);
+        return value + normalDistribution(randomEngine);
     }
 }

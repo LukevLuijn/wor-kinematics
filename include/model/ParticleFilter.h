@@ -7,8 +7,15 @@
 
 #include "AbstractFilter.h"
 
+#include <random>
+
 namespace Model
 {
+    struct Particle {
+        Point location;
+        double weight = 1;
+    };
+
     class ParticleFilter : public AbstractFilter
     {
     public:
@@ -16,13 +23,23 @@ namespace Model
         explicit ParticleFilter(const Point& aInitialPosition);
         ~ParticleFilter() override = default;
 
-        Point getMeasuredPosition(const Point& position,std::vector<AbstractSensorPtr>& sensors) override;
-        void iterate(Point& perceivedPosition, const Point& targetPosition, const Point& measuredPosition) override;
+        void iterate(Point& perceivedPosition, const Point& targetPosition,
+                     std::vector<AbstractSensorPtr>& sensors) override;
 
         std::string asString() const override;
 
     private:
+        void initializeParticles();
+
+    private:
+        static constexpr uint8_t GRID_SIZE = 32;// 64^2 = 4096 particles TODO maybe to big.
+        static constexpr uint16_t NUM_PARTICLES = GRID_SIZE * GRID_SIZE;
+
+        std::array<Particle, NUM_PARTICLES> particles;
+        std::array<double, NUM_PARTICLES> weights;
+
+        std::mt19937 randomEngine;
     };
-}
+}// namespace Model
 
 #endif//WOR_WORLD_KINEMATICA_PARTICLEFILTER_H

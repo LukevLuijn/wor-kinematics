@@ -433,8 +433,7 @@ namespace Application
         Model::RobotPtr robot = Model::RobotWorld::getRobotWorld().getRobot("Robot");
         if (robot)
         {
-            LOG("unimplemented");
-//            robot->setFilter(Model::Filters_e::PARTICLE_FILTER);
+            robot->setFilter(Model::Filters_e::PARTICLE_FILTER);
         }
         else
         {

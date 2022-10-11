@@ -17,10 +17,13 @@ namespace Model
         explicit KalmanFilter(const Point& aInitialPosition);
         ~KalmanFilter() override = default;
 
-        Point getMeasuredPosition(const Point& position, std::vector<AbstractSensorPtr>& sensors) override;
-        void iterate(Point& perceivedPosition, const Point& targetPosition, const Point& measuredPosition) override;
+//        Point getMeasuredPosition(const Point& position, std::vector<AbstractSensorPtr>& sensors) override;
+        void iterate(Point& perceivedPosition, const Point& targetPosition, std::vector<AbstractSensorPtr>& sensors) override;
 
         std::string asString() const override;
+
+    private:
+        Point getMeasuredPosition(const Point& position, std::vector<AbstractSensorPtr>& sensors);
 
     private:
         Utils::Matrix<double, 2, 1> belief;// previous state vector

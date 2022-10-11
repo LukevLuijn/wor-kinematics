@@ -20,6 +20,38 @@ namespace Model
               error(Utils::Matrix<double, 2, 2>{{100, 0}, {0, 100}})
     {
     }
+    void KalmanFilter::iterate(Point& perceivedPosition, const Point& targetPosition, std::vector<AbstractSensorPtr>& sensors)
+    {
+        Point measuredPosition = getMeasuredPosition(perceivedPosition, sensors);
+
+        // control vector
+        Utils::Matrix<double, 2, 1> control = {static_cast<double>(targetPosition.x - perceivedPosition.x),
+                                               static_cast<double>(targetPosition.y - perceivedPosition.y)};
+        // measurement vector
+        Utils::Matrix<double, 2, 1> measured = {static_cast<double>(measuredPosition.x),
+                                                static_cast<double>(measuredPosition.y)};
+
+        // == CONTROL UPDATE ==
+        // predicted state vector
+        Utils::Matrix<double, 2, 1> PSV = (A * belief) + (A /*B*/ * control);// + predicted process noise
+        // predicted process covariance
+        Utils::Matrix<double, 2, 2> PPC = A * error * A /*A^T*/;// + process noise covariance
+
+        // kalman gain vector
+        Utils::Matrix<double, 2, 2> KG = (PPC * A /*C*/) * (A /*C*/ * PPC * A /*C^T*/ + R).inverse();
+
+        // == MEASUREMENT UPDATE ==
+        // adjusted state vector
+        belief = PSV + KG * (measured - A /*C*/ * PSV);
+        // adjusted process covariance
+        error = PPC * (A /*I*/ - KG * A /*C*/);
+
+        perceivedPosition = Point(static_cast<int32_t>(belief[0][0]), static_cast<int32_t>(belief[1][0]));
+    }
+    std::string KalmanFilter::asString() const
+    {
+        return "KalmanFilter";
+    }
     Point KalmanFilter::getMeasuredPosition(const Point& position, std::vector<AbstractSensorPtr>& sensors)
     {
         double distance = std::numeric_limits<double>::max();
@@ -58,35 +90,4 @@ namespace Model
 
         return Point(measuredPositionX, measuredPositionY);
     }
-    void KalmanFilter::iterate(Point& perceivedPosition, const Point& targetPosition, const Point& measuredPosition)
-    {
-        // control vector
-        Utils::Matrix<double, 2, 1> control = {static_cast<double>(targetPosition.x - perceivedPosition.x),
-                                               static_cast<double>(targetPosition.y - perceivedPosition.y)};
-        // measurement vector
-        Utils::Matrix<double, 2, 1> measured = {static_cast<double>(measuredPosition.x),
-                                                static_cast<double>(measuredPosition.y)};
-
-        // == CONTROL UPDATE ==
-        // predicted state vector
-        Utils::Matrix<double, 2, 1> PSV = (A * belief) + (A /*B*/ * control);// + predicted process noise
-        // predicted process covariance
-        Utils::Matrix<double, 2, 2> PPC = A * error * A /*A^T*/;// + process noise covariance
-
-        // kalman gain vector
-        Utils::Matrix<double, 2, 2> KG = (PPC * A /*C*/) * (A /*C*/ * PPC * A /*C^T*/ + R).inverse();
-
-        // == MEASUREMENT UPDATE ==
-        // adjusted state vector
-        belief = PSV + KG * (measured - A /*C*/ * PSV);
-        // adjusted process covariance
-        error = PPC * (A /*I*/ - KG * A /*C*/);
-
-        perceivedPosition = Point(static_cast<int32_t>(belief[0][0]), static_cast<int32_t>(belief[1][0]));
-    }
-    std::string KalmanFilter::asString() const
-    {
-        return "KalmanFilter";
-    }
-
 }

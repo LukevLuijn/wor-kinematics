@@ -12,15 +12,15 @@ namespace Model
     class NoisySensor
     {
     public:
-        NoisySensor(double minDistribution, double maxDistribution);
+        NoisySensor(double mean, double deviation);
         virtual ~NoisySensor() = default;
 
     protected:
         double noisify(double value);
 
     private:
-        std::normal_distribution<double> distribution;
-        std::default_random_engine generator;
+        std::normal_distribution<double> normalDistribution;
+        std::default_random_engine randomEngine;
     };
 }
 

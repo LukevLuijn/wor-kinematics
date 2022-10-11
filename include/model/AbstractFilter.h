@@ -26,8 +26,7 @@ namespace Model
         AbstractFilter() = default;
         virtual ~AbstractFilter() = default;
 
-        virtual Point getMeasuredPosition(const Point& position,std::vector<AbstractSensorPtr>& sensors) = 0;
-        virtual void iterate(Point& perceivedPosition, const Point& targetPosition, const Point& measuredPosition) = 0;
+        virtual void iterate(Point& perceivedPosition, const Point& targetPosition, std::vector<AbstractSensorPtr>& sensors) = 0;
 
         virtual std::string asString() const = 0;
         virtual std::string asDebugString() const

@@ -116,8 +116,7 @@ namespace Model
                 {
                     position = previousPosition;
 
-                    const PathAlgorithm::Vertex& vertex = path[pathPoint += static_cast<unsigned int>(getSpeed())];
-                    const Point target = vertex.asPoint();
+                    const Point target = (path[pathPoint += static_cast<unsigned int>(getSpeed())]).asPoint();
 
                     RelativeMovementCommand command(target);
                     steeringActuator->handleCommand(command);
@@ -127,7 +126,7 @@ namespace Model
 
                     notifyObservers();
 
-                    filter->iterate(previousPosition, actualTarget, filter->getMeasuredPosition(position, sensors));
+                    filter->iterate(previousPosition, actualTarget, sensors);
 
                     std::this_thread::sleep_for(std::chrono::milliseconds(100));
                 }

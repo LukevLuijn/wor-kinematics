@@ -21,64 +21,11 @@ namespace Model
     }
     AbstractStimulusPtr LidarSensor::getStimulus() const
     {
-        // TODO remove labmda
-
-        auto takeReading = [](const Point& location, double angleInRads) -> LidarReading {
-            double minimalMeasuredDistance = 1500;//std::numeric_limits<double>::max();
-            const Point BEAM_END_POINT(
-                    static_cast<int32_t>(location.x + minimalMeasuredDistance * std::cos(angleInRads)),
-                    static_cast<int32_t>(location.y + minimalMeasuredDistance * std::sin(angleInRads)));
-
-            for (const WallPtr& wall : Model::RobotWorld::getRobotWorld().getWalls())
-            {
-                Point beamIntersection = Utils::Shape2DUtils::getIntersection(location,
-                                                                              BEAM_END_POINT,
-                                                                              wall->getPoint1(),
-                                                                              wall->getPoint2());
-
-                if (beamIntersection != DefaultPosition)
-                {
-                    double measuredDistance = std::sqrt(std::pow((location.x - beamIntersection.x), 2) +
-                                                        std::pow((location.y - beamIntersection.y), 2));
-                    minimalMeasuredDistance = std::min(minimalMeasuredDistance, measuredDistance);
-                }
-            }
-
-            return LidarReading{Utils::MathUtils::toDegrees(angleInRads), minimalMeasuredDistance};
-        };
-
         double currentAngle = Utils::Shape2DUtils::getAngle(dynamic_cast<Robot*>(agent)->getFront());
         Point currentPosition = dynamic_cast<Robot*>(agent)->getPosition();
 
-        LidarData data;
+        LidarData data = getReadingFromLocation(currentPosition, currentAngle);
 
-        for (uint8_t i = 0; i < 180; ++i)
-        {
-            double angleInRads = Utils::MathUtils::toRadians((currentAngle + (2 * i)));
-            double minimalMeasuredDistance = 1500;//std::numeric_limits<double>::max();
-
-            const Point BEAM_END_POINT(
-                    static_cast<int32_t>(currentPosition.x + minimalMeasuredDistance * std::cos(angleInRads)),
-                    static_cast<int32_t>(currentPosition.y + minimalMeasuredDistance * std::sin(angleInRads)));
-
-
-            for (const WallPtr& wall : Model::RobotWorld::getRobotWorld().getWalls())
-            {
-                Point beamIntersection = Utils::Shape2DUtils::getIntersection(currentPosition,
-                                                                              BEAM_END_POINT,
-                                                                              wall->getPoint1(),
-                                                                              wall->getPoint2());
-                if (beamIntersection != DefaultPosition)
-                {
-                    double measuredDistanceX = std::pow(currentPosition.x - beamIntersection.x, 2);
-                    double measuredDistanceY = std::pow(currentPosition.y - beamIntersection.y, 2);
-                    double measuredDistance = std::sqrt(measuredDistanceX + measuredDistanceY);
-
-                    minimalMeasuredDistance = std::min(minimalMeasuredDistance, measuredDistance);
-                }
-            }
-            data[i] = LidarReading{Utils::MathUtils::toDegrees(angleInRads), minimalMeasuredDistance};
-        }
         return AbstractStimulusPtr(new LidarStimulus(data));
     }
     AbstractPerceptPtr LidarSensor::getPerceptFor(AbstractStimulusPtr aStimulus)
@@ -100,4 +47,38 @@ namespace Model
     {
         return asString();
     }
+    LidarData LidarSensor::getReadingFromLocation(const Point& location, double angle)
+    {
+        LidarData data;
+
+        for (uint8_t i = 0; i < 180; ++i)
+        {
+            double angleInRads = Utils::MathUtils::toRadians((angle + (2 * i)));
+            double minimalMeasuredDistance = 1500;//std::numeric_limits<double>::max();
+
+            const Point BEAM_END_POINT(
+                    static_cast<int32_t>(location.x + minimalMeasuredDistance * std::cos(angleInRads)),
+                    static_cast<int32_t>(location.y + minimalMeasuredDistance * std::sin(angleInRads)));
+
+
+            for (const WallPtr& wall : Model::RobotWorld::getRobotWorld().getWalls())
+            {
+                Point beamIntersection = Utils::Shape2DUtils::getIntersection(location,
+                                                                              BEAM_END_POINT,
+                                                                              wall->getPoint1(),
+                                                                              wall->getPoint2());
+                if (beamIntersection != DefaultPosition)
+                {
+                    double measuredDistanceX = std::pow(location.x - beamIntersection.x, 2);
+                    double measuredDistanceY = std::pow(location.y - beamIntersection.y, 2);
+                    double measuredDistance = std::sqrt(measuredDistanceX + measuredDistanceY);
+
+                    minimalMeasuredDistance = std::min(minimalMeasuredDistance, measuredDistance);
+                }
+            }
+            data[i] = LidarReading{Utils::MathUtils::toDegrees(angleInRads), minimalMeasuredDistance};
+        }
+        return data;
+    }
+
 }// namespace Model

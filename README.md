@@ -36,8 +36,8 @@ make -j4 2>$1 | tee build.log
 |02|Vergroot de wereld tot 1024x1024 pixels.|:heavy_check_mark:|
 |03|Voeg ten minste 4 muren van tenminste 100 pixels toe aan de wereld.|:heavy_check_mark:|
 |04|De robot heeft kennis van de kaart van de wereld.|:heavy_check_mark:|
-|05|De robot heeft een positie en oriëntatie die gebruikt wordt voor het bepalen van de route, het rijden en als input voor de sensoren (van waaruit ergemeten moet worden). Daarnaast moet de robot een ’belief’ positie en oriëntatie krijgen.|:x:|
-|06|Het bepalen van de route met A-star en het automatisch rijden naar het doel kan beschout worden als het handmatig besturen / laten rijden van de robot.|:x:|
+|05|De robot heeft een positie en oriëntatie die gebruikt wordt voor het bepalen van de route, het rijden en als input voor de sensoren (van waaruit ergemeten moet worden). Daarnaast moet de robot een ’belief’ positie en oriëntatie krijgen.|:heavy_check_mark: <br> GUI elementen toevoegen.|
+|06|Het bepalen van de route met A-star en het automatisch rijden naar het doel kan beschout worden als het handmatig besturen / laten rijden van de robot.|:heavy_check_mark: ?|
 |07|De robot maakt gebruik van de Kalmanfilter op basis van kompas en odometer om een overtuiging van zijn positie en oriëntatie te vormen.|:heavy_check_mark:|
 |08|De robot maakt gebruik van het Particlefilter op basis van kompas en lidar omeen overtuiging van zijn positie en oriëntatie te vormen.|:heavy_check_mark:|
 |09|De robot ontwikkelt een overtuiging van de werkelijkheid volgens twee methodes (zie voorgaande twee items). Voeg aan de GUI van robotwereld een optie toe waarmee de gebruiker kan selecteren of de robot gebruik maakt van de overtuiging verkregen met Kalmanfilter of die uit het Particlefilter om een keuze te maken voor de control update.|:heavy_check_mark:|

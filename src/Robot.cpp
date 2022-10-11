@@ -125,9 +125,10 @@ namespace Model
                     const Point actualTarget = command.relativePositionRequest;
                     front = BoundedVector(actualTarget, position);
 
+                    notifyObservers();
+
                     filter->iterate(previousPosition, actualTarget, filter->getMeasuredPosition(position, sensors));
 
-                    notifyObservers();
                     std::this_thread::sleep_for(std::chrono::milliseconds(100));
                 }
 

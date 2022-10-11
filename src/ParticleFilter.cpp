@@ -17,10 +17,23 @@ namespace Model
     {
         // TODO
 
+        UNUSEDCAST(position);
         UNUSEDCAST(sensors);
+
+        return Point(0,0);
     }
     void ParticleFilter::iterate(Point& perceivedPosition, const Point& targetPosition, const Point& measuredPosition)
     {
+        /*
+         * move
+         * update
+         *
+         * pick best
+         *
+         * resample
+         */
+
+
         // TODO
 
         UNUSEDCAST(perceivedPosition);

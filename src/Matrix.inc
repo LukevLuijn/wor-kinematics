@@ -294,7 +294,7 @@ namespace Utils
     Matrix<T, M, N> Matrix<T, M, N>::identity() const
     {
         Matrix<T, N, M> result;
-        for (int i = 0; i < N; ++i)
+        for (std::size_t i = 0; i < N; ++i)
         {
             result[i][i] = 1;
         }

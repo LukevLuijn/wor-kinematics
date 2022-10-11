@@ -20,6 +20,8 @@ namespace Model
         void iterate(Point& perceivedPosition, const Point& targetPosition, const Point& measuredPosition) override;
 
         std::string asString() const override;
+
+    private:
     };
 }
 

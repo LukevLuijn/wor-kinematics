@@ -2,6 +2,7 @@
 
 #include "Goal.hpp"
 #include "Logger.hpp"
+#include "Path.h"
 #include "Robot.hpp"
 #include "Wall.hpp"
 #include "WayPoint.hpp"
@@ -28,6 +29,8 @@ namespace Model
                                   bool aNotifyObservers /*= true*/)
     {
         RobotPtr robot(new Robot(aName, aPosition));
+
+
 
         robots.push_back(robot);
         if (aNotifyObservers == true)
@@ -77,6 +80,20 @@ namespace Model
             notifyObservers();
         }
         return wall;
+    }
+    /**
+     *
+     */
+    PathPtr RobotWorld::newPath(bool aNotifyObservers)
+    {
+        PathPtr path(new Path());
+        paths.push_back(path);
+
+        if (aNotifyObservers)
+        {
+            notifyObservers();
+        }
+        return path;
     }
     /**
 	 *
@@ -143,6 +160,25 @@ namespace Model
             walls.erase(i);
 
             if (aNotifyObservers == true)
+            {
+                notifyObservers();
+            }
+        }
+    }
+    /**
+     *
+     */
+    void RobotWorld::deletePath(PathPtr aPath, bool aNotifyObservers)
+    {
+        auto it = std::find_if(paths.begin(), paths.end(), [&aPath](const PathPtr& path) {
+          return path == aPath;
+        });
+
+        if (it != paths.end())
+        {
+            paths.erase(it);
+
+            if (aNotifyObservers)
             {
                 notifyObservers();
             }
@@ -350,6 +386,7 @@ namespace Model
         wayPoints.clear();
         goals.clear();
         walls.clear();
+        paths.clear();
 
         if (aNotifyObservers)
         {
@@ -404,6 +441,17 @@ namespace Model
                                                             aWall->getObjectId()) == aKeepObjects.end();
                                        }),
                         walls.end());
+        }
+        if (paths.size() > 0)
+        {
+            paths.erase(std::remove_if(paths.begin(),
+                                       paths.end(),
+                                        [&aKeepObjects](PathPtr aPath) {
+                                          return std::find(aKeepObjects.begin(),
+                                                           aKeepObjects.end(),
+                                                           aPath->getObjectId()) == aKeepObjects.end();
+                                        }),
+                        paths.end());
         }
 
         if (aNotifyObservers)
@@ -461,5 +509,4 @@ namespace Model
         disableNotification();
         unpopulate();
     }
-
 }// namespace Model

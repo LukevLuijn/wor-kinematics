@@ -87,6 +87,7 @@ set(HEADERS_MODEL
         include/model/AbstractFilter.h
         include/model/KalmanFilter.h
         include/model/ParticleFilter.h
+        include/model/Path.h
         )
 set(HEADERS_PATH_ALGORITHM
         include/pathAlgorithm/AStar.hpp)
@@ -107,6 +108,8 @@ set(HEADERS_VIEW
         include/view/ViewObject.hpp
         include/view/WallShape.hpp
         include/view/WayPointShape.hpp
+
+        include/view/PathShape.h
         )
 set(HEADERS_WIDGETS
         include/widgets/Point.hpp
@@ -174,6 +177,8 @@ set(SOURCES
         src/Matrix.inc
         src/KalmanFilter.cpp
         src/ParticleFilter.cpp
+        src/PathShape.cpp
+        src/Path.cpp
         )
 
 add_executable(${EXE} ${SOURCES} ${HEADERS})

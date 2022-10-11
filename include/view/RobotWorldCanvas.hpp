@@ -24,6 +24,8 @@ namespace View
 	typedef std::shared_ptr<WayPointShape> WayPointShapePtr;
 	class WallShape;
 	typedef std::shared_ptr<WallShape> WallShapePtr;
+    class PathShape;
+    typedef std::shared_ptr<PathShape> PathShapePtr;
 
 	/**
 	 *
@@ -259,7 +261,11 @@ namespace View
 			/**
 			 *
 			 */
-			void removeShape( RobotShapePtr aRobotShape);
+			 void addShape(PathShapePtr aPathShape);
+             /**
+              *
+              */
+             void removeShape( RobotShapePtr aRobotShape);
 			/**
 			 *
 			 */
@@ -275,6 +281,10 @@ namespace View
 			/**
 			 *
 			 */
+            void removeShape(PathShapePtr aPathShape);
+			 /**
+			  *
+			  */
 			void removeGenericShape( ShapePtr aShape);
 		private:
 			/**

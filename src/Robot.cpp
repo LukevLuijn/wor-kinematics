@@ -131,6 +131,9 @@ namespace Model
                     filter->iterate(previousPosition, actualTarget, sensors);
 
                     auto stop = std::chrono::high_resolution_clock::now();
+
+                    //
+
                     auto time = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
                     std::chrono::milliseconds delay =
                             std::max(std::chrono::milliseconds(0), std::chrono::milliseconds(100) - time);

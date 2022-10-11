@@ -13,6 +13,7 @@
 #include "WallShape.hpp"
 #include "WayPoint.hpp"
 #include "WayPointShape.hpp"
+#include "PathShape.h"
 
 #include <algorithm>
 
@@ -1205,7 +1206,18 @@ namespace View
 		shapes.push_back( end);
 		shapes.push_back( aWallShape);
 	}
-	/**
+    /**
+     *
+     */
+    void RobotWorldCanvas::addShape(PathShapePtr aPathShape)
+    {
+        aPathShape->handleNotificationsFor(*aPathShape->getPath());
+
+        // TODO set color?
+
+        shapes.push_back(aPathShape);
+    }
+    /**
 	 *
 	 */
 	void RobotWorldCanvas::removeShape( RobotShapePtr aRobotShape)
@@ -1244,6 +1256,15 @@ namespace View
 		removeGenericShape( start);
 		removeGenericShape( end);
 	}
+    /**
+     *
+     */
+    void RobotWorldCanvas::removeShape(PathShapePtr aPathShape)
+    {
+        aPathShape->stopHandlingNotificationsFor(*aPathShape->getPath());
+        Model::RobotWorld::getRobotWorld().deletePath(aPathShape->getPath(), false);
+        removeGenericShape(aPathShape);
+    }
 	/**
 	 *
 	 */

@@ -53,7 +53,7 @@ namespace Model
 
         for (uint8_t i = 0; i < 180; ++i)
         {
-            double angleInRads = Utils::MathUtils::toRadians((angle + (2 * i)));
+            const double angleInRads = Utils::MathUtils::toRadians((angle + (2 * i)));
             double minimalMeasuredDistance = 1500;//std::numeric_limits<double>::max();
 
             const Point BEAM_END_POINT(
@@ -69,9 +69,9 @@ namespace Model
                                                                               wall->getPoint2());
                 if (beamIntersection != DefaultPosition)
                 {
-                    double measuredDistanceX = std::pow(location.x - beamIntersection.x, 2);
-                    double measuredDistanceY = std::pow(location.y - beamIntersection.y, 2);
-                    double measuredDistance = std::sqrt(measuredDistanceX + measuredDistanceY);
+                    const double measuredDistanceX = std::pow(location.x - beamIntersection.x, 2);
+                    const double measuredDistanceY = std::pow(location.y - beamIntersection.y, 2);
+                    const double measuredDistance = std::sqrt(measuredDistanceX + measuredDistanceY);
 
                     minimalMeasuredDistance = std::min(minimalMeasuredDistance, measuredDistance);
                 }

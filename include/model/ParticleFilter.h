@@ -31,6 +31,12 @@ namespace Model
     private:
         void initializeParticles();
 
+        void controlUpdate(const Point& perceivedPosition, const Point& targetPosition);
+        void measurementUpdate(std::vector<AbstractSensorPtr>& sensors);
+        void resampleParticles();
+        Point calculateNewPosition();
+
+
     private:
         static constexpr uint8_t GRID_SIZE = 32;// 64^2 = 4096 particles TODO maybe to big.
         static constexpr uint16_t NUM_PARTICLES = GRID_SIZE * GRID_SIZE;

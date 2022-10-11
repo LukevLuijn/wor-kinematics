@@ -126,9 +126,15 @@ namespace Model
 
                     notifyObservers();
 
+                    auto start = std::chrono::high_resolution_clock::now();
+
                     filter->iterate(previousPosition, actualTarget, sensors);
 
-                    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                    auto stop = std::chrono::high_resolution_clock::now();
+                    auto time = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
+                    std::chrono::milliseconds delay =
+                            std::max(std::chrono::milliseconds(0), std::chrono::milliseconds(100) - time);
+                    std::this_thread::sleep_for(delay);
                 }
 
                 if (!driving)

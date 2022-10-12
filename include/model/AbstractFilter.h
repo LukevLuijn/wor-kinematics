@@ -23,16 +23,31 @@ namespace Model
     class AbstractFilter
     {
     public:
-        AbstractFilter() = default;
+        explicit AbstractFilter(Filters_e aFilterType) : filterType(aFilterType)
+        {
+        }
         virtual ~AbstractFilter() = default;
 
-        virtual void iterate(Point& perceivedPosition, const Point& targetPosition, std::vector<AbstractSensorPtr>& sensors) = 0;
+        virtual void iterate(Point& perceivedPosition, const Point& targetPosition,
+                             std::vector<AbstractSensorPtr>& sensors) = 0;
 
         virtual std::string asString() const = 0;
         virtual std::string asDebugString() const
         {
             return asString();
         }
+
+        bool operator==(const AbstractFilter& other) const
+        {
+            return other.filterType == filterType;
+        }
+        [[nodiscard]] Filters_e getFilterType() const
+        {
+            return filterType;
+        }
+
+    protected:
+        Filters_e filterType;
     };
 }// namespace Model
 

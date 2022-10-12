@@ -71,8 +71,7 @@ namespace Model
         std::string asString() const override;
         std::string asDebugString() const override;
 
-    private:
-        void readFromConfigFile();
+        void recalibrate() override;
 
     private:
         Point previousPosition;

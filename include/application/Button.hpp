@@ -11,7 +11,7 @@
 
 namespace Application
 {
-	/**
+    /**
 	 * Utility function that creates a Button with aLabel that binds the given ActionFunction with the
 	 * wxEVT_COMMAND_BUTTON_CLICKED of the button.
 	 *
@@ -20,15 +20,13 @@ namespace Application
 	 * @param anActionFunction
 	 * @return
 	 */
-	template< typename ActionFunction>
-	Button* makeButton( 	Window* aParent,
-							const std::string& aLabel,
-							const ActionFunction anActionFunction)
-	{
-        Button* button = new Button( aParent, DEFAULT_ID, WXSTRING(aLabel));
-		button->Bind(wxEVT_COMMAND_BUTTON_CLICKED, anActionFunction);
-		return button;
-	}
-} // namespace Application
+    template<typename ActionFunction>
+    Button* makeButton(Window* aParent, const std::string& aLabel, const ActionFunction anActionFunction)
+    {
+        Button* button = new Button(aParent, DEFAULT_ID, WXSTRING(aLabel));
+        button->Bind(wxEVT_COMMAND_BUTTON_CLICKED, anActionFunction);
+        return button;
+    }
+}// namespace Application
 
-#endif // DANU_BUTTON_HPP_
+#endif// DANU_BUTTON_HPP_

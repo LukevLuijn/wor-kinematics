@@ -11,12 +11,12 @@ namespace Model
 {
     OdometerSensor::OdometerSensor() : NoisySensor(0, 1), previousPosition(0, 0)
     {
-        readFromConfigFile();
+        recalibrate();
     }
     OdometerSensor::OdometerSensor(Robot* robot)
         : AbstractSensor(robot), NoisySensor(0, 1), previousPosition(robot->getPosition())
     {
-        readFromConfigFile();
+        recalibrate();
     }
     AbstractStimulusPtr OdometerSensor::getStimulus() const
     {
@@ -46,12 +46,8 @@ namespace Model
     {
         return asString();
     }
-    void OdometerSensor::readFromConfigFile()
+    void OdometerSensor::recalibrate()
     {
-        if (Application::MainApplication::isArgGiven("-odometer"))
-        {
-            double stdDeviation = std::stod(Application::MainApplication::getArg("-odometer").value);
-            setStandardDeviation(stdDeviation);
-        }
+        readFromConfigFile("-odometer");
     }
 }// namespace Model

@@ -12,6 +12,11 @@
 
 #include <vector>
 
+namespace Model
+{
+    enum class Filters_e : uint8_t;
+}
+
 namespace View
 {
 	class Shape;
@@ -168,7 +173,7 @@ namespace View
 			/**
 			 * Asks the world to populates itself with a robot, a goal and the given number of walls
 			 */
-			void populate( int aNumberOfWalls = 2);
+			void populate(const std::vector<Model::Filters_e>& activeFilters, int aNumberOfWalls = 2);
 			/**
 			 * Removes everything from the world
 			 */

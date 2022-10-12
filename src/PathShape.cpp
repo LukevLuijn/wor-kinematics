@@ -14,27 +14,29 @@ namespace View
     }
     void PathShape::draw(wxDC& dc)
     {
-
-        std::vector<Point> pathPoints = getPath()->getPoints();
-
-        if (!pathPoints.empty())
+        if (getPath()->isPathActive())
         {
-            wxColour pathColor = getPath()->getPathColor();
-            wxColour positionColor = getPath()->getPositionColor();
+            std::vector<Point> pathPoints = getPath()->getPoints();
 
-            wxPen pathPen(pathColor, 2, wxPENSTYLE_SOLID);
-            wxPen positionPen(positionColor, 1, wxPENSTYLE_SOLID);
-            dc.SetBrush(positionColor);
-
-            for (auto it = std::next(pathPoints.begin()); it != pathPoints.end(); ++it)
+            if (!pathPoints.empty())
             {
-                Point start = *(it - 1);
+                wxColour pathColor = getPath()->getPathColor();
+                wxColour positionColor = getPath()->getPositionColor();
 
-                dc.SetPen(pathPen);
-                dc.DrawLine(start, *(it));
+                wxPen pathPen(pathColor, 2, wxPENSTYLE_SOLID);
+                wxPen positionPen(positionColor, 1, wxPENSTYLE_SOLID);
+                dc.SetBrush(positionColor);
 
-                dc.SetPen(positionPen);
-                dc.DrawCircle(start, 1);
+                for (auto it = std::next(pathPoints.begin()); it != pathPoints.end(); ++it)
+                {
+                    Point start = *(it - 1);
+
+                    dc.SetPen(pathPen);
+                    dc.DrawLine(start, *(it));
+
+                    dc.SetPen(positionPen);
+                    dc.DrawCircle(start, 1);
+                }
             }
         }
     }

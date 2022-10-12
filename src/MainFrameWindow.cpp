@@ -1,6 +1,5 @@
 #include "MainFrameWindow.hpp"
 
-#include "Button.hpp"
 #include "Client.hpp"
 #include "FileTraceFunction.hpp"
 #include "LogTextCtrl.hpp"
@@ -15,6 +14,11 @@
 #include "Shape2DUtils.hpp"
 #include "StdOutTraceFunction.hpp"
 #include "WidgetTraceFunction.hpp"
+
+#include "Button.hpp"
+#include "Slider.h"
+#include "ToggleButton.h"
+
 
 #include <iostream>
 
@@ -225,26 +229,85 @@ namespace Application
     Panel* MainFrameWindow::initialiseButtonPanel()
     {
         auto* panel = new Panel(rhsPanel, DEFAULT_ID, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
-        auto* sizer = new wxFlexGridSizer(4, 2, 0, 0);
+        auto* sizer = new wxFlexGridSizer(3, 5, 0, 0);
 
+        sizer->AddGrowableCol(3);
         sizer->SetFlexibleDirection(wxBOTH);
         sizer->SetNonFlexibleGrowMode(wxFLEX_GROWMODE_SPECIFIED);
 
+        kalmanFilterToggle = makeToggleButton(panel, "Kalman filter", [this](CommandEvent& anEvent) {
+            this->OnKalmanToggle(anEvent);
+        });
+
+        kalmanFilterToggle->SetValue(true);
+        kalmanFilterToggle->SetBackgroundColour(KALMAN_BLUE);
+
+        particleFilterToggle = makeToggleButton(panel, "Particle filter", [this](CommandEvent& anEvent) {
+            this->OnParticleToggle(anEvent);
+        });
+        particleFilterToggle->SetValue(true);
+        particleFilterToggle->SetBackgroundColour(PARTICLE_GREEN);
+
+
+        compassSlider = makeSlider(panel, 0, 100, [this](CommandEvent& anEvent) {
+            this->OnSliderCompass(anEvent);
+        });
+
+        if (MainApplication::isArgGiven("-compass"))
+        {
+            compassConfigValue = std::stoi(MainApplication::getArg("-compass").value);
+            compassSlider->SetValue(static_cast<int32_t>(compassConfigValue));
+        }
+
+
+        odometerSlider = makeSlider(panel, 0, 100, [this](CommandEvent& anEvent) {
+            this->OnSliderOdometer(anEvent);
+        });
+        if (MainApplication::isArgGiven("-odometer"))
+        {
+            odometerConfigValue = std::stoi(MainApplication::getArg("-odometer").value);
+            odometerSlider->SetValue(static_cast<int32_t>(odometerConfigValue));
+        }
+
+
+        lidarSlider = makeSlider(panel, 0, 100, [this](CommandEvent& anEvent) {
+            this->OnSliderLidar(anEvent);
+        });
+        if (MainApplication::isArgGiven("-lidar"))
+        {
+            lidarConfigValue = std::stoi(MainApplication::getArg("-lidar").value);
+            lidarSlider->SetValue(static_cast<int32_t>(lidarConfigValue));
+        }
+
+
         sizer->Add(makeButton(panel,
-                              "Populate",
+                              "Populate world",
                               [this](CommandEvent& anEvent) {
                                   this->OnPopulate(anEvent);
                               }),
                    1,
-                   wxALL | wxEXPAND,
+                   wxALL | wxEXPAND | wxALIGN_CENTER_VERTICAL,
                    5);
         sizer->Add(makeButton(panel,
-                              "Clear",
+                              "Clear world",
                               [this](CommandEvent& anEvent) {
                                   this->OnUnpopulate(anEvent);
                               }),
                    1,
-                   wxALL | wxEXPAND,
+                   wxALL | wxEXPAND | wxALIGN_CENTER_VERTICAL,
+                   5);
+        sizer->Add(new wxStaticText(panel, DEFAULT_ID, WXSTRING("Compass:")),
+                   1,
+                   wxALL | wxEXPAND | wxALIGN_CENTER_VERTICAL,
+                   5);
+        sizer->Add(compassSlider, 1, wxALL | wxEXPAND, 5);
+        sizer->Add(makeButton(panel,
+                              "Reset compass",
+                              [this](CommandEvent& anEvent) {
+                                this->OnResetSliderCompass(anEvent);
+                              }),
+                   1,
+                   wxALL | wxEXPAND | wxALIGN_CENTER_VERTICAL,
                    5);
         sizer->Add(makeButton(panel,
                               "Start robot",
@@ -252,7 +315,7 @@ namespace Application
                                   this->OnStartRobot(anEvent);
                               }),
                    1,
-                   wxALL | wxEXPAND,
+                   wxALL | wxEXPAND | wxALIGN_CENTER_VERTICAL,
                    5);
         sizer->Add(makeButton(panel,
                               "Stop robot",
@@ -260,33 +323,36 @@ namespace Application
                                   this->OnStopRobot(anEvent);
                               }),
                    1,
-                   wxALL | wxEXPAND,
+                   wxALL | wxEXPAND | wxALIGN_CENTER_VERTICAL,
                    5);
+        sizer->Add(new wxStaticText(panel, DEFAULT_ID, WXSTRING("Odometer:")),
+                   1,
+                   wxALL | wxEXPAND | wxALIGN_CENTER_VERTICAL,
+                   5);
+        sizer->Add(odometerSlider, 1, wxALL | wxEXPAND, 5);
         sizer->Add(makeButton(panel,
-                              "No filter",
+                              "Reset odometer",
                               [this](CommandEvent& anEvent) {
-                                  this->OnNoFilter(anEvent);
+                                this->OnResetSliderOdometer(anEvent);
                               }),
                    1,
-                   wxALL | wxEXPAND,
+                   wxALL | wxEXPAND | wxALIGN_CENTER_VERTICAL,
                    5);
+        sizer->Add(kalmanFilterToggle, 1, wxALL | wxEXPAND | wxALIGN_CENTER_VERTICAL, 5);
+        sizer->Add(particleFilterToggle, 1, wxALL | wxEXPAND | wxALIGN_CENTER_VERTICAL, 5);
+        sizer->Add(new wxStaticText(panel, DEFAULT_ID, WXSTRING("Lidar:")),
+                   1,
+                   wxALL | wxEXPAND | wxALIGN_CENTER_VERTICAL,
+                   5);
+        sizer->Add(lidarSlider, 1, wxALL | wxEXPAND, 5);
         sizer->Add(makeButton(panel,
-                              "Kalman filter",
+                              "Reset lidar",
                               [this](CommandEvent& anEvent) {
-                                  this->OnKalman(anEvent);
+                                this->OnResetSliderLidar(anEvent);
                               }),
                    1,
-                   wxALL | wxEXPAND,
+                   wxALL | wxEXPAND | wxALIGN_CENTER_VERTICAL,
                    5);
-        sizer->Add(makeButton(panel,
-                              "Particle filter",
-                              [this](CommandEvent& anEvent) {
-                                this->OnParticle(anEvent);
-                              }),
-                   1,
-                   wxALL | wxEXPAND,
-                   5);
-
         panel->SetSizerAndFit(sizer);
 
         return panel;
@@ -379,9 +445,21 @@ namespace Application
     {
         LOG("Populating world");
 
+        std::vector<Model::Filters_e> filters;
+
+        if (kalmanFilterToggle->GetValue())
+        {
+            filters.emplace_back(Model::Filters_e::KALMAN_FILTER);
+        }
+        if (particleFilterToggle->GetValue())
+        {
+            filters.emplace_back(Model::Filters_e::PARTICLE_FILTER);
+        }
+
+
         // clear previous instances
         robotWorldCanvas->unpopulate();
-        robotWorldCanvas->populate(4);
+        robotWorldCanvas->populate(filters, 4);
     }
     /**
 	 *
@@ -395,50 +473,146 @@ namespace Application
     /**
      *
      */
-    void MainFrameWindow::OnNoFilter(CommandEvent& UNUSEDPARAM(anEvent))
+    void MainFrameWindow::OnKalmanToggle(CommandEvent& UNUSEDPARAM(anEvent))
     {
-        LOG("unimplemented");
+        Model::RobotPtr robot = Model::RobotWorld::getRobotWorld().getRobot("Robot");
+        if (robot)
+        {
+            if (kalmanFilterToggle->GetValue())
+            {
+                LOG("adding kalman filter to robot");
+                robot->addFilter(Model::Filters_e::KALMAN_FILTER);
+                kalmanFilterToggle->SetBackgroundColour(KALMAN_BLUE);
+            }
+            else
+            {
+                LOG("removing kalman filter from robot");
+                robot->removeFilter(Model::Filters_e::KALMAN_FILTER);
+                kalmanFilterToggle->SetBackgroundColour(GetBackgroundColour());
+            }
+        }
+        else
+        {
+            kalmanFilterToggle->SetValue(!kalmanFilterToggle->GetValue());
+            LOG("There is no robot available");
+        }
+    }
+    /**
+     *
+     */
+    void MainFrameWindow::OnParticleToggle(CommandEvent& UNUSEDPARAM(anEvent))
+    {
+        Model::RobotPtr robot = Model::RobotWorld::getRobotWorld().getRobot("Robot");
+        if (robot)
+        {
+            if (particleFilterToggle->GetValue())
+            {
+                LOG("adding particle filter to robot");
+                robot->addFilter(Model::Filters_e::PARTICLE_FILTER);
+                particleFilterToggle->SetBackgroundColour(PARTICLE_GREEN);
+            }
+            else
+            {
+                LOG("removing particle filter from robot");
+                robot->removeFilter(Model::Filters_e::PARTICLE_FILTER);
+                particleFilterToggle->SetBackgroundColour(GetBackgroundColour());
+            }
+        }
+        else
+        {
+            particleFilterToggle->SetValue(!particleFilterToggle->GetValue());
+            LOG("There is no robot available");
+        }
+    }
+    /**
+     *
+     */
+    void MainFrameWindow::OnSliderCompass(CommandEvent& UNUSEDPARAM(anEvent))
+    {
+        const std::string value = std::to_string(compassSlider->GetValue());
 
-//        Model::RobotPtr robot = Model::RobotWorld::getRobotWorld().getRobot("Robot");
-//
-//        if (robot)
-//        {
-//            robot->setDrivingStrategy(Model::DrivingStrategy_e::NO_FILTER);
-//        }
-//        else
-//        {
-//            LOG("There is no robot available");
-//        }
+        if (MainApplication::isArgGiven("-compass"))
+        {
+            MainApplication::getArg("-compass").value = value;
+        }
+        Model::RobotPtr robot = Model::RobotWorld::getRobotWorld().getRobot("Robot");
+
+        if (robot)
+        {
+            robot->resetSensor("CompassSensor");
+        }
+
+        LOG("compass standard deviation set", value + " degrees");
     }
     /**
      *
      */
-    void MainFrameWindow::OnKalman(CommandEvent& UNUSEDPARAM(anEvent))
+    void MainFrameWindow::OnSliderOdometer(CommandEvent& UNUSEDPARAM(anEvent))
     {
+        const std::string value = std::to_string(odometerSlider->GetValue());
+
+        if (MainApplication::isArgGiven("-odometer"))
+        {
+            MainApplication::getArg("-odometer").value = value;
+        }
+
         Model::RobotPtr robot = Model::RobotWorld::getRobotWorld().getRobot("Robot");
+
         if (robot)
         {
-            robot->setFilter(Model::Filters_e::KALMAN_FILTER);
+            robot->resetSensor("OdometerSensor");
         }
-        else
-        {
-            LOG("There is no robot available");
-        }
+
+        LOG("odometer standard deviation set", value + " pixels");
     }
     /**
      *
      */
-    void MainFrameWindow::OnParticle(CommandEvent& UNUSEDPARAM(anEvent))
+    void MainFrameWindow::OnSliderLidar(CommandEvent& UNUSEDPARAM(anEvent))
     {
+        const std::string value = std::to_string(lidarSlider->GetValue());
+
+        if (MainApplication::isArgGiven("-lidar"))
+        {
+            MainApplication::getArg("-lidar").value = value;
+        }
+
         Model::RobotPtr robot = Model::RobotWorld::getRobotWorld().getRobot("Robot");
+
         if (robot)
         {
-            robot->setFilter(Model::Filters_e::PARTICLE_FILTER);
+            robot->resetSensor("LidarSensor");
+
         }
-        else
-        {
-            LOG("There is no robot available");
-        }
+
+        LOG("lidar standard deviation set", value + " pixels");
+    }
+    void MainFrameWindow::OnResetSliderCompass(CommandEvent& UNUSEDPARAM(anEvent))
+    {
+        compassSlider->SetValue(static_cast<int32_t>(compassConfigValue));
+
+        LOG("resetting compass standard deviation");
+
+        wxCommandEvent anEvent;
+        OnSliderCompass(anEvent);
+    }
+    void MainFrameWindow::OnResetSliderOdometer(CommandEvent& UNUSEDPARAM(anEvent))
+    {
+        odometerSlider->SetValue(static_cast<int32_t>(odometerConfigValue));
+
+        LOG("resetting odometer standard deviation");
+
+        wxCommandEvent anEvent;
+        OnSliderOdometer(anEvent);
+    }
+    void MainFrameWindow::OnResetSliderLidar(CommandEvent& UNUSEDPARAM(anEvent))
+    {
+        lidarSlider->SetValue(static_cast<int32_t>(lidarConfigValue));
+
+        LOG("resetting lidar standard deviation");
+
+        wxCommandEvent anEvent;
+        OnSliderLidar(anEvent);
 
     }
 }// namespace Application

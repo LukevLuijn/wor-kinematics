@@ -40,6 +40,9 @@ set(HEADERS_APPLICATION
         include/application/MainApplication.hpp
         include/application/MainFrameWindow.hpp
         include/application/WidgetTraceFunction.hpp
+
+        include/application/ToggleButton.h
+        include/application/Slider.h
         )
 set(HEADERS_BASE
         include/base/FileTraceFunction.hpp

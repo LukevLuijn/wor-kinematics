@@ -31,17 +31,23 @@ namespace Model
 
         void setPoint(const Point& aPoint, std::size_t index);
         void setPath(const std::vector<Point>& aPath);
+        void setPathActive(bool active);
 
         std::string asString() const override;
         std::string asDebugString() const override;
 
-        wxColor getPathColor() const
+        wxColour getPathColor() const
         {
             return pathColor;
         }
-        wxColor getPositionColor() const
+        wxColour getPositionColor() const
         {
             return positionColor;
+        }
+
+        bool isPathActive() const
+        {
+            return isActive;
         }
         std::string getName() const
         {
@@ -50,6 +56,7 @@ namespace Model
     private:
         std::string name;
         std::vector<Point> points;
+        bool isActive;
         wxColor pathColor, positionColor;
     };
 }// namespace Model

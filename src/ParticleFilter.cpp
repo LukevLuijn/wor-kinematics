@@ -14,14 +14,14 @@
 
 namespace Model
 {
-    ParticleFilter::ParticleFilter()
+    ParticleFilter::ParticleFilter() : AbstractFilter(Filters_e::PARTICLE_FILTER)
     {
         std::random_device randomDevice;
         randomEngine = std::mt19937(randomDevice());
 
         initializeParticles();
     }
-    ParticleFilter::ParticleFilter(const Point& aInitialPosition)
+    ParticleFilter::ParticleFilter(const Point& aInitialPosition) : AbstractFilter(Filters_e::PARTICLE_FILTER)
     {
         // TODO
         UNUSEDCAST(aInitialPosition);
@@ -99,12 +99,13 @@ namespace Model
             }
         }
 
-        for (std::size_t i = 0; i < particles.size(); ++i) //x32^2
+        for (std::size_t i = 0; i < particles.size(); ++i)//x32^2
         {
-            LidarData lidarDataParticle = LidarSensor::getReadingFromLocation(particles[i].location, orientation); // 180 readings
+            LidarData lidarDataParticle =
+                    LidarSensor::getReadingFromLocation(particles[i].location, orientation);// 180 readings
 
             double totalDistanceDelta = 0;
-            for (std::size_t j = 0; j < lidarDataRobot.size(); ++j) // x180
+            for (std::size_t j = 0; j < lidarDataRobot.size(); ++j)// x180
             {
                 totalDistanceDelta += std::abs(lidarDataRobot[j].distance - lidarDataParticle[j].distance);
             }

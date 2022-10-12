@@ -14,11 +14,11 @@ namespace Model
 {
     CompassSensor::CompassSensor() : NoisySensor(0, Utils::MathUtils::toRadians(2))
     {
-        readFromConfigFile();
+        recalibrate();
     }
     CompassSensor::CompassSensor(Robot* aRobot) : AbstractSensor(aRobot), NoisySensor(0, Utils::MathUtils::toRadians(2))
     {
-        readFromConfigFile();
+        recalibrate();
     }
     AbstractStimulusPtr CompassSensor::getStimulus() const
     {
@@ -43,13 +43,8 @@ namespace Model
     {
         return asString();
     }
-    void CompassSensor::readFromConfigFile()
+    void CompassSensor::recalibrate()
     {
-        if (Application::MainApplication::isArgGiven("-compass"))
-        {
-            double stdDeviation = std::stod(Application::MainApplication::getArg("-compass").value);
-            setStandardDeviation(stdDeviation);
-        }
+        readFromConfigFile("-compass");
     }
-
 }// namespace Model

@@ -43,7 +43,11 @@ namespace Model
         attachSensors();
         attachActuators();
 
-        setFilter(Filters_e::KALMAN_FILTER);
+//        addFilter(Filters_e::KALMAN_FILTER);
+//        addFilter(Filters_e::PARTICLE_FILTER);
+
+        filters.emplace_back(new KalmanFilter(getPosition()));
+        filters.emplace_back(new ParticleFilter(getPosition()));
     }
     /**
 	 *
@@ -55,7 +59,11 @@ namespace Model
         attachSensors();
         attachActuators();
 
-        setFilter(Filters_e::KALMAN_FILTER);
+//        addFilter(Filters_e::KALMAN_FILTER);
+//        addFilter(Filters_e::PARTICLE_FILTER);
+
+        filters.emplace_back(new KalmanFilter(getPosition()));
+        filters.emplace_back(new ParticleFilter(getPosition()));
     }
     /**
 	 *
@@ -67,7 +75,11 @@ namespace Model
         attachSensors();
         attachActuators();
 
-        setFilter(Filters_e::KALMAN_FILTER);
+//        addFilter(Filters_e::KALMAN_FILTER);
+//        addFilter(Filters_e::PARTICLE_FILTER);
+
+        filters.emplace_back(new KalmanFilter(getPosition()));
+        filters.emplace_back(new ParticleFilter(getPosition()));
     }
     /**
 	 *
@@ -97,7 +109,9 @@ namespace Model
             }
 
             uint32_t pathPoint = 0;
-            Point believedPosition = position;
+            Point believedPositionKalman = position;
+            Point believedPositionParticle = position;
+
 
             for (PathPtr& pathPtr : paths)
             {
@@ -105,9 +119,13 @@ namespace Model
                 {
                     pathPtr->addPoint(position);
                 }
-                else if (pathPtr.get()->getName() == "Belief")
+                else if (pathPtr.get()->getName() == "Belief-kalman")
                 {
-                    pathPtr->addPoint(believedPosition);
+                    pathPtr->addPoint(believedPositionKalman);
+                }
+                else if (pathPtr.get()->getName() == "Belief-particle")
+                {
+                    pathPtr->addPoint(believedPositionParticle);
                 }
             }
 
@@ -127,8 +145,6 @@ namespace Model
                 }
                 else
                 {
-//                    position = previousPosition;
-
                     const Point target = (path[pathPoint += static_cast<unsigned int>(getSpeed())]).asPoint();
 
                     RelativeMovementCommand command(target);
@@ -142,7 +158,22 @@ namespace Model
 
                     auto start = std::chrono::high_resolution_clock::now();
 
-                    filter->iterate(believedPosition, actualTarget, sensors);
+                    for (AbstractFilter* filter : filters)
+                    {
+                        switch (filter->getFilterType())
+                        {
+                            case Filters_e::KALMAN_FILTER:
+                                filter->iterate(believedPositionKalman, actualTarget, sensors);
+                                break;
+                            case Filters_e::PARTICLE_FILTER:
+                                filter->iterate(believedPositionParticle, actualTarget, sensors);
+                                break;
+                            default:
+                                LOG("undefined filter");
+                                std::cerr << __FUNCTION__ << " undefined filter" << std::endl;
+                                break;
+                        }
+                    }
 
                     auto stop = std::chrono::high_resolution_clock::now();
 
@@ -152,9 +183,13 @@ namespace Model
                         {
                             pathPtr->addPoint(position);
                         }
-                        else if (pathPtr.get()->getName() == "Belief")
+                        else if (pathPtr.get()->getName() == "Belief-kalman")
                         {
-                            pathPtr->addPoint(believedPosition);
+                            pathPtr->addPoint(believedPositionKalman);
+                        }
+                        else if (pathPtr.get()->getName() == "Belief-particle")
+                        {
+                            pathPtr->addPoint(believedPositionParticle);
                         }
                     }
 
@@ -180,6 +215,21 @@ namespace Model
         {
             LOG("unknown exception caught");
             std::cerr << __PRETTY_FUNCTION__ << ": unknown exception" << std::endl;
+        }
+    }
+    /**
+     *
+     */
+    void Robot::resetSensor(const std::string& sensorName)
+    {
+        auto it = std::find_if(sensors.begin(), sensors.end(), [&sensorName](AbstractSensorPtr& sensor)
+                               {
+                                    return sensor->asString() == sensorName;
+                               });
+
+        if (it != sensors.end())
+        {
+            it->get()->recalibrate();
         }
     }
     /**
@@ -387,23 +437,30 @@ namespace Model
     /**
      *
      */
-    void Robot::setFilter(Filters_e newFilter)
+    void Robot::setActiveFilters(const std::vector<Filters_e>& activeFilters)
     {
-        switch (newFilter)
+        for (Filters_e filter : activeFilters)
         {
-            case Filters_e::KALMAN_FILTER:
-                filter = new KalmanFilter(getPosition());
-                break;
-            case Filters_e::PARTICLE_FILTER:
-                filter = new ParticleFilter(getPosition());
-                break;
-            default:
-                LOG("undefined filter requested", static_cast<uint64_t>(newFilter));
-                std::cerr << "undefined filter requested" << std::endl;
-                return;
+            addFilter(filter);
         }
-        LOG("New filter set", filter->asString());
     }
+    /**
+     *
+     */
+    void Robot::addFilter(Filters_e newFilter)
+    {
+        activateFilterVisualization(newFilter, true);
+    }
+    /**
+     *
+     */
+    void Robot::removeFilter(Filters_e newFilter)
+    {
+        activateFilterVisualization(newFilter, false);
+    }
+    /**
+     *
+     */
     void Robot::addPathPointer(const PathPtr& aPath)
     {
         auto it = std::find_if(paths.begin(), paths.end(), [&aPath](const PathPtr& pathLine) {
@@ -672,6 +729,29 @@ namespace Model
         for (const std::shared_ptr<AbstractActuator>& actuator : robotActuators)
         {
             attachActuator(actuator);
+        }
+    }
+    void Robot::activateFilterVisualization(Filters_e filter, bool activate)
+    {
+        std::string filterName = "undefined";
+
+        switch(filter)
+        {
+            case Filters_e::KALMAN_FILTER:
+                filterName = "Belief-kalman";
+                break;
+            case Filters_e::PARTICLE_FILTER:
+                filterName = "Belief-particle";
+                break;
+        }
+
+        auto it = std::find_if(paths.begin(), paths.end(), [&filterName](const PathPtr& aPath) {
+            return aPath->getName() == filterName;
+        });
+
+        if (it != paths.end())
+        {
+            it->get()->setPathActive(activate);
         }
     }
 }// namespace Model

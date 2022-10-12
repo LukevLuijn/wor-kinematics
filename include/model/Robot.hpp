@@ -49,13 +49,15 @@ namespace Model
 
         virtual void drive();
 
+        void resetSensor(const std::string& sensorName);
+
         bool intersects(const Region& aRegion) const;
         bool arrived(GoalPtr aGoal);
         bool collision();
         bool outOfBounds(uint32_t pathPoint);
 
-        virtual void startActing() override;
-        virtual void stopActing() override;
+        void startActing() override;
+        void stopActing() override;
 
         virtual void startDriving();
         virtual void stopDriving();
@@ -68,7 +70,10 @@ namespace Model
         void setPosition(const Point& aPosition, bool aNotifyObservers = true);
         void setFront(const BoundedVector& aVector, bool aNotifyObservers = true);
         void setSpeed(float aNewSpeed, bool aNotifyObservers = true);
-        void setFilter(Filters_e newFilter);
+        void setActiveFilters(const std::vector<Filters_e>& activeFilters);
+
+        void addFilter(Filters_e newFilter);
+        void removeFilter(Filters_e newFilter);
 
         void addPathPointer(const PathPtr& aPath);
 
@@ -134,6 +139,8 @@ namespace Model
         void attachSensors();
         void attachActuators();
 
+        void activateFilterVisualization(Filters_e filter, bool activate);
+
     private:
         std::string name;
         Size size;
@@ -150,7 +157,7 @@ namespace Model
         mutable std::recursive_mutex robotMutex;
         Messaging::ServerPtr server;
 
-        AbstractFilter* filter;
+        std::vector<AbstractFilter*> filters;
         std::shared_ptr<SteeringActuator> steeringActuator;
         std::vector<PathPtr> paths;
     };

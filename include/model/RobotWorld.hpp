@@ -28,6 +28,10 @@ namespace Model
 
     class Path;
     typedef std::shared_ptr<Path> PathPtr;
+
+    enum class Filters_e : uint8_t;
+
+
     /**
 	 *
 	 */
@@ -137,7 +141,7 @@ namespace Model
         /**
               *
               */
-        void populate(int aNumberOfWalls = 2);
+        void populate( const std::vector<Filters_e>& activeFilters, int aNumberOfWalls = 2);
         /**
 			 *
 			 */

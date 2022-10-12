@@ -7,8 +7,9 @@
 #include "Wall.hpp"
 #include "WayPoint.hpp"
 
-
 #include "CompassSensor.h"
+
+#include "AbstractFilter.h"
 
 #include <algorithm>
 #include <memory>
@@ -350,7 +351,7 @@ namespace Model
     /**
 	 *
 	 */
-    void RobotWorld::populate(int aNumberOfWalls /* = 2*/)
+    void RobotWorld::populate(const std::vector<Filters_e>& activeFilters, int aNumberOfWalls /* = 2*/)
     {
 
         // define world dimensions.
@@ -398,16 +399,15 @@ namespace Model
         RobotPtr robot = newRobot("Robot", robotLocation, false);// @suppress("Avoid magic numbers")
         newGoal("Goal", goalLocation, false);                    // @suppress("Avoid magic numbers")
 
-
-        wxColour blue(66, 135, 245);
-        wxColour red(255, 0, 0);
-        wxColour black(0, 0, 0);
-
-        PathPtr actualPath = newPath("Actual", red, black);
-        PathPtr beliefPath = newPath("Belief", blue, black);
+        PathPtr actualPath = newPath("Actual", DRIVE_LINE_RED, POSITIONAL_BLACK);
+        PathPtr beliefKalmanPath = newPath("Belief-kalman", KALMAN_BLUE, POSITIONAL_BLACK);
+        PathPtr beliefParticlePath = newPath("Belief-particle", PARTICLE_GREEN, POSITIONAL_BLACK);
 
         robot->addPathPointer(actualPath);
-        robot->addPathPointer(beliefPath);
+        robot->addPathPointer(beliefKalmanPath);
+        robot->addPathPointer(beliefParticlePath);
+
+        robot->setActiveFilters(activeFilters);
 
         notifyObservers();
     }

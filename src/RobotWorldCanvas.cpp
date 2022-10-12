@@ -15,6 +15,8 @@
 #include "WayPointShape.hpp"
 #include "PathShape.h"
 
+#include "AbstractFilter.h"
+
 #include <algorithm>
 
 namespace View
@@ -442,9 +444,9 @@ namespace View
 	/**
 	 *
 	 */
-	void RobotWorldCanvas::populate( int aNumberOfWalls)
+	void RobotWorldCanvas::populate(const std::vector<Model::Filters_e>& activeFilters, int aNumberOfWalls)
 	{
-		Model::RobotWorld::getRobotWorld().populate(aNumberOfWalls);
+		Model::RobotWorld::getRobotWorld().populate(activeFilters, aNumberOfWalls);
 	}
 	/**
 	 *

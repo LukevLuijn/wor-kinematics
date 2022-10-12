@@ -18,6 +18,7 @@ namespace Model
     protected:
         double noisify(double value);
         void setStandardDeviation(double aDeviation);
+        void readFromConfigFile(const std::string& sensor);
 
     private:
         std::normal_distribution<double> normalDistribution;

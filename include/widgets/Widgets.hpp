@@ -35,10 +35,19 @@
 #include <wx/validate.h>
 #include <wx/generic/textdlgg.h>
 
+#include <wx/tglbtn.h>
+#include <wx/slider.h>
+#include <wx/stattext.h>
+
 #include <string>
 
 namespace Widgets
 {
+#define KALMAN_BLUE wxColour(66,135,245)
+#define PARTICLE_GREEN wxColour(66,245,78)
+#define DRIVE_LINE_RED wxColour(255,0,0)
+#define POSITIONAL_BLACK wxColour(0,0,0)
+
 	/**
 	 * @see http://docs.wxwidgets.org/stable/classwx_activate_event
 	 */
@@ -59,6 +68,14 @@ typedef wxActivateEvent ActivateEvent;
 	 * @see http://docs.wxwidgets.org/stable/classwx_button
 	 */
 	typedef wxButton Button;
+    /**
+     * @see https://docs.wxwidgets.org/3.0/classwx_toggle_button
+     */
+    typedef wxToggleButton ToggleButton;
+    /**
+     * @see https://docs.wxwidgets.org/3.0/classwx_slider
+     */
+    typedef wxSlider Slider;
 	/**
 	 * @see http://docs.wxwidgets.org/stable/classwx_colour
 	 */

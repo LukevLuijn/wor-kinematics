@@ -5,22 +5,25 @@
 #include "KalmanFilter.h"
 
 #include "CompassSensor.h"
-#include "OdometerSensor.h"
 #include "Logger.hpp"
+#include "OdometerSensor.h"
 
 namespace Model
 {
     KalmanFilter::KalmanFilter()
-            : belief(Utils::Matrix<double, 2, 1>{0.0, 0.0}), error(Utils::Matrix<double, 2, 2>{{100, 0}, {0, 100}})
+        : AbstractFilter(Filters_e::KALMAN_FILTER), belief(Utils::Matrix<double, 2, 1>{0.0, 0.0}),
+          error(Utils::Matrix<double, 2, 2>{{100, 0}, {0, 100}})
     {
     }
     KalmanFilter::KalmanFilter(const Point& aInitialPosition)
-            : belief(Utils::Matrix<double, 2, 1>{static_cast<double>(aInitialPosition.x),
-                                                 static_cast<double>(aInitialPosition.y)}),
-              error(Utils::Matrix<double, 2, 2>{{100, 0}, {0, 100}})
+        : AbstractFilter(Filters_e::KALMAN_FILTER),
+          belief(Utils::Matrix<double, 2, 1>{static_cast<double>(aInitialPosition.x),
+                                             static_cast<double>(aInitialPosition.y)}),
+          error(Utils::Matrix<double, 2, 2>{{100, 0}, {0, 100}})
     {
     }
-    void KalmanFilter::iterate(Point& perceivedPosition, const Point& targetPosition, std::vector<AbstractSensorPtr>& sensors)
+    void KalmanFilter::iterate(Point& perceivedPosition, const Point& targetPosition,
+                               std::vector<AbstractSensorPtr>& sensors)
     {
         Point measuredPosition = getMeasuredPosition(perceivedPosition, sensors);
 
@@ -90,4 +93,4 @@ namespace Model
 
         return Point(measuredPositionX, measuredPositionY);
     }
-}
+}// namespace Model

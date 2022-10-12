@@ -10,12 +10,13 @@
 
 namespace Model
 {
-    Path::Path(std::string  aName, const wxColor& aPathColor, const wxColor& aPositionColor)
-        : name(std::move(aName)), pathColor(aPathColor), positionColor(aPositionColor)
+    Path::Path(std::string aName, const wxColor& aPathColor, const wxColor& aPositionColor)
+        : name(std::move(aName)), isActive(true), pathColor(aPathColor), positionColor(aPositionColor)
     {
     }
-    Path::Path(std::string  aName, std::vector<Point> aPath, const wxColor& aPathColor, const wxColor& aPositionColor)
-        : name(std::move(aName)), points(std::move(aPath)), pathColor(aPathColor), positionColor(aPositionColor)
+    Path::Path(std::string aName, std::vector<Point> aPath, const wxColor& aPathColor, const wxColor& aPositionColor)
+        : name(std::move(aName)), points(std::move(aPath)), isActive(true), pathColor(aPathColor),
+          positionColor(aPositionColor)
     {
     }
     bool Path::operator==(const Path& other)
@@ -82,6 +83,10 @@ namespace Model
     void Path::setPath(const std::vector<Point>& aPath)
     {
         points = aPath;
+    }
+    void Path::setPathActive(bool active)
+    {
+        isActive = active;
     }
     std::string Path::asString() const
     {

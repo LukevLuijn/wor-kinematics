@@ -7,93 +7,110 @@
 
 namespace Base
 {
-	class ITraceFunction;
-} // namespace BaseBase
+    class ITraceFunction;
+}// namespace Base
 
 namespace View
 {
-	class RobotWorldCanvas;
+    class RobotWorldCanvas;
 }
 
 namespace Application
 {
-	class LogTextCtrl;
+    class LogTextCtrl;
 
-	/**
+    /**
 	 *
 	 */
-	class MainFrameWindow : public Frame
-	{
-		public:
-			/**
+    class MainFrameWindow : public Frame
+    {
+    public:
+        /**
 			 *
 			 * @param aTitle The title which is shown in the title bar
 			 */
-			explicit MainFrameWindow( const std::string& aTitle);
-			/**
+        explicit MainFrameWindow(const std::string& aTitle);
+        /**
 			 *
 			 */
-			virtual ~MainFrameWindow();
+        virtual ~MainFrameWindow();
 
-		protected:
-			/**
+    protected:
+        /**
 			 *
 			 */
-			void initialise();
-			/**
+        void initialise();
+        /**
 			 *
 			 */
-			MenuBar* initialiseMenuBar();
-			/**
+        MenuBar* initialiseMenuBar();
+        /**
 			 *
 			 */
-			Panel* initialiseClientPanel();
-			/**
+        Panel* initialiseClientPanel();
+        /**
 			 *
 			 */
-			SplitterWindow* initialiseSplitterWindow();
-			/**
+        SplitterWindow* initialiseSplitterWindow();
+        /**
 			 *
 			 */
-			Panel* initialiseLhsPanel();
-			/**
+        Panel* initialiseLhsPanel();
+        /**
 			 *
 			 */
-			Panel* initialiseRhsPanel();
-			/**
+        Panel* initialiseRhsPanel();
+        /**
 			 *
 			 */
-			Panel* initialiseButtonPanel();
+        Panel* initialiseButtonPanel();
 
-		protected:
+    protected:
+    private:
+        Panel* clientPanel;
+        MenuBar* menuBar;
+        SplitterWindow* splitterWindow;
 
-		private:
-			Panel* clientPanel;
-			MenuBar* menuBar;
-			SplitterWindow* splitterWindow;
+        Panel* lhsPanel;
+        View::RobotWorldCanvas* robotWorldCanvas;
 
-			Panel* lhsPanel;
-			View::RobotWorldCanvas* robotWorldCanvas;
+        Panel* rhsPanel;
+        LogTextCtrl* logTextCtrl;
+        Panel* buttonPanel;
 
-			Panel* rhsPanel;
-			LogTextCtrl* logTextCtrl;
-			Panel* buttonPanel;
+        ToggleButton* kalmanFilterToggle;
+        ToggleButton* particleFilterToggle;
 
-			void OnQuit( CommandEvent& anEvent);
-			void OnWidgetTraceFunction( CommandEvent& anEvent);
-			void OnStdOutTraceFunction( CommandEvent& anEvent);
-			void OnFileTraceFunction( CommandEvent& anEvent);
-			void OnAbout( CommandEvent& anEvent);
+        Slider* compassSlider;
+        Slider* odometerSlider;
+        Slider* lidarSlider;
 
-			void OnStartRobot( CommandEvent& anEvent);
-			void OnStopRobot( CommandEvent& anEvent);
-			void OnPopulate( CommandEvent& anEvent);
-			void OnUnpopulate( CommandEvent& anEvent);
-            void OnNoFilter(CommandEvent& anEvent);
-            void OnKalman(CommandEvent& anEvent);
-            void OnParticle(CommandEvent& anEvent);
-	};
-	//	class MainFrameWindow
-} //namespace Application
+        double compassConfigValue;
+        double odometerConfigValue;
+        double lidarConfigValue;
 
-#endif // MAINFRAMEWINDOW_HPP_
+        void OnQuit(CommandEvent& anEvent);
+        void OnWidgetTraceFunction(CommandEvent& anEvent);
+        void OnStdOutTraceFunction(CommandEvent& anEvent);
+        void OnFileTraceFunction(CommandEvent& anEvent);
+        void OnAbout(CommandEvent& anEvent);
+
+        void OnStartRobot(CommandEvent& anEvent);
+        void OnStopRobot(CommandEvent& anEvent);
+        void OnPopulate(CommandEvent& anEvent);
+        void OnUnpopulate(CommandEvent& anEvent);
+        void OnKalmanToggle(CommandEvent& anEvent);
+        void OnParticleToggle(CommandEvent& anEvent);
+
+        void OnSliderCompass(CommandEvent& anEvent);
+        void OnSliderOdometer(CommandEvent& anEvent);
+        void OnSliderLidar(CommandEvent& anEvent);
+
+        void OnResetSliderCompass(CommandEvent& anEvent);
+        void OnResetSliderOdometer(CommandEvent& anEvent);
+        void OnResetSliderLidar(CommandEvent& anEvent);
+    };
+    //	class MainFrameWindow
+}//namespace Application
+
+#endif// MAINFRAMEWINDOW_HPP_

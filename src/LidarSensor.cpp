@@ -17,11 +17,11 @@ namespace Model
 {
     LidarSensor::LidarSensor() : NoisySensor(0, 10)
     {
-        readFromConfigFile();
+        recalibrate();
     }
     LidarSensor::LidarSensor(Robot* robot) : AbstractSensor(robot), NoisySensor(0, 10)
     {
-        readFromConfigFile();
+        recalibrate();
     }
     AbstractStimulusPtr LidarSensor::getStimulus() const
     {
@@ -84,12 +84,8 @@ namespace Model
     {
         return asString();
     }
-    void LidarSensor::readFromConfigFile()
+    void LidarSensor::recalibrate()
     {
-        if (Application::MainApplication::isArgGiven("-lidar"))
-        {
-            double stdDeviation = std::stod(Application::MainApplication::getArg("-lidar").value);
-            setStandardDeviation(stdDeviation);
-        }
+        readFromConfigFile("-lidar");
     }
 }// namespace Model

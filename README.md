@@ -43,6 +43,28 @@ Uitvoeren van de applicatie met een aangepaste configuratie file buiten de map v
 ./robotworld -fromRoot -config="path/from/root/name_of_config_file.txt"
 ```
 
+### Gebruik van de applicatie
+
+||
+|:---:|
+|<img width="1000" src="assets/image_GUI_04.png"  alt="GUI image 01"/>|
+|**Afbeelding 01** - *GUI*|
+
+|#|Type|Onderdeel|Beschrijving|
+|:---:|:---:|:---|:---|
+|01|Push button|**Populate world**|Vul de wereld met voor de opdracht relevante objecten.|
+|02|Push button|**Clear world**|Verwijder alle objecten uit de wereld.|
+|03|Push button|**Start robot**|Start de robot indien er een robot beschikbaar is.|
+|04|Push button|**Stop robot**|Stop de robot indien er een robot beschikbaar is.|
+|05|Toggle button|**Kalman filter**|(De)activeer de kalman filter. ```[default = Aan]```|
+|06|Toggle button|**Particle filter**|(De)activeer de particle filter. ```[default = Aan]```|
+|07|Slider|**Compass standaarddeviatie**|Stel de standaard deviatie van de compass sensor in, de nieuwe waarde wordt toegepast wanneer de slider is losgelaten.|
+|08|Slider|**Odometer standaarddeviatie**|Stel de standaard deviatie van de odometer sensor in, de nieuwe waarde wordt toegepast wanneer de slider is losgelaten.|
+|09|Slider|**Lidar standaarddeviatie**|Stel de standaard deviatie van de lidar sensor in, de nieuwe waarde wordt toegepast wanneer de slider is losgelaten.|
+|10|Push button|**Reset Compass**|Reset de standaard deviatie van de compass sensor terug naar de in de configuratie file aangegeven waarde.|
+|11|Push button|**Reset Odometer**|Reset de standaard deviatie van de compass sensor terug naar de in de configuratie file aangegeven waarde.|
+|12|Push button|**Reset Lidar**|Reset de standaard deviatie van de compass sensor terug naar de in de configuratie file aangegeven waarde.|
+
 ### Opdracht
 
 <details>

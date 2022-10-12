@@ -2,7 +2,7 @@
 
 Dit project bevat de uitwerking van de World of robots - kinematica opdracht 2022.
 
-## Instalatie instructies [Linux]
+## Installatie instructies [Linux]
 
 > **```note```** Als beide Boost en wxWidgets geïnstalleerd en ge-compiled zijn als beschreven in de installatie handleiding kunnen de onderstaande commando's gebruikt worden voor het compileren van de robotworld applicatie.
 
@@ -21,14 +21,32 @@ make -j4 2>$1 | tee build.log
 
 ### Uitvoeren van de executable
 
+Uitvoeren van de applicatie in de standaard opstelling.
+
 ```bash
 ./robotworld
 ```
 
-<details>
-    <summary> Opdracht progressie 01 </summary>
+Uitvoeren van de applicatie met een aangepaste configuratie file. Deze file moet in de config map geplaatst zijn.
 
-## TODO list 01
+> **```note```** zie config/sensor_noise_config.txt
+
+```bash
+./robotworld -config="name_of_config_file.txt"
+```
+
+Uitvoeren van de applicatie met een aangepaste configuratie file buiten de map van de applicatie.
+
+> **```note```** zie config/sensor_noise_config.txt
+
+```bash
+./robotworld -fromRoot -config="path/from/root/name_of_config_file.txt"
+```
+
+### Opdracht
+
+<details>
+    <summary> Opdracht progressie </summary>
 
 |#|Beschrijving|Voldaan|
 |:---:|:---|:---:|
@@ -50,9 +68,7 @@ make -j4 2>$1 | tee build.log
 </details>
 
 <details>
-    <summary> Opdracht progressie 02 </summary>
-
-## TODO list 02
+    <summary> Opdracht progressie (updated: 06-10-2022) </summary>
 
 |#|Beschrijving|Voldaan|
 |:---:|:---|:---:|

@@ -97,6 +97,9 @@ set(HEADERS_UTILS
         include/utils/TimeStamp.hpp
         include/utils/TypeInfo.hpp
         include/utils/Matrix.hpp
+
+        include/utils/FileIO.h
+        include/utils/StringUtils.h
         )
 set(HEADERS_VIEW
         include/view/GoalShape.hpp
@@ -179,6 +182,7 @@ set(SOURCES
         src/ParticleFilter.cpp
         src/PathShape.cpp
         src/Path.cpp
+        src/FileIO.cpp
         )
 
 add_executable(${EXE} ${SOURCES} ${HEADERS})

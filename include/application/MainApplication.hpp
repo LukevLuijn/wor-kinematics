@@ -78,6 +78,10 @@ namespace Application
 			 * @return Any files that are given on the command line.
 			 */
 			static std::vector< std::string >& getCommandlineFiles();
+            /**
+             *
+             */
+             static void readFileConfiguration ();
 			//@}
 
 		private:
@@ -89,4 +93,4 @@ namespace Application
 	//	class MainApplication
 } // namespace Application
 
-#endif // MAINAPPLICATION_HPP_
+#endif // MAINAPPLICATION_HPP_

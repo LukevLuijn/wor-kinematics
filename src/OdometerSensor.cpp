@@ -5,14 +5,18 @@
 #include "OdometerSensor.h"
 #include "Robot.hpp"
 
+#include "MainApplication.hpp"
+
 namespace Model
 {
     OdometerSensor::OdometerSensor() : NoisySensor(0, 1), previousPosition(0, 0)
     {
+        readFromConfigFile();
     }
     OdometerSensor::OdometerSensor(Robot* robot)
         : AbstractSensor(robot), NoisySensor(0, 1), previousPosition(robot->getPosition())
     {
+        readFromConfigFile();
     }
     AbstractStimulusPtr OdometerSensor::getStimulus() const
     {
@@ -41,5 +45,13 @@ namespace Model
     std::string OdometerSensor::asDebugString() const
     {
         return asString();
+    }
+    void OdometerSensor::readFromConfigFile()
+    {
+        if (Application::MainApplication::isArgGiven("-odometer"))
+        {
+            double stdDeviation = std::stod(Application::MainApplication::getArg("-odometer").value);
+            setStandardDeviation(stdDeviation);
+        }
     }
 }// namespace Model

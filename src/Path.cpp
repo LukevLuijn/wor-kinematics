@@ -41,8 +41,6 @@ namespace Model
     }
     void Path::addPoint(const Point& aPoint)
     {
-        LOG("path: " + name, "new point");
-
         points.emplace_back(aPoint);
     }
     void Path::removePoint(int32_t index)

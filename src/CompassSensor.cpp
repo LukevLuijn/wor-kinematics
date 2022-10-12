@@ -5,14 +5,20 @@
 #include "CompassSensor.h"
 #include "Robot.hpp"
 #include "Shape2DUtils.hpp"
+#include "MainApplication.hpp"
+
+// TODO remove
+#include "Logger.hpp"
 
 namespace Model
 {
     CompassSensor::CompassSensor() : NoisySensor(0, Utils::MathUtils::toRadians(2))
     {
+        readFromConfigFile();
     }
     CompassSensor::CompassSensor(Robot* aRobot) : AbstractSensor(aRobot), NoisySensor(0, Utils::MathUtils::toRadians(2))
     {
+        readFromConfigFile();
     }
     AbstractStimulusPtr CompassSensor::getStimulus() const
     {
@@ -37,4 +43,13 @@ namespace Model
     {
         return asString();
     }
+    void CompassSensor::readFromConfigFile()
+    {
+        if (Application::MainApplication::isArgGiven("-compass"))
+        {
+            double stdDeviation = std::stod(Application::MainApplication::getArg("-compass").value);
+            setStandardDeviation(stdDeviation);
+        }
+    }
+
 }// namespace Model

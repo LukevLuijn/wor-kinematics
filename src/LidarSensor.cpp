@@ -11,13 +11,17 @@
 #include "Wall.hpp"
 #include "Widgets.hpp"
 
+#include "MainApplication.hpp"
+
 namespace Model
 {
     LidarSensor::LidarSensor() : NoisySensor(0, 10)
     {
+        readFromConfigFile();
     }
     LidarSensor::LidarSensor(Robot* robot) : AbstractSensor(robot), NoisySensor(0, 10)
     {
+        readFromConfigFile();
     }
     AbstractStimulusPtr LidarSensor::getStimulus() const
     {
@@ -38,14 +42,6 @@ namespace Model
         }
 
         return AbstractPerceptPtr(new LidarPercept(*stimulus));
-    }
-    std::string LidarSensor::asString() const
-    {
-        return "LidarSensor";
-    }
-    std::string LidarSensor::asDebugString() const
-    {
-        return asString();
     }
     LidarData LidarSensor::getReadingFromLocation(const Point& location, double angle)
     {
@@ -80,5 +76,20 @@ namespace Model
         }
         return data;
     }
-
+    std::string LidarSensor::asString() const
+    {
+        return "LidarSensor";
+    }
+    std::string LidarSensor::asDebugString() const
+    {
+        return asString();
+    }
+    void LidarSensor::readFromConfigFile()
+    {
+        if (Application::MainApplication::isArgGiven("-lidar"))
+        {
+            double stdDeviation = std::stod(Application::MainApplication::getArg("-lidar").value);
+            setStandardDeviation(stdDeviation);
+        }
+    }
 }// namespace Model

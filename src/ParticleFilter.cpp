@@ -36,14 +36,7 @@ namespace Model
                                  std::vector<AbstractSensorPtr>& sensors)
     {
         controlUpdate(perceivedPosition, targetPosition);
-
-        auto start = std::chrono::high_resolution_clock::now();
         measurementUpdate(sensors);
-        auto stop = std::chrono::high_resolution_clock::now();
-
-        LOG("measurement update per iteration time: ",
-            std::to_string(std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count()));
-
         resampleParticles();
         perceivedPosition = calculateNewPosition();
     }

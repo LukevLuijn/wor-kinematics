@@ -3,155 +3,213 @@
 #include "MainFrameWindow.hpp"
 #include "ObjectId.hpp"
 
-#include <stdexcept>
+#include "FileIO.h"
+#include "StringUtils.h"
+
 #include <algorithm>
 #include <cstring>
+#include <stdexcept>
 
 
 namespace Application
 {
-	/* static */std::vector< CommandlineArgument > MainApplication::commandlineArguments;
-	/* static */std::vector< std::string > MainApplication::commandlineFiles;
+    /* static */ std::vector<CommandlineArgument> MainApplication::commandlineArguments;
+    /* static */ std::vector<std::string> MainApplication::commandlineFiles;
 
-	// Create a new application object: this macro will allow wxWidgets to create
-	// the application object during program execution (it's better than using a
-	// static object for many reasons) and also implements the accessor function
-	// wxGetApp() which will return the reference of the right type (i.e. MyApp and
-	// not wxApp)
-	wxIMPLEMENT_APP_NO_MAIN( MainApplication); // @suppress("C-Style cast instead of C++ cast")
+    // Create a new application object: this macro will allow wxWidgets to create
+    // the application object during program execution (it's better than using a
+    // static object for many reasons) and also implements the accessor function
+    // wxGetApp() which will return the reference of the right type (i.e. MyApp and
+    // not wxApp)
+    wxIMPLEMENT_APP_NO_MAIN(MainApplication);// @suppress("C-Style cast instead of C++ cast")
 
-	/**
+    /**
 	 *
 	 */
-	// cppcheck-suppress unusedFunction
-	MainApplication& TheApp()
-	{
-		return wxGetApp();
-	}
-	/**
+    // cppcheck-suppress unusedFunction
+    MainApplication& TheApp()
+    {
+        return wxGetApp();
+    }
+    /**
 	 *
 	 */
-	// cppcheck-suppress unusedFunction
-	bool MainApplication::OnInit()
-	{
-		// To make all platforms use all available images
-		wxInitAllImageHandlers();
+    // cppcheck-suppress unusedFunction
+    bool MainApplication::OnInit()
+    {
+        // To make all platforms use all available images
+        wxInitAllImageHandlers();
 
-		MainApplication::setCommandlineArguments( argc, argv);
+        MainApplication::setCommandlineArguments(argc, argv);
+        readFileConfiguration();
 
-		MainFrameWindow* frame = nullptr;
-		if(MainApplication::isArgGiven("-worldname"))
-		{
-			Base::ObjectId::objectIdNamespace = MainApplication::getArg("-worldname").value + "-";
+        MainFrameWindow* frame = nullptr;
+        if (MainApplication::isArgGiven("-worldname"))
+        {
+            Base::ObjectId::objectIdNamespace = MainApplication::getArg("-worldname").value + "-";
 
-			frame = new MainFrameWindow( "RobotWorld : " + MainApplication::getArg("-worldname").value);
+            frame = new MainFrameWindow("RobotWorld : " + MainApplication::getArg("-worldname").value);
+        }
+        else
+        {
+            frame = new MainFrameWindow("RobotWorld");
+        }
 
-		}else
-		{
-			frame = new MainFrameWindow( "RobotWorld");
-		}
+        SetTopWindow(frame);
 
-		SetTopWindow( frame);
+        // and show it (the frames, unlike simple controls, are not shown when
+        // created initially)
+        frame->Show(true);
 
-		// and show it (the frames, unlike simple controls, are not shown when
-		// created initially)
-		frame->Show( true);
-
-		// success: wxApp::OnRun() will be called which will enter the main message
-		// loop and the application will run. If we returned false here, the
-		// application would exit immediately.
-		return true;
-	}
-	/**
+        // success: wxApp::OnRun() will be called which will enter the main message
+        // loop and the application will run. If we returned false here, the
+        // application would exit immediately.
+        return true;
+    }
+    /**
 	 *
 	 */
-	/* static */void MainApplication::setCommandlineArguments( 	int theArgc,
-																char* theArgv[])
-	{
+    /* static */ void MainApplication::setCommandlineArguments(int theArgc, char* theArgv[])
+    {
 
-		// argv[0] contains the executable name as one types on the command line (with or without extension)
-		MainApplication::commandlineArguments.push_back( CommandlineArgument( 0, "Executable", theArgv[0]));
+        // argv[0] contains the executable name as one types on the command line (with or without extension)
+        MainApplication::commandlineArguments.push_back(CommandlineArgument(0, "Executable", theArgv[0]));
 
-		for (unsigned int i = 1; i < static_cast<unsigned int >(theArgc); ++i)
-		{
-			char* currentArg = theArgv[i];
-			size_t argLength = std::strlen( currentArg);
+        for (unsigned int i = 1; i < static_cast<unsigned int>(theArgc); ++i)
+        {
+            char* currentArg = theArgv[i];
+            size_t argLength = std::strlen(currentArg);
 
 
-			// If the first char of the argument is not a "-" we assume that is is
-			// a filename otherwise it is an ordinary argument
+            // If the first char of the argument is not a "-" we assume that is is
+            // a filename otherwise it is an ordinary argument
 
-			if (currentArg[0] == '-') // ordinary argument
-			{
-				bool inserted = false;
+            if (currentArg[0] == '-')// ordinary argument
+            {
+                bool inserted = false;
 
-				// First handle the arguments in the form of "variable=value", and find the "="
+                // First handle the arguments in the form of "variable=value", and find the "="
 
-				for (size_t j = 0; j < argLength; ++j)
-				{
-					if (currentArg[j] == '=')
-					{
-						std::string variable( currentArg, j);
-						std::string value( &currentArg[j + 1]);
-						MainApplication::commandlineArguments.push_back( CommandlineArgument( i, variable, value));
-						inserted = true;
-					}
-				}
+                for (size_t j = 0; j < argLength; ++j)
+                {
+                    if (currentArg[j] == '=')
+                    {
+                        std::string variable(currentArg, j);
+                        std::string value(&currentArg[j + 1]);
+                        MainApplication::commandlineArguments.push_back(CommandlineArgument(i, variable, value));
+                        inserted = true;
+                    }
+                }
 
-				// Second handle the stand alone arguments.
+                // Second handle the stand alone arguments.
 
-				// If inserted is
+                // If inserted is
 
-				// It is assumed that they are actually booleans.
-				// If given on the command line than the variable will be set to true as if
-				// variable=true is passed
-				if (inserted == false)
-				{
-					std::string variable( currentArg);
-					std::string value( "true");
-					MainApplication::commandlineArguments.push_back( CommandlineArgument( i, variable, value));
-				}
-			} else // file argument
-			{
-				MainApplication::commandlineFiles.push_back( currentArg);
-			}
-		}
-	}
-	/**
+                // It is assumed that they are actually booleans.
+                // If given on the command line than the variable will be set to true as if
+                // variable=true is passed
+                if (inserted == false)
+                {
+                    std::string variable(currentArg);
+                    std::string value("true");
+                    MainApplication::commandlineArguments.push_back(CommandlineArgument(i, variable, value));
+                }
+            }
+            else// file argument
+            {
+                MainApplication::commandlineFiles.push_back(currentArg);
+            }
+        }
+    }
+    /**
 	 *
 	 */
-	/* static */bool MainApplication::isArgGiven( const std::string& aVariable)
-	{
-		std::vector< CommandlineArgument >::iterator i = std::find( MainApplication::commandlineArguments.begin(), MainApplication::commandlineArguments.end(), aVariable);
-		return i != MainApplication::commandlineArguments.end();
-	}
+    /* static */ bool MainApplication::isArgGiven(const std::string& aVariable)
+    {
+        std::vector<CommandlineArgument>::iterator i = std::find(MainApplication::commandlineArguments.begin(),
+                                                                 MainApplication::commandlineArguments.end(),
+                                                                 aVariable);
+        return i != MainApplication::commandlineArguments.end();
+    }
 
-	/* static */CommandlineArgument& MainApplication::getArg( const std::string& aVariable)
-	{
-		std::vector< CommandlineArgument >::iterator i = std::find( MainApplication::commandlineArguments.begin(), MainApplication::commandlineArguments.end(), aVariable);
-		if (i == MainApplication::commandlineArguments.end())
-		{
-			throw std::invalid_argument( "No such command line argument");
-		}
-		return *i; // @suppress("Returning the address of a local variable")
-	}
-	/**
+    /* static */ CommandlineArgument& MainApplication::getArg(const std::string& aVariable)
+    {
+        std::vector<CommandlineArgument>::iterator i = std::find(MainApplication::commandlineArguments.begin(),
+                                                                 MainApplication::commandlineArguments.end(),
+                                                                 aVariable);
+        if (i == MainApplication::commandlineArguments.end())
+        {
+            throw std::invalid_argument("No such command line argument");
+        }
+        return *i;// @suppress("Returning the address of a local variable")
+    }
+    /**
 	 *
 	 */
-	/* static */CommandlineArgument& MainApplication::getArg( unsigned long anArgumentNumber)
-	{
-		if(anArgumentNumber >= MainApplication::commandlineArguments.size())
-		{
-			throw std::invalid_argument( "No such command line argument");
-		}
-		return MainApplication::commandlineArguments[anArgumentNumber];
-	}
-	/**
+    /* static */ CommandlineArgument& MainApplication::getArg(unsigned long anArgumentNumber)
+    {
+        if (anArgumentNumber >= MainApplication::commandlineArguments.size())
+        {
+            throw std::invalid_argument("No such command line argument");
+        }
+        return MainApplication::commandlineArguments[anArgumentNumber];
+    }
+    /**
 	 *
 	 */
-	// cppcheck-suppress unusedFunction
-	/* static */std::vector< std::string >& MainApplication::getCommandlineFiles()
-	{
-		return commandlineFiles;
-	}
-} // namespace Application
+    // cppcheck-suppress unusedFunction
+    /* static */ std::vector<std::string>& MainApplication::getCommandlineFiles()
+    {
+        return commandlineFiles;
+    }
+    /* static */ void MainApplication::readFileConfiguration()
+    {
+        bool fromRoot = MainApplication::isArgGiven("-fromRoot");
+
+        std::string fileName = "sensor_noise_config.txt";
+        std::string filePath = (fromRoot) ? "" : "../config/";
+
+        if (MainApplication::isArgGiven("-config"))
+        {
+            fileName = MainApplication::getArg("-config").value;
+        }
+
+        std::vector<std::string> lines;
+        if (Utils::FileIO::readFile(filePath + fileName, lines, fromRoot))
+        {
+            try
+            {
+                for (const std::string& line : lines)
+                {
+                    std::vector<std::string> elements = Utils::StringUtils::Divide(line, ';');
+
+                    std::string argName = "-" + elements.at(0);
+                    std::string argValue = elements.at(1);
+
+                    double valueTest = std::stod(argValue);// check if value is correct type.
+                    UNUSEDCAST(valueTest);
+
+                    CommandlineArgument argument(commandlineArguments.size(), argName, argValue);
+                    commandlineArguments.emplace_back(argument);
+                }
+            }
+            catch (std::out_of_range& e)
+            {
+                std::cerr << __FUNCTION__ << ": given config file has incorrect format -> " << fileName << std::endl;
+            }
+            catch (std::invalid_argument& e)
+            {
+                std::cerr << __FUNCTION__ << ": given config file has incorrect format -> " << fileName << std::endl;
+            }
+            catch (...)
+            {
+                std::cerr << __FUNCTION__ << ": unknown error caught" << std::endl;
+            }
+        }
+        else
+        {
+            std::cerr <<  __FUNCTION__ << "given configuration file does not exist, go to README.md for instructions." << std::endl;
+        }
+    }
+
+}// namespace Application

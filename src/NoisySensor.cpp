@@ -6,6 +6,8 @@
 
 #include "NoisySensor.h"
 
+// TODO remove
+#include "Logger.hpp"
 
 namespace Model
 {
@@ -19,4 +21,10 @@ namespace Model
     {
         return value + normalDistribution(randomEngine);
     }
+    void NoisySensor::setStandardDeviation(double aDeviation)
+    {
+        LOG("deviation reset: ", aDeviation);
+        normalDistribution = std::normal_distribution<double> (normalDistribution.mean(), aDeviation);
+    }
+
 }

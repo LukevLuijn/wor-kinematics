@@ -17,6 +17,7 @@ namespace Model
 
     protected:
         double noisify(double value);
+        void setStandardDeviation(double aDeviation);
 
     private:
         std::normal_distribution<double> normalDistribution;

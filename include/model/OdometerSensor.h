@@ -72,6 +72,9 @@ namespace Model
         std::string asDebugString() const override;
 
     private:
+        void readFromConfigFile();
+
+    private:
         Point previousPosition;
     };
 }// namespace Model

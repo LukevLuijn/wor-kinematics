@@ -23,6 +23,7 @@
 
 #include "KalmanFilter.h"
 #include "ParticleFilter.h"
+#include "Path.h"
 
 #include <chrono>
 #include <ctime>
@@ -96,7 +97,19 @@ namespace Model
             }
 
             uint32_t pathPoint = 0;
-            Point previousPosition = position;
+            Point believedPosition = position;
+
+            for (PathPtr& pathPtr : paths)
+            {
+                if (pathPtr.get()->getName() == "Actual")
+                {
+                    pathPtr->addPoint(position);
+                }
+                else if (pathPtr.get()->getName() == "Belief")
+                {
+                    pathPtr->addPoint(believedPosition);
+                }
+            }
 
             while (!outOfBounds(pathPoint))
             {
@@ -114,7 +127,7 @@ namespace Model
                 }
                 else
                 {
-                    position = previousPosition;
+//                    position = previousPosition;
 
                     const Point target = (path[pathPoint += static_cast<unsigned int>(getSpeed())]).asPoint();
 
@@ -123,16 +136,27 @@ namespace Model
 
                     const Point actualTarget = command.relativePositionRequest;
                     front = BoundedVector(actualTarget, position);
+                    position = actualTarget;
 
                     notifyObservers();
 
                     auto start = std::chrono::high_resolution_clock::now();
 
-                    filter->iterate(previousPosition, actualTarget, sensors);
+                    filter->iterate(believedPosition, actualTarget, sensors);
 
                     auto stop = std::chrono::high_resolution_clock::now();
 
-                    //
+                    for (PathPtr& pathPtr : paths)
+                    {
+                        if (pathPtr.get()->getName() == "Actual")
+                        {
+                            pathPtr->addPoint(position);
+                        }
+                        else if (pathPtr.get()->getName() == "Belief")
+                        {
+                            pathPtr->addPoint(believedPosition);
+                        }
+                    }
 
                     auto time = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
                     std::chrono::milliseconds delay =
@@ -218,18 +242,19 @@ namespace Model
      */
     bool Robot::outOfBounds(uint32_t pathPoint)
     {
+        bool isOutOfBounds = false;
+
         if ((position.x <= 0) || (position.x >= 1024) || (position.y <= 0) || (position.y >= 1024))
         {
             LOG("Robot out of bounds");
+            isOutOfBounds = true;
         }
         if (pathPoint > path.size())
         {
             LOG("Path point of of bounds");
+            isOutOfBounds = true;
         }
-
-
-        return (position.x <= 0) || (position.x >= 1024) || (position.y <= 0) || (position.y >= 1024) ||
-               (pathPoint > path.size());
+        return isOutOfBounds;
     }
     /**
      *
@@ -378,6 +403,21 @@ namespace Model
                 return;
         }
         LOG("New filter set", filter->asString());
+    }
+    void Robot::addPathPointer(const PathPtr& aPath)
+    {
+        auto it = std::find_if(paths.begin(), paths.end(), [&aPath](const PathPtr& pathLine) {
+            return pathLine.get() == aPath.get();
+        });
+
+        if (it == paths.end())
+        {
+            paths.emplace_back(aPath);
+        }
+        else
+        {
+            LOG("path already exists in robot: " + getName(), aPath->getName());
+        }
     }
     /**
      *

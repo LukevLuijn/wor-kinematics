@@ -14,7 +14,6 @@ namespace View
     {
     public:
         explicit PathShape(const Model::PathPtr& aPath);
-        PathShape(const Model::PathPtr& aPath, const wxColor& aPathColor, const wxColor& aPositionColor);
         ~PathShape() override = default;
 
         void draw(wxDC& dc) override;
@@ -26,8 +25,7 @@ namespace View
 
         [[nodiscard]] Model::PathPtr getPath() const;
 
-    private:
-        wxColor pathColor, positionColor;
+        void handleNotification() override;
     };
 }// namespace View
 

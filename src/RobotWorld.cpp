@@ -7,6 +7,7 @@
 #include "Wall.hpp"
 #include "WayPoint.hpp"
 
+
 #include "CompassSensor.h"
 
 #include <algorithm>
@@ -29,7 +30,6 @@ namespace Model
                                   bool aNotifyObservers /*= true*/)
     {
         RobotPtr robot(new Robot(aName, aPosition));
-
 
 
         robots.push_back(robot);
@@ -84,11 +84,11 @@ namespace Model
     /**
      *
      */
-    PathPtr RobotWorld::newPath(bool aNotifyObservers)
+    PathPtr RobotWorld::newPath(const std::string& aName, const wxColour& pathColor, const wxColour& positionColor,
+                                bool aNotifyObservers)
     {
-        PathPtr path(new Path());
+        PathPtr path(new Path(aName, pathColor, positionColor));
         paths.push_back(path);
-
         if (aNotifyObservers)
         {
             notifyObservers();
@@ -171,7 +171,7 @@ namespace Model
     void RobotWorld::deletePath(PathPtr aPath, bool aNotifyObservers)
     {
         auto it = std::find_if(paths.begin(), paths.end(), [&aPath](const PathPtr& path) {
-          return path == aPath;
+            return path == aPath;
         });
 
         if (it != paths.end())
@@ -296,7 +296,22 @@ namespace Model
         }
         return nullptr;
     }
-
+    /**
+     *
+     */
+    PathPtr RobotWorld::getPath(const Base::ObjectId& anObjectId) const
+    {
+        if (auto i = std::find_if(paths.begin(),
+                                  paths.end(),
+                                  [&anObjectId](PathPtr path) {
+                                      return path->getObjectId() == anObjectId;
+                                  });
+            i != paths.end())
+        {
+            return *i;
+        }
+        return nullptr;
+    }
     /**
 	 *
 	 */
@@ -326,10 +341,18 @@ namespace Model
         return walls;
     }
     /**
+     *
+     */
+    const std::vector<PathPtr>& RobotWorld::getPaths() const
+    {
+        return paths;
+    }
+    /**
 	 *
 	 */
     void RobotWorld::populate(int aNumberOfWalls /* = 2*/)
     {
+
         // define world dimensions.
 
         const uint16_t max = 1024;
@@ -344,10 +367,10 @@ namespace Model
 
         // add world borders.
 
-        RobotWorld::getRobotWorld().newWall(C0, C1, true);
-        RobotWorld::getRobotWorld().newWall(C1, C2, true);
-        RobotWorld::getRobotWorld().newWall(C2, C3, true);
-        RobotWorld::getRobotWorld().newWall(C3, C0, true);
+        newWall(C0, C1, true);
+        newWall(C1, C2, true);
+        newWall(C2, C3, true);
+        newWall(C3, C0, true);
 
         // set maze wall coordinates.
 
@@ -362,7 +385,7 @@ namespace Model
 
         for (std::size_t i = 0; i < static_cast<std::size_t>(aNumberOfWalls); ++i)
         {
-            RobotWorld::getRobotWorld().newWall(wallCoordinates[i].first, wallCoordinates[i].second, false);
+            newWall(wallCoordinates[i].first, wallCoordinates[i].second, false);
         }
 
         // add robot and goal.
@@ -372,8 +395,19 @@ namespace Model
         Point goalLocation = robotLocation;// TODO testing
         goalLocation.y += max / 5 * 1;
 
-        RobotWorld::getRobotWorld().newRobot("Robot", robotLocation, false);// @suppress("Avoid magic numbers")
-        RobotWorld::getRobotWorld().newGoal("Goal", goalLocation, false);   // @suppress("Avoid magic numbers")
+        RobotPtr robot = newRobot("Robot", robotLocation, false);// @suppress("Avoid magic numbers")
+        newGoal("Goal", goalLocation, false);                    // @suppress("Avoid magic numbers")
+
+
+        wxColour blue(66, 135, 245);
+        wxColour red(255, 0, 0);
+        wxColour black(0, 0, 0);
+
+        PathPtr actualPath = newPath("Actual", red, black);
+        PathPtr beliefPath = newPath("Belief", blue, black);
+
+        robot->addPathPointer(actualPath);
+        robot->addPathPointer(beliefPath);
 
         notifyObservers();
     }
@@ -446,11 +480,11 @@ namespace Model
         {
             paths.erase(std::remove_if(paths.begin(),
                                        paths.end(),
-                                        [&aKeepObjects](PathPtr aPath) {
-                                          return std::find(aKeepObjects.begin(),
-                                                           aKeepObjects.end(),
-                                                           aPath->getObjectId()) == aKeepObjects.end();
-                                        }),
+                                       [&aKeepObjects](PathPtr aPath) {
+                                           return std::find(aKeepObjects.begin(),
+                                                            aKeepObjects.end(),
+                                                            aPath->getObjectId()) == aKeepObjects.end();
+                                       }),
                         paths.end());
         }
 

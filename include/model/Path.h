@@ -7,6 +7,7 @@
 
 #include "ModelObject.hpp"
 #include "Point.hpp"
+#include "Widgets.hpp"
 
 namespace Model
 {
@@ -16,8 +17,8 @@ namespace Model
     class Path : public ModelObject
     {
     public:
-        Path() = default;
-        explicit Path(std::vector<Point> aPath);
+        Path(std::string  name, const wxColor& aPathColor, const wxColor& aPositionColor);
+        explicit Path(std::string  name,std::vector<Point> aPath, const wxColor& aPathColor, const wxColor& aPositionColor);
         ~Path() override = default;
 
         bool operator==(const Path& other);
@@ -34,8 +35,22 @@ namespace Model
         std::string asString() const override;
         std::string asDebugString() const override;
 
+        wxColor getPathColor() const
+        {
+            return pathColor;
+        }
+        wxColor getPositionColor() const
+        {
+            return positionColor;
+        }
+        std::string getName() const
+        {
+            return name;
+        }
     private:
+        std::string name;
         std::vector<Point> points;
+        wxColor pathColor, positionColor;
     };
 }// namespace Model
 

@@ -7,6 +7,7 @@
 #include "Point.hpp"
 
 #include <vector>
+#include <wx/colour.h>
 
 namespace Model
 {
@@ -27,7 +28,6 @@ namespace Model
 
     class Path;
     typedef std::shared_ptr<Path> PathPtr;
-
     /**
 	 *
 	 */
@@ -60,7 +60,8 @@ namespace Model
         /**
 			 *
 			 */
-        PathPtr newPath(bool aNotifyObservers = false);
+        PathPtr newPath(const std::string& aName = "New Path", const wxColour& pathColor = wxColour(0, 0, 0),
+                        const wxColour& positionColor = wxColour(0, 0, 0), bool aNotifyObservers = false);
         /**
 			  *
 			  */
@@ -112,6 +113,10 @@ namespace Model
         /**
 			 *
 			 */
+        PathPtr getPath(const Base::ObjectId& anObjectId) const;
+        /**
+         *
+         */
         const std::vector<RobotPtr>& getRobots() const;
         /**
 			 *
@@ -128,6 +133,10 @@ namespace Model
         /**
 			 *
 			 */
+        const std::vector<PathPtr>& getPaths() const;
+        /**
+              *
+              */
         void populate(int aNumberOfWalls = 2);
         /**
 			 *

@@ -502,7 +502,7 @@ namespace View
 	 */
 	void RobotWorldCanvas::render( wxDC& dc)
 	{
-		for (ShapePtr shape : shapes)
+        for (ShapePtr shape : shapes)
 		{
 			//		Logger::log("Drawing shape: " + shape->asString());
 			shape->draw( dc);
@@ -513,7 +513,7 @@ namespace View
 			dc.SetPen( wxPen( wxColor( 0, 0, 0), 1)); // black line, 1 pixels thick
 			dc.DrawLine( startActionShape->getCentre().x, startActionShape->getCentre().y, endActionPoint.x, endActionPoint.y);
 		}
-	}
+    }
 	/**
 	 *
 	 */
@@ -1054,6 +1054,11 @@ namespace View
 
 		remove<Model::Wall,View::WallShape>( Model::RobotWorld::getRobotWorld().getWalls());
 		add<Model::Wall,View::WallShape>( Model::RobotWorld::getRobotWorld().getWalls());
+
+        // TODO linking model to shape happens here.
+
+        remove<Model::Path,View::PathShape>( Model::RobotWorld::getRobotWorld().getPaths());
+        add<Model::Path,View::PathShape>( Model::RobotWorld::getRobotWorld().getPaths());
 
 		Refresh();
 	}

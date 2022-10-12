@@ -36,6 +36,9 @@ namespace Model
     class Goal;
     typedef std::shared_ptr<Goal> GoalPtr;
 
+    class Path;
+    typedef std::shared_ptr<Path> PathPtr;
+
     class Robot : public AbstractAgent, public Messaging::MessageHandler, public Base::Observer
     {
     public:
@@ -66,6 +69,8 @@ namespace Model
         void setFront(const BoundedVector& aVector, bool aNotifyObservers = true);
         void setSpeed(float aNewSpeed, bool aNotifyObservers = true);
         void setFilter(Filters_e newFilter);
+
+        void addPathPointer(const PathPtr& aPath);
 
         Region getRegion() const;
         Point getFrontLeft() const;
@@ -147,7 +152,7 @@ namespace Model
 
         AbstractFilter* filter;
         std::shared_ptr<SteeringActuator> steeringActuator;
-
+        std::vector<PathPtr> paths;
     };
 }// namespace Model
 #endif// ROBOT_HPP_

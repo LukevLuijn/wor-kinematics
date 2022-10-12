@@ -9,30 +9,33 @@
 namespace View
 {
     PathShape::PathShape(const Model::PathPtr& aPath)
-        : Shape(aPath), pathColor(wxColor(0, 0, 0)), positionColor(wxColor(0, 0, 0))
-    {
-    }
-    PathShape::PathShape(const Model::PathPtr& aPath, const wxColor& aPathColor, const wxColor& aPositionColor)
-        : Shape(aPath), pathColor(aPathColor), positionColor(aPositionColor)
+        : Shape(aPath)
     {
     }
     void PathShape::draw(wxDC& dc)
     {
-        wxPen pathPen(pathColor, 1, wxPENSTYLE_SHORT_DASH);
-        wxPen positionPen(positionColor, 1, wxPENSTYLE_SOLID);
 
         std::vector<Point> pathPoints = getPath()->getPoints();
 
-        dc.SetBrush(positionColor);
-        for (auto it = std::next(pathPoints.begin()); it != pathPoints.end(); ++it)
+        if (!pathPoints.empty())
         {
-            Point start = *(it - 1);
+            wxColour pathColor = getPath()->getPathColor();
+            wxColour positionColor = getPath()->getPositionColor();
 
-            dc.SetPen(pathPen);
-            dc.DrawLine(start, *(it));
+            wxPen pathPen(pathColor, 2, wxPENSTYLE_SOLID);
+            wxPen positionPen(positionColor, 1, wxPENSTYLE_SOLID);
+            dc.SetBrush(positionColor);
 
-            dc.SetPen(positionPen);
-            dc.DrawCircle(start, 2);
+            for (auto it = std::next(pathPoints.begin()); it != pathPoints.end(); ++it)
+            {
+                Point start = *(it - 1);
+
+                dc.SetPen(pathPen);
+                dc.DrawLine(start, *(it));
+
+                dc.SetPen(positionPen);
+                dc.DrawCircle(start, 1);
+            }
         }
     }
     bool PathShape::occupies(const Point& aPoint) const
@@ -70,5 +73,10 @@ namespace View
     Model::PathPtr PathShape::getPath() const
     {
         return std::dynamic_pointer_cast<Model::Path>(getModelObject());
+    }
+    void PathShape::handleNotification()
+    {
+        LOG("handle notification");
+        std::cout << "handle notification" << std::endl;
     }
 }// namespace View

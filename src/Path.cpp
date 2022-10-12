@@ -10,14 +10,19 @@
 
 namespace Model
 {
-    Path::Path(std::vector<Point> aPath) : points(std::move(aPath))
+    Path::Path(std::string  aName, const wxColor& aPathColor, const wxColor& aPositionColor)
+        : name(std::move(aName)), pathColor(aPathColor), positionColor(aPositionColor)
+    {
+    }
+    Path::Path(std::string  aName, std::vector<Point> aPath, const wxColor& aPathColor, const wxColor& aPositionColor)
+        : name(std::move(aName)), points(std::move(aPath)), pathColor(aPathColor), positionColor(aPositionColor)
     {
     }
     bool Path::operator==(const Path& other)
     {
         bool isEqual = true;
 
-        if (points.size() == other.points.size())
+        if ((name == other.name) && (points.size() == other.points.size()))
         {
             for (std::size_t i = 0; i < points.size(); ++i)
             {
@@ -36,6 +41,8 @@ namespace Model
     }
     void Path::addPoint(const Point& aPoint)
     {
+        LOG("path: " + name, "new point");
+
         points.emplace_back(aPoint);
     }
     void Path::removePoint(int32_t index)

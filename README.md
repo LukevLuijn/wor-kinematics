@@ -68,8 +68,8 @@ make -j4 2>$1 | tee build.log
 |10|Alle updates gaan deterministisch, i.e. daar zit geen onzekerheid in.|:heavy_check_mark:|
 |11|Aleen de sensoren zijn probabilistisch.|:heavy_check_mark:|
 |12|Het kompas van de robot meet de rijrichting van de robot met een configureerbare standaardeviatie. De uitgangswaarde van de standaardeviatie is 2 graden.|:heavy_check_mark: <br> maak configureerbaar|
-|13|De odometer van de robot meet de afgelegde weg van de robot met een configureerbare standaardeviatie. De uitgangswaarde van deze standaar deviatie is 1 pixel per stap van 10 pixels.|:<br> maak configureerbaar:|
-|14|De lidar van de robot meet per ronde 180 keer (dat is iedere 2 graden). De afstandsmeting van iedere “beam” heeft een configureerbare standaardeviatie. De uitgangswaarde van deze standaardeviatie is 10 pixels.|:<br> maak configureerbaar:|
+|13|De odometer van de robot meet de afgelegde weg van de robot met een configureerbare standaardeviatie. De uitgangswaarde van deze standaar deviatie is 1 pixel per stap van 10 pixels.|:heavy_check_mark:<br> maak configureerbaar:|
+|14|De lidar van de robot meet per ronde 180 keer (dat is iedere 2 graden). De afstandsmeting van iedere “beam” heeft een configureerbare standaardeviatie. De uitgangswaarde van deze standaardeviatie is 10 pixels.|:heavy_check_mark:<br> maak configureerbaar:|
 |15|Alle configureerbare waardes moeten uit een tekst-bestand gelezen worden|:x:|
 |16|Laat de robot naar een willekeurig doel in de wereld rijden. Plot in de robotwereld de werkelijk afgelegde weg, de overtuiging van de afgelegde weg volgens het Kalmanfilter, en de overtuiging van de afgelegde weg volgens het Particlefilter.|:x:|
 

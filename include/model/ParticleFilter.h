@@ -19,30 +19,52 @@ namespace Model
     class ParticleFilter : public AbstractFilter
     {
     public:
+        /**
+         *
+         */
         ParticleFilter();
-        explicit ParticleFilter(const Point& aInitialPosition);
+        /**
+         *
+         */
         ~ParticleFilter() override = default;
-
+        /**
+         *
+         */
         void iterate(Point& perceivedPosition, const Point& targetPosition,
                      std::vector<AbstractSensorPtr>& sensors) override;
-
-        std::string asString() const override;
+        /**
+         *
+         */
+        [[nodiscard]] std::string asString() const override;
 
     private:
+        /**
+         *
+         */
         void initializeParticles();
-
+        /**
+         *
+         */
         void controlUpdate(const Point& perceivedPosition, const Point& targetPosition);
+        /**
+         *
+         */
         void measurementUpdate(std::vector<AbstractSensorPtr>& sensors);
+        /**
+         *
+         */
         void resampleParticles();
+        /**
+         *
+         */
         Point calculateNewPosition();
 
-
     private:
-        static constexpr uint8_t GRID_SIZE = 32;// 64^2 = 4096 particles TODO maybe to big.
-        static constexpr uint16_t NUM_PARTICLES = GRID_SIZE * GRID_SIZE;
+        uint32_t gridSize, numParticles;
 
-        std::array<Particle, NUM_PARTICLES> particles;
-        std::array<double, NUM_PARTICLES> weights;
+        std::vector<Particle> particles;
+        std::vector<double> weights;
+
 
         std::mt19937 randomEngine;
     };

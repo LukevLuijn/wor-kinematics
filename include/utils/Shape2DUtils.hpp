@@ -23,15 +23,14 @@ namespace Utils
          * @param aVector
          * @return the counterclockwise angle in radians between the positive X axis and the given vector.
          */
-        static double getAngle( const Model::BoundedVector& aVector);
+        static double getAngle(const Model::BoundedVector& aVector);
         /**
          *
          * @param aStartpoint
          * @param anEndPoint
          * @return the counterclockwise angle in radians between the positive X axis and the line between the points
          */
-        static double getAngle( const Point& aStartpoint,
-                                const Point& anEndPoint);
+        static double getAngle(const Point& aStartpoint, const Point& anEndPoint);
         /**
          *
          * @param aStartLine1
@@ -40,10 +39,8 @@ namespace Utils
          * @param anEndLine2
          * @return true if the lines intersect, false otherwise
          */
-        static bool intersect(	const Point& aStartLine1,
-                                  const Point& aEndLine1,
-                                  const Point& aStartLine2,
-                                  const Point& anEndLine2);
+        static bool intersect(const Point& aStartLine1, const Point& aEndLine1, const Point& aStartLine2,
+                              const Point& anEndLine2);
         /**
          *
          * @param aStartLine1
@@ -52,18 +49,15 @@ namespace Utils
          * @param anEndLine2
          * @return a valid Point it the ;lines intersect, DefaultPosition otherwise
          */
-        static Point getIntersection(	const Point& aStartLine1,
-                                         const Point& aEndLine1,
-                                         const Point& aStartLine2,
-                                         const Point& anEndLine2);
+        static Point getIntersection(const Point& aStartLine1, const Point& aEndLine1, const Point& aStartLine2,
+                                     const Point& anEndLine2);
         /**
          *
          * @param aPoint1
          * @param aPoint2
          * @return the Cartesian plane distance
          */
-        static double distance(const Point& aPoint1,
-                               const Point& aPoint2);
+        static double distance(const Point& aPoint1, const Point& aPoint2);
         /**
          *
          * @param aPolygon The array of points
@@ -71,9 +65,7 @@ namespace Utils
          * @param p The point for which to test
          * @return True if the point is inside the polygon, false otherwise
          */
-        static bool isInsidePolygon( 	const Point* aPolygon,
-                                        int aNumberOfPoints,
-                                        const Point& aPoint);
+        static bool isInsidePolygon(const Point* aPolygon, int aNumberOfPoints, const Point& aPoint);
         /**
          *
          * @param aStartpoint
@@ -82,10 +74,7 @@ namespace Utils
          * @param aRadius The number of pixels we can be wrong
          * @return True if aPoint is within aRadius of the given line
          */
-        static bool isOnLine(	const Point& aStartPoint,
-                                 const Point& anEndPoint,
-                                 const Point& aPoint,
-                                 int aRadius = 6);
+        static bool isOnLine(const Point& aStartPoint, const Point& anEndPoint, const Point& aPoint, int aRadius = 6);
 
         /**
          *
@@ -96,11 +85,8 @@ namespace Utils
          * @param aClosedShape True if the path is a closed, false otherwise
          * @return True if aPoint is within aRadius of the given path lines
          */
-        static bool isOnLine( 	const Point* aPolygon,
-                                 int aNumberOfPoints,
-                                 const Point& aPoint,
-                                 int aRadius = 6,
-                                 bool aClosedShape = true);
+        static bool isOnLine(const Point* aPolygon, int aNumberOfPoints, const Point& aPoint, int aRadius = 6,
+                             bool aClosedShape = true);
 
         /**
          * The rotation will be done around (0.0)
@@ -109,8 +95,7 @@ namespace Utils
          * @param anAngle
          * @return The rotated point
          */
-        static Point rotate(	const Point& aPoint,
-                                double anAngle);
+        static Point rotate(const Point& aPoint, double anAngle);
         /**
          * Enum to find the point of a rectangle
          */
@@ -130,10 +115,8 @@ namespace Utils
          * @param aPoint A Point on the border of the shape
          * @return
          */
-        static CompassPoint getCompassPoint(	const Point& aPoint,
-                                                const Size& aSize,
-                                                const Point& aBorderPoint,
-                                                int aRadius = 6);
+        static CompassPoint getCompassPoint(const Point& aPoint, const Size& aSize, const Point& aBorderPoint,
+                                            int aRadius = 6);
         /**
          *
          * @param aBorderPoint
@@ -141,35 +124,25 @@ namespace Utils
          * @param aRadius
          * @return
          */
-        static bool isCompassPoint( const Point& aPoint,
-                                    const Size& aSize,
-                                    const Point& aBorderPoint,
-                                    CompassPoint aCompassPoint,
-                                    int aRadius = 6);
+        static bool isCompassPoint(const Point& aPoint, const Size& aSize, const Point& aBorderPoint,
+                                   CompassPoint aCompassPoint, int aRadius = 6);
 
         /**
          *
          */
-        static std::string asString( const Point& aPoint);
+        static std::string asString(const Point& aPoint);
         /**
          *
          */
-        static std::string asString( const Size& aSize);
+        static std::string asString(const Size& aSize);
 
     protected:
-        static double rotateX(	const Point& aPoint,
-                                  double anAngle);
-        static double rotateY(	const Point& aPoint,
-                                  double anAngle);
-        static double rotateX( 	int anX,
-                                  int anY,
-                                  double anAngle);
-        static double rotateY( 	int anX,
-                                  int anY,
-                                  double anAngle);
-
+        static double rotateX(const Point& aPoint, double anAngle);
+        static double rotateY(const Point& aPoint, double anAngle);
+        static double rotateX(int anX, int anY, double anAngle);
+        static double rotateY(int anX, int anY, double anAngle);
     };
     //	class Shape2DUtils
-} // namespace Utils
+}// namespace Utils
 
-#endif // SHAPE2DUTILS_HPP_
+#endif// SHAPE2DUTILS_HPP_

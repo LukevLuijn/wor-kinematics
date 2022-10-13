@@ -14,12 +14,12 @@
 
 namespace Widgets
 {
-	/**
+    /**
 	 * @see http://docs.wxwidgets.org/stable/classwx_region
 	 */
-	typedef wxRegion Region;
-} // namespace Widgets
+    typedef wxRegion Region;
+}// namespace Widgets
 using namespace Widgets;
 
 
-#endif // SIZE_HPP_
+#endif// SIZE_HPP_

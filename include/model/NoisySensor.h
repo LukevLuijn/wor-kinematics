@@ -12,14 +12,28 @@ namespace Model
     class NoisySensor
     {
     public:
+        /**
+         *
+         */
         NoisySensor(double mean, double deviation);
+        /**
+         *
+         */
         virtual ~NoisySensor() = default;
 
     protected:
+        /**
+         * Add preconfigured noise to sensor value.
+         */
         double noisify(double value);
+        /**
+         *
+         */
         void setStandardDeviation(double aDeviation);
+        /**
+         *
+         */
         void readFromConfigFile(const std::string& sensor);
-
     private:
         std::normal_distribution<double> normalDistribution;
         std::default_random_engine randomEngine;

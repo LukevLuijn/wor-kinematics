@@ -9,128 +9,112 @@
 
 namespace Model
 {
-/**
+    /**
  *
  */
-class BoundedVector
-{
-	public:
-		/**
+    class BoundedVector
+    {
+    public:
+        /**
 		 *
 		 */
-		BoundedVector() :
-						x( 0.0),
-						y( 0.0)
-		{
-		}
-		/**
+        BoundedVector() : x(0.0), y(0.0)
+        {
+        }
+        /**
 		 *
 		 */
-		BoundedVector( double anX,
-					   double anY) :
-						x( anX),
-						y( anY)
-		{
-		}
-		/**
+        BoundedVector(double anX, double anY) : x(anX), y(anY)
+        {
+        }
+        /**
 		 *
 		 */
-		BoundedVector( const Point& aPoint1,
-					   const Point& aPoint2) :
-						x( aPoint1.x - aPoint2.x),
-						y( aPoint1.y - aPoint2.y)
-		{
-		}
-		/**
+        BoundedVector(const Point& aPoint1, const Point& aPoint2) : x(aPoint1.x - aPoint2.x), y(aPoint1.y - aPoint2.y)
+        {
+        }
+        /**
 		 *
 		 */
-		BoundedVector( const BoundedVector& aPolarCoord)	:
-						x( aPolarCoord.x),
-						y( aPolarCoord.y)
-		{
-		}
-		/**
+        BoundedVector(const BoundedVector& aPolarCoord) : x(aPolarCoord.x), y(aPolarCoord.y)
+        {
+        }
+        /**
 		 *
 		 */
-		virtual ~BoundedVector()
-		{
-		}
-		/**
+        virtual ~BoundedVector()
+        {
+        }
+        /**
 		 *
 		 */
-		double getMagnitude();
-		/**
+        double getMagnitude();
+        /**
 		 *
 		 */
-		void normalise();
-		/**
+        void normalise();
+        /**
 		 *
 		 */
-		BoundedVector getNormalised();
-		/**
+        BoundedVector getNormalised();
+        /**
 		 *
 		 */
-		void reverse();
-		/**
+        void reverse();
+        /**
 		 *
 		 */
-		BoundedVector& operator=( const BoundedVector& aVector);
-		/**
+        BoundedVector& operator=(const BoundedVector& aVector);
+        /**
 		 *
 		 */
-		BoundedVector& operator+=( const BoundedVector& aVector);
-		/**
+        BoundedVector& operator+=(const BoundedVector& aVector);
+        /**
 		 *
 		 */
-		BoundedVector& operator-=( const BoundedVector& aVector);
-		/**
+        BoundedVector& operator-=(const BoundedVector& aVector);
+        /**
 		 *
 		 */
-		BoundedVector& operator*=( float aScalar);
-		/**
+        BoundedVector& operator*=(float aScalar);
+        /**
 		 *
 		 */
-		BoundedVector& operator/=( float aScalar);
-		/**
+        BoundedVector& operator/=(float aScalar);
+        /**
 		 *
 		 */
-		BoundedVector operator-();
+        BoundedVector operator-();
 
-		/**
+        /**
 		 * @name Debug functions
 		 */
-		//@{
-		/**
+        //@{
+        /**
 		 * Returns a 1-line description of the object
 		 */
-		virtual std::string asString() const;
-		/**
+        virtual std::string asString() const;
+        /**
 		 * Returns a description of the object with all data of the object usable for debugging
 		 */
-		virtual std::string asDebugString() const;
-		//@}
+        virtual std::string asDebugString() const;
+        //@}
 
-		// No need for accessors and mutators?
-		double x;
-		double y;
-};
-// class PolarCoord
-} //namespace Model
+        // No need for accessors and mutators?
+        double x;
+        double y;
+    };
+    // class PolarCoord
+}//namespace Model
 
 // Some global operators
-Model::BoundedVector operator+(	const Model::BoundedVector& lhs,
-								const Model::BoundedVector& rhs);
-Model::BoundedVector operator-(	const Model::BoundedVector& lhs,
-								const Model::BoundedVector& rhs);
-double operator*(	const Model::BoundedVector& lhs,
-					const Model::BoundedVector& rhs);
+Model::BoundedVector operator+(const Model::BoundedVector& lhs, const Model::BoundedVector& rhs);
+Model::BoundedVector operator-(const Model::BoundedVector& lhs, const Model::BoundedVector& rhs);
+double operator*(const Model::BoundedVector& lhs, const Model::BoundedVector& rhs);
 
-Model::BoundedVector operator*( 	float s,
-						const Model::BoundedVector& rhs);
-Model::BoundedVector operator*(	const Model::BoundedVector& lhs,
-								float s);
+Model::BoundedVector operator*(float s, const Model::BoundedVector& rhs);
+Model::BoundedVector operator*(const Model::BoundedVector& lhs, float s);
 
-Model::BoundedVector operator/(	const Model::BoundedVector& lhs,
-								float s);
+Model::BoundedVector operator/(const Model::BoundedVector& lhs, float s);
 
-#endif // BOUNDEDVECTOR_HPP_
+#endif// BOUNDEDVECTOR_HPP_

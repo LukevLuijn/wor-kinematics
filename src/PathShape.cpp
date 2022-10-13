@@ -8,8 +8,7 @@
 
 namespace View
 {
-    PathShape::PathShape(const Model::PathPtr& aPath)
-        : Shape(aPath)
+    PathShape::PathShape(const Model::PathPtr& aPath) : Shape(aPath)
     {
     }
     void PathShape::draw(wxDC& dc)

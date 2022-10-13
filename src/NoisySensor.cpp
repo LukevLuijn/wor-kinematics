@@ -4,8 +4,8 @@
 
 #include <chrono>
 
-#include "NoisySensor.h"
 #include "MainApplication.hpp"
+#include "NoisySensor.h"
 
 namespace Model
 {
@@ -13,7 +13,6 @@ namespace Model
         : normalDistribution(mean, deviation),
           randomEngine(uint32_t(std::chrono::system_clock::now().time_since_epoch().count()))
     {
-
     }
     double NoisySensor::noisify(double value)
     {
@@ -21,7 +20,7 @@ namespace Model
     }
     void NoisySensor::setStandardDeviation(double aDeviation)
     {
-        normalDistribution = std::normal_distribution<double> (normalDistribution.mean(), aDeviation);
+        normalDistribution = std::normal_distribution<double>(normalDistribution.mean(), aDeviation);
     }
     void NoisySensor::readFromConfigFile(const std::string& sensor)
     {
@@ -32,4 +31,4 @@ namespace Model
         }
     }
 
-}
+}// namespace Model

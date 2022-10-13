@@ -6,35 +6,36 @@
 
 namespace Model
 {
-	/**
+    /**
 	 *
 	 */
-	ModelObject::ModelObject() : objectId(Base::ObjectId::newObjectId())
-	{
-	}
-	/**
+    ModelObject::ModelObject() : objectId(Base::ObjectId::newObjectId())
+    {
+    }
+    /**
 	 *
 	 */
-	ModelObject::~ModelObject()
-	{
-	}
-	/**
+    ModelObject::~ModelObject()
+    {
+    }
+    /**
 	 *
 	 */
-	std::string ModelObject::asString() const
-	{
-		std::ostringstream os;
-		os << __PRETTY_FUNCTION__ << " : " << Utils::typeinfoFor(*this) <<  ", " << "ObjectId: " <<  getObjectId();
-		return os.str();
-	}
-	/**
+    std::string ModelObject::asString() const
+    {
+        std::ostringstream os;
+        os << __PRETTY_FUNCTION__ << " : " << Utils::typeinfoFor(*this) << ", "
+           << "ObjectId: " << getObjectId();
+        return os.str();
+    }
+    /**
 	 *
 	 */
-	std::string ModelObject::asDebugString() const
-	{
-		std::ostringstream os;
-		os << __PRETTY_FUNCTION__ << " : " << Utils::typeinfoFor(*this) << "\n";
-		os << "ObjectId: " <<  getObjectId();
-		return os.str();
-	}
-} // namespace Model
+    std::string ModelObject::asDebugString() const
+    {
+        std::ostringstream os;
+        os << __PRETTY_FUNCTION__ << " : " << Utils::typeinfoFor(*this) << "\n";
+        os << "ObjectId: " << getObjectId();
+        return os.str();
+    }
+}// namespace Model

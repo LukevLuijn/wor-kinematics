@@ -13,6 +13,17 @@
 
 namespace Application
 {
+    /**
+     * Utility function that creates a Slider with min and max value that binds the given ActionFunction with the
+	 * wxEVT_SCROLL_THUMBRELEASE of the slider.
+     *
+     * @tparam ActionFunction
+     * @param aParent
+     * @param minValue
+     * @param maxValue
+     * @param anActionFunction
+     * @return
+     */
     template<typename ActionFunction>
     Slider* makeSlider(Window* aParent, int32_t minValue, int32_t maxValue, const ActionFunction anActionFunction)
     {

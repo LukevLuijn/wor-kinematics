@@ -10,28 +10,26 @@
 #include "CompassSensor.h"
 #include "LidarSensor.h"
 
+#include "MainApplication.hpp"
+
 #include <chrono>
 
 namespace Model
 {
-    ParticleFilter::ParticleFilter() : AbstractFilter(Filters_e::PARTICLE_FILTER)
+    ParticleFilter::ParticleFilter()
+        : AbstractFilter(Filters_e::PARTICLE_FILTER), gridSize(32), numParticles(gridSize * gridSize)
     {
+        if (Application::MainApplication::isArgGiven("-particle"))
+        {
+            gridSize = static_cast<uint32_t>(std::stoi(Application::MainApplication::getArg("-particle").value));
+            numParticles = gridSize * gridSize;
+        }
+
         std::random_device randomDevice;
         randomEngine = std::mt19937(randomDevice());
 
         initializeParticles();
     }
-    ParticleFilter::ParticleFilter(const Point& aInitialPosition) : AbstractFilter(Filters_e::PARTICLE_FILTER)
-    {
-        // TODO
-        UNUSEDCAST(aInitialPosition);
-
-        std::random_device randomDevice;
-        randomEngine = std::mt19937(randomDevice());
-
-        initializeParticles();
-    }
-
     void ParticleFilter::iterate(Point& perceivedPosition, const Point& targetPosition,
                                  std::vector<AbstractSensorPtr>& sensors)
     {
@@ -46,22 +44,22 @@ namespace Model
     }
     void ParticleFilter::initializeParticles()
     {
-        std::uniform_int_distribution<uint8_t> distribution(0, GRID_SIZE);
-        uint16_t stepSize = 1024 / GRID_SIZE;
+        std::uniform_int_distribution<uint8_t> distribution(0, static_cast<uint8_t>(gridSize));
+        uint32_t stepSize = 1024 / gridSize;
 
-        for (std::size_t i = 0; i < NUM_PARTICLES; ++i)
+        for (std::size_t i = 0; i < numParticles; ++i)
         {
-            weights[i] = 1;
+            weights.emplace_back(1);
 
             auto locationX = static_cast<int32_t>(stepSize * distribution(randomEngine));
             auto locationY = static_cast<int32_t>(stepSize * distribution(randomEngine));
 
-            particles[i] = Particle{Point(locationX, locationY), weights[i]};
+            particles.emplace_back(Particle{Point(locationX, locationY), weights[i]});
         }
     }
     void ParticleFilter::controlUpdate(const Point& perceivedPosition, const Point& targetPosition)
     {
-        uint8_t standardDeviation = 2;// TODO change maybe?
+        uint8_t standardDeviation = 2;
         std::normal_distribution<double> distribution(0, standardDeviation);
 
         auto relativeMovementX =
@@ -112,16 +110,16 @@ namespace Model
 
             double newWeight = (totalDistanceDelta > Utils::ALMOST_ZERO) ? (1.0 / totalDistanceDelta) : 1;
             particles[i].weight = weights[i] = newWeight;
-        }
+        }// total of 184320 readings taken and compared per iteration. (approx 100 ms)
     }
     void ParticleFilter::resampleParticles()
     {
         decltype(particles) selectedParticles;
         std::discrete_distribution<uint16_t> discreteDistribution(weights.begin(), weights.end());
 
-        for (std::size_t i = 0; i < NUM_PARTICLES; ++i)
+        for (std::size_t i = 0; i < numParticles; ++i)
         {
-            selectedParticles[i] = particles[discreteDistribution(randomEngine)];
+            selectedParticles.emplace_back(particles[discreteDistribution(randomEngine)]);
         }
         particles = selectedParticles;
     }

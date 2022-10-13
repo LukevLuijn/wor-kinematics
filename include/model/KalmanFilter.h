@@ -13,16 +13,32 @@ namespace Model
     class KalmanFilter : public AbstractFilter
     {
     public:
+        /**
+         *
+         */
         KalmanFilter();
+        /**
+         *
+         */
         explicit KalmanFilter(const Point& aInitialPosition);
+        /**
+         *
+         */
         ~KalmanFilter() override = default;
-
-//        Point getMeasuredPosition(const Point& position, std::vector<AbstractSensorPtr>& sensors) override;
-        void iterate(Point& perceivedPosition, const Point& targetPosition, std::vector<AbstractSensorPtr>& sensors) override;
-
+        /**
+         * Represents one iteration of the kalman filter.
+         */
+        void iterate(Point& perceivedPosition, const Point& targetPosition,
+                     std::vector<AbstractSensorPtr>& sensors) override;
+        /**
+         *
+         */
         std::string asString() const override;
 
     private:
+        /**
+         * Calculate measured position from sensors.
+         */
         Point getMeasuredPosition(const Point& position, std::vector<AbstractSensorPtr>& sensors);
 
     private:
@@ -32,6 +48,6 @@ namespace Model
         const Utils::Matrix<double, 2, 2> A = {{1, 0}, {0, 1}};
         const Utils::Matrix<double, 2, 2> R = {{1, 0}, {0, 1}};// sensor covariance matrix
     };
-}
+}// namespace Model
 
 #endif//WOR_WORLD_KINEMATICA_KALMANFILTER_H

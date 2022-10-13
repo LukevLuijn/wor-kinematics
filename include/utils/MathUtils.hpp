@@ -5,30 +5,30 @@
 
 namespace Utils
 {
-	/**
+    /**
 	 *
 	 */
-	const double PI = 3.141592654;
-	/**
+    const double PI = 3.141592654;
+    /**
 	 *
 	 */
-	const double ALMOST_ZERO = 0.000000000000001;
+    const double ALMOST_ZERO = 0.000000000000001;
 
-	/**
+    /**
 	 *
 	 */
-	class MathUtils
-	{
-		public:
-			/**
+    class MathUtils
+    {
+    public:
+        /**
 			 *
 			 */
-			static double toRadians( double aDegrees);
-			/**
+        static double toRadians(double aDegrees);
+        /**
 			 *
 			 */
-			static double toDegrees( double aRadian);
-	};
-	//	class Math
-} // namespace Utils
-#endif // MATHUTILS_HPP_
+        static double toDegrees(double aRadian);
+    };
+    //	class Math
+}// namespace Utils
+#endif// MATHUTILS_HPP_

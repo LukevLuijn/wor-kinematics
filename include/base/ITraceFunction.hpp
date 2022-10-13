@@ -7,18 +7,20 @@
 
 namespace Base
 {
-	/**
+    /**
 	 *
 	 */
-	class ITraceFunction
-	{
-		public:
-			virtual ~ITraceFunction(){}
-			/**
+    class ITraceFunction
+    {
+    public:
+        virtual ~ITraceFunction()
+        {
+        }
+        /**
 			 *
 			 */
-			virtual void trace(	const std::string& aText) = 0;
-	}; // class ITraceFunction
-} // namespace Base
+        virtual void trace(const std::string& aText) = 0;
+    };// class ITraceFunction
+}// namespace Base
 
-#endif // SRC_ITRACEFUNCTION_HPP_ 
+#endif// SRC_ITRACEFUNCTION_HPP_

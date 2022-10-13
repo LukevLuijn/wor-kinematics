@@ -1,9 +1,6 @@
-// ======================================
-// Filename:    String.h
-// Project:     ROBOX Control UI
-// Author:      Luke van Luijn
-// Data:        15-05-2022
-// ======================================
+//
+// Created by luke on 05-15-22.
+//
 
 #ifndef ROBOX_CONTROL_UI_STRING_H
 #define ROBOX_CONTROL_UI_STRING_H
@@ -102,7 +99,7 @@ namespace Utils
         static std::vector<std::string> Divide(const std::string& str, char start, char stop)
         {
             std::vector<std::string> words = Divide(str, stop);
-            for(std::string& word : words)
+            for (std::string& word : words)
             {
                 Remove(word, start);
             }
@@ -181,7 +178,7 @@ namespace Utils
          */
         static void Remove(std::string& str, const std::vector<char>& targets)
         {
-            for(char target : targets)
+            for (char target : targets)
             {
                 str.erase(std::remove(str.begin(), str.end(), target), str.end());
             }
@@ -227,7 +224,7 @@ namespace Utils
          */
         static void RemoveEncasement(std::string& str)
         {
-            str = str.substr(1, str.size() -2);
+            str = str.substr(1, str.size() - 2);
         }
         /**
          * @brief Add color codes to string.

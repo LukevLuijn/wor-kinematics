@@ -12,166 +12,159 @@
 
 namespace Base
 {
-	/**
+    /**
 	 * This Trace class can be used instead of just using std::cout.
 	 * Most of the time one just uses the tracing MACROs below and not the class itself.
 	 * The tracing is done through an installable trace function.
 	 */
-	class Trace
-	{
-		public:
-			/**
+    class Trace
+    {
+    public:
+        /**
 			 *
 			 */
-			explicit Trace(	const std::string& aText,
-							long aLineNumber    = 0,
-							bool withTimeStamp  = false,
-							bool aTraceCDtor 	= true);
-			/**
+        explicit Trace(const std::string& aText, long aLineNumber = 0, bool withTimeStamp = false,
+                       bool aTraceCDtor = true);
+        /**
 			 *
 			 */
-			Trace(	const std::string& aText1,
-					const std::string& aText2,
-					long aLineNumber    = 0,
-					bool withTimeStamp  = false,
-					bool aTraceCDtor 	= true);
-			/**
+        Trace(const std::string& aText1, const std::string& aText2, long aLineNumber = 0, bool withTimeStamp = false,
+              bool aTraceCDtor = true);
+        /**
 			 *
 			 */
-			~Trace();
+        ~Trace();
 
-			/**
+        /**
 			 *
 			 */
-			static void	enableTrace( bool enable = true)
-			{
-				traceOn = enable;
-			}
-			/**
+        static void enableTrace(bool enable = true)
+        {
+            traceOn = enable;
+        }
+        /**
 			 *
 			 */
-			static bool isTraceEnabled()
-			{
-				return traceOn;
-			}
-			/**
+        static bool isTraceEnabled()
+        {
+            return traceOn;
+        }
+        /**
 			 *
 			 */
-			static void	enableTimeStamp( bool enable = true)
-			{
-				traceWithTimeStamp = enable;
-			}
-			/**
+        static void enableTimeStamp(bool enable = true)
+        {
+            traceWithTimeStamp = enable;
+        }
+        /**
 			 *
 			 */
-			static bool isTimeStampEnabled()
-			{
-				return traceWithTimeStamp;
-			}
-			/**
+        static bool isTimeStampEnabled()
+        {
+            return traceWithTimeStamp;
+        }
+        /**
 			 *
 			 */
-			static void enableLineNumber( bool enable = true)
-			{
-				traceLineNumber = enable;
-			}
-			/**
+        static void enableLineNumber(bool enable = true)
+        {
+            traceLineNumber = enable;
+        }
+        /**
 			 *
 			 */
-			static bool isLineNumberEnabled()
-			{
-				return traceLineNumber;
-			}
-			/**
+        static bool isLineNumberEnabled()
+        {
+            return traceLineNumber;
+        }
+        /**
 			 *
 			 */
-			static void enableThreadId( bool enable = true)
-			{
-				traceThreadId = enable;
-			}
-			/**
+        static void enableThreadId(bool enable = true)
+        {
+            traceThreadId = enable;
+        }
+        /**
 			 *
 			 */
-			static bool isThreadIdEnabled()
-			{
-				return traceThreadId;
-			}
-			/**
+        static bool isThreadIdEnabled()
+        {
+            return traceThreadId;
+        }
+        /**
 			 *
 			 */
-			static void setTraceFunction( std::unique_ptr<ITraceFunction> aTraceFunction)
-			{
-				traceFunction = std::move(aTraceFunction);
-			}
-			/**
+        static void setTraceFunction(std::unique_ptr<ITraceFunction> aTraceFunction)
+        {
+            traceFunction = std::move(aTraceFunction);
+        }
+        /**
 			 *
 			 */
-			static void trace(	const std::string& aText,
-								bool withTimeStamp = Trace::isTimeStampEnabled());
-			/**
+        static void trace(const std::string& aText, bool withTimeStamp = Trace::isTimeStampEnabled());
+        /**
 			 *
 			 */
-			static void trace(	const std::string& aText,
-			                  	const char* aFunctionName,
-			                  	long aLineNumber,
-			                  	bool withTimeStamp = Trace::isTimeStampEnabled());
-		private:
-			/**
-			 *
-			 */
-			void traceConstructor(long aLineNumber) const;
-			/**
-			 *
-			 */
-			void traceDestructor() const;
-			/**
-			 *
-			 */
-			static void traceFormattedString(	const std::string& aText,
-												char aTraceMarker);	// 	This text will be prepended
+        static void trace(const std::string& aText, const char* aFunctionName, long aLineNumber,
+                          bool withTimeStamp = Trace::isTimeStampEnabled());
 
-			/**
+    private:
+        /**
 			 *
 			 */
-			static bool traceOn;
-			/**
+        void traceConstructor(long aLineNumber) const;
+        /**
 			 *
 			 */
-			static bool traceWithTimeStamp;
-			/**
+        void traceDestructor() const;
+        /**
 			 *
 			 */
-			static bool traceLineNumber;
-			/**
-			 *
-			 */
-			static bool traceThreadId;
-			/**
-			 *
-			 */
-			static bool	traceExceptions;
+        static void traceFormattedString(const std::string& aText,
+                                         char aTraceMarker);// 	This text will be prepended
 
-			/**
+        /**
 			 *
 			 */
-			std::string traceText;
-			/**
+        static bool traceOn;
+        /**
 			 *
 			 */
-			bool traceTimeStamp;
-			/**
+        static bool traceWithTimeStamp;
+        /**
 			 *
 			 */
-			bool traceCDtor;
-			/**
+        static bool traceLineNumber;
+        /**
 			 *
 			 */
-			static std::unique_ptr<ITraceFunction> traceFunction;
-			/**
+        static bool traceThreadId;
+        /**
 			 *
 			 */
-			static std::mutex traceFunctionMutex;
-	}; // class Trace
+        static bool traceExceptions;
+
+        /**
+			 *
+			 */
+        std::string traceText;
+        /**
+			 *
+			 */
+        bool traceTimeStamp;
+        /**
+			 *
+			 */
+        bool traceCDtor;
+        /**
+			 *
+			 */
+        static std::unique_ptr<ITraceFunction> traceFunction;
+        /**
+			 *
+			 */
+        static std::mutex traceFunctionMutex;
+    };// class Trace
 
 } /* namespace Base */
 
@@ -189,26 +182,26 @@ namespace Base
  * The constructor and destructor trace the function name. If this is the first thing upon function entry
  * the start and finish of the function are traced.
  */
-#define FUNCTRACE_DEVELOP()                 	Base::Trace trc(__PRETTY_FUNCTION__, __LINE__)
+#define FUNCTRACE_DEVELOP() Base::Trace trc(__PRETTY_FUNCTION__, __LINE__)
 /**
  * @def FUNCTRACE_TEXT_DEVELOP(a_text)
  * The constructor and destructor trace the function name, appended with a_text. If this is the first thing upon function entry
  * the start and finish of the function are traced.
  */
-#define FUNCTRACE_TEXT_DEVELOP(a_text)   		Base::Trace trc(__PRETTY_FUNCTION__, a_text, __LINE__)
+#define FUNCTRACE_TEXT_DEVELOP(a_text) Base::Trace trc(__PRETTY_FUNCTION__, a_text, __LINE__)
 /**
  * \def TRACE_DEVELOP()
  * Traces the text.
  */
-#define TRACE_DEVELOP(a_text)               	Base::Trace::trace(a_text)
+#define TRACE_DEVELOP(a_text) Base::Trace::trace(a_text)
 /**
  * The TS-variants do the same as the non-TS-variants but prepend a time stamp to the output.
  */
-#define TSFUNCTRACE_DEVELOP()               	Base::Trace trc(__PRETTY_FUNCTION__, __LINE__,	true)
-#define TSFUNCTRACE_TEXT_DEVELOP(a_text)   		Base::Trace trc( __PRETTY_FUNCTION__, a_text ,	__LINE__,	true)
-#define TSTRACE_DEVELOP(a_text)             	Base::Trace::trace(a_text, true)
+#define TSFUNCTRACE_DEVELOP() Base::Trace trc(__PRETTY_FUNCTION__, __LINE__, true)
+#define TSFUNCTRACE_TEXT_DEVELOP(a_text) Base::Trace trc(__PRETTY_FUNCTION__, a_text, __LINE__, true)
+#define TSTRACE_DEVELOP(a_text) Base::Trace::trace(a_text, true)
 //@}
-#else // !DEVELOPMENT
+#else// !DEVELOPMENT
 #define FUNCTRACE_DEVELOP()
 #define FUNCTRACE_TEXT_DEVELOP(a_text)
 #define TRACE_DEVELOP(a_text)
@@ -217,4 +210,4 @@ namespace Base
 #define TSTRACE_DEVELOP(a_text)
 #endif
 
-#endif // TRACE_HPP_ 
+#endif// TRACE_HPP_

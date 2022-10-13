@@ -3,12 +3,9 @@
 //
 
 #include "CompassSensor.h"
+#include "MainApplication.hpp"
 #include "Robot.hpp"
 #include "Shape2DUtils.hpp"
-#include "MainApplication.hpp"
-
-// TODO remove
-#include "Logger.hpp"
 
 namespace Model
 {

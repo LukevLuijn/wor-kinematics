@@ -2,7 +2,6 @@
 #define BUTTON_HPP_
 
 #include "Config.hpp"
-
 #include "Widgets.hpp"
 
 #include <functional>
@@ -29,4 +28,4 @@ namespace Application
     }
 }// namespace Application
 
-#endif// DANU_BUTTON_HPP_
+#endif// BUTTON_HPP_

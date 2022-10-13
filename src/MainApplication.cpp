@@ -166,7 +166,7 @@ namespace Application
     {
         bool fromRoot = MainApplication::isArgGiven("-fromRoot");
 
-        std::string fileName = "sensor_noise_config.txt";
+        std::string fileName = "config.txt";
         std::string filePath = (fromRoot) ? "" : "../config/";
 
         if (MainApplication::isArgGiven("-config"))

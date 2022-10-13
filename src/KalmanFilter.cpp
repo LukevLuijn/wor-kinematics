@@ -80,7 +80,6 @@ namespace Model
             }
         }
 
-        // TODO maybe unnecessary?
         if (distance == std::numeric_limits<double>::max() || orientation == std::numeric_limits<double>::max())
         {
             LOG("something went wrong while retrieving sensor percepts");

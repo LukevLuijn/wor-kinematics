@@ -16,299 +16,274 @@
 
 namespace PathAlgorithm
 {
-	struct Vertex
-	{
-			/**
+    struct Vertex {
+        /**
 			 *
 			 */
-			Vertex( int anX,
-					int anY) :
-						x( anX),
-						y( anY),
-						actualCost( 0.0),
-						heuristicCost( 0.0)
-			{
-			}
-			/**
+        Vertex(int anX, int anY) : x(anX), y(anY), actualCost(0.0), heuristicCost(0.0)
+        {
+        }
+        /**
 			 *
 			 */
-			explicit Vertex( const Point& aPoint) :
-				x( aPoint.x),
-				y( aPoint.y),
-				actualCost( 0.0),
-				heuristicCost( 0.0)
-			{
-			}
-			/**
+        explicit Vertex(const Point& aPoint) : x(aPoint.x), y(aPoint.y), actualCost(0.0), heuristicCost(0.0)
+        {
+        }
+        /**
 			 *
 			 */
-			 Vertex( const Vertex&) = default;
-			/**
+        Vertex(const Vertex&) = default;
+        /**
 			 *
 			 */
-			 Vertex( Vertex&&) = default;
-			/**
+        Vertex(Vertex&&) = default;
+        /**
 			 *
 			 */
-			 Vertex& operator=( const Vertex&) = default;
-			/**
+        Vertex& operator=(const Vertex&) = default;
+        /**
 			 *
 			 */
-			Point asPoint() const
-			{
-				return Point( x, y);
-			}
-			/**
+        Point asPoint() const
+        {
+            return Point(x, y);
+        }
+        /**
 			 *
 			 */
-			bool lessCost( const Vertex& aVertex) const
-			{
-				if (heuristicCost < aVertex.heuristicCost)
-					return true;
-				// less uncertainty if the actual cost is smaller
-				if (heuristicCost == aVertex.heuristicCost)
-					return actualCost > aVertex.actualCost;
-				return false;
-			}
-			/**
+        bool lessCost(const Vertex& aVertex) const
+        {
+            if (heuristicCost < aVertex.heuristicCost)
+                return true;
+            // less uncertainty if the actual cost is smaller
+            if (heuristicCost == aVertex.heuristicCost)
+                return actualCost > aVertex.actualCost;
+            return false;
+        }
+        /**
 			 *
 			 */
-			bool lessId( const Vertex& aVertex) const
-			{
-				if(x < aVertex.x) return true;
-				if(x == aVertex.x) return y < aVertex.y;
-				return false;
-			}
-			/**
+        bool lessId(const Vertex& aVertex) const
+        {
+            if (x < aVertex.x)
+                return true;
+            if (x == aVertex.x)
+                return y < aVertex.y;
+            return false;
+        }
+        /**
 			 *
 			 */
-			bool equalPoint( const Vertex& aVertex) const
-			{
-				return x == aVertex.x && y == aVertex.y;
-			}
+        bool equalPoint(const Vertex& aVertex) const
+        {
+            return x == aVertex.x && y == aVertex.y;
+        }
 
-			int x;
-			int y;
+        int x;
+        int y;
 
-			double actualCost;
-			double heuristicCost;
-	};
-	// struct Vertex
+        double actualCost;
+        double heuristicCost;
+    };
+    // struct Vertex
 
-	/**
+    /**
 	 *
 	 */
-	struct VertexLessCostCompare
-	{
-			bool operator()(	const Vertex& lhs,
-								const Vertex& rhs) const
-			{
-				return lhs.lessCost( rhs);
-			}
-	};
-	// struct VertexCostCompare
-	/**
+    struct VertexLessCostCompare {
+        bool operator()(const Vertex& lhs, const Vertex& rhs) const
+        {
+            return lhs.lessCost(rhs);
+        }
+    };
+    // struct VertexCostCompare
+    /**
 	 *
 	 */
-	struct VertexLessIdCompare
-	{
-			bool operator()(	const Vertex& lhs,
-								const Vertex& rhs) const
-			{
-				return lhs.lessId( rhs);
-			}
-	};
-	// struct VertexIdCompare
-	/**
+    struct VertexLessIdCompare {
+        bool operator()(const Vertex& lhs, const Vertex& rhs) const
+        {
+            return lhs.lessId(rhs);
+        }
+    };
+    // struct VertexIdCompare
+    /**
 	 *
 	 */
-	struct VertexEqualPointCompare
-	{
-			bool operator()(	const Vertex& lhs,
-								const Vertex& rhs) const
-			{
-				return lhs.equalPoint( rhs);
-			}
-	};
-	// struct VertexPointCompare
-	struct Edge
-	{
-			Edge(	const Vertex& aVertex1,
-					const Vertex& aVertex2) :
-						vertex1( aVertex1),
-						vertex2( aVertex2)
-			{
-			}
-			Edge( const Edge& anEdge) :
-				vertex1( anEdge.vertex1),
-				vertex2( anEdge.vertex2)
-			{
-			}
+    struct VertexEqualPointCompare {
+        bool operator()(const Vertex& lhs, const Vertex& rhs) const
+        {
+            return lhs.equalPoint(rhs);
+        }
+    };
+    // struct VertexPointCompare
+    struct Edge {
+        Edge(const Vertex& aVertex1, const Vertex& aVertex2) : vertex1(aVertex1), vertex2(aVertex2)
+        {
+        }
+        Edge(const Edge& anEdge) : vertex1(anEdge.vertex1), vertex2(anEdge.vertex2)
+        {
+        }
 
-			const Vertex& thisSide( const Vertex& aVertex) const
-			{
-				if (vertex1.equalPoint( aVertex))
-					return vertex1;
-				if (vertex2.equalPoint( aVertex))
-					return vertex2;
-				throw std::logic_error( "thisSide: huh???");
-			}
+        const Vertex& thisSide(const Vertex& aVertex) const
+        {
+            if (vertex1.equalPoint(aVertex))
+                return vertex1;
+            if (vertex2.equalPoint(aVertex))
+                return vertex2;
+            throw std::logic_error("thisSide: huh???");
+        }
 
-			const Vertex& otherSide( const Vertex& aVertex) const
-			{
-				if (vertex1.equalPoint( aVertex))
-					return vertex2;
-				if (vertex2.equalPoint( aVertex))
-					return vertex1;
-				throw std::logic_error( "otherSide: huh???");
-			}
+        const Vertex& otherSide(const Vertex& aVertex) const
+        {
+            if (vertex1.equalPoint(aVertex))
+                return vertex2;
+            if (vertex2.equalPoint(aVertex))
+                return vertex1;
+            throw std::logic_error("otherSide: huh???");
+        }
 
-			Vertex vertex1;
-			Vertex vertex2;
-	}; // struct Edge
-	/**
+        Vertex vertex1;
+        Vertex vertex2;
+    };// struct Edge
+    /**
 	 *
 	 * @param os
 	 * @param aVertex
 	 * @return
 	 */
-	inline std::ostream& operator<<( 	std::ostream& os,
-										const Vertex & aVertex)
-	{
-		return os << "(" << aVertex.x << "," << aVertex.y << "), " << aVertex.actualCost << " " << aVertex.heuristicCost;
-	}
-	/**
+    inline std::ostream& operator<<(std::ostream& os, const Vertex& aVertex)
+    {
+        return os << "(" << aVertex.x << "," << aVertex.y << "), " << aVertex.actualCost << " "
+                  << aVertex.heuristicCost;
+    }
+    /**
 	 *
 	 * @param os
 	 * @param anEdge
 	 * @return
 	 */
-	inline std::ostream& operator<<( 	std::ostream& os,
-										const Edge& anEdge)
-	{
-		return os << anEdge.vertex1 << " -> " << anEdge.vertex2;
-	}
-	/*
+    inline std::ostream& operator<<(std::ostream& os, const Edge& anEdge)
+    {
+        return os << anEdge.vertex1 << " -> " << anEdge.vertex2;
+    }
+    /*
 	 *
 	 */
-	typedef std::vector< Vertex > Path;
-	typedef std::vector< Vertex > OpenSet;
-	typedef std::set< Vertex, VertexLessIdCompare > ClosedSet;
-	typedef std::map< Vertex, Vertex, VertexLessIdCompare > VertexMap;
-	/**
+    typedef std::vector<Vertex> Path;
+    typedef std::vector<Vertex> OpenSet;
+    typedef std::set<Vertex, VertexLessIdCompare> ClosedSet;
+    typedef std::map<Vertex, Vertex, VertexLessIdCompare> VertexMap;
+    /**
 	 *
 	 */
-	class AStar : public Base::Notifier
-	{
-		public:
-			/**
+    class AStar : public Base::Notifier
+    {
+    public:
+        /**
 			 *
 			 */
-			Path search(const Point& aStartPoint,
-						const Point& aGoalPoint,
-						const Size& aRobotSize);
-			/**
+        Path search(const Point& aStartPoint, const Point& aGoalPoint, const Size& aRobotSize);
+        /**
 			 *
 			 */
-			Path search(Vertex aStart,
-						const Vertex& aGoal,
-						const Size& aRobotSize);
-			/**
+        Path search(Vertex aStart, const Vertex& aGoal, const Size& aRobotSize);
+        /**
 			 *
 			 */
-			void addToOpenSet( const Vertex& aVertex);
-			/**
+        void addToOpenSet(const Vertex& aVertex);
+        /**
 			 *
 			 */
-			void removeFromOpenSet( const Vertex& aVertex);
-			/**
+        void removeFromOpenSet(const Vertex& aVertex);
+        /**
 			 *
 			 */
-			void removeFromOpenSet( OpenSet::iterator& i);
-			/**
+        void removeFromOpenSet(OpenSet::iterator& i);
+        /**
 			 *
 			 */
-			OpenSet::iterator findInOpenSet( const Vertex& aVertex);
-			/**
+        OpenSet::iterator findInOpenSet(const Vertex& aVertex);
+        /**
 			 *
 			 */
-			bool findRemoveInOpenSet( const Vertex& aVertex);
-			/**
+        bool findRemoveInOpenSet(const Vertex& aVertex);
+        /**
 			 *
 			 */
-			void removeFirstFromOpenSet();
-			/**
+        void removeFirstFromOpenSet();
+        /**
 			 *
 			 */
-			void addToClosedSet( const Vertex& aVertex);
-			/**
+        void addToClosedSet(const Vertex& aVertex);
+        /**
 			 *
 			 */
-			void removeFromClosedSet( const Vertex& aVertex);
-			/**
+        void removeFromClosedSet(const Vertex& aVertex);
+        /**
 			 *
 			 */
-			void removeFromClosedSet( ClosedSet::iterator& i);
-			/**
+        void removeFromClosedSet(ClosedSet::iterator& i);
+        /**
 			 *
 			 */
-			ClosedSet::iterator findInClosedSet( const Vertex& aVertex);
-			/**
+        ClosedSet::iterator findInClosedSet(const Vertex& aVertex);
+        /**
 			 *
 			 */
-			bool findRemoveClosedSet( const Vertex& aVertex);
-			/**
+        bool findRemoveClosedSet(const Vertex& aVertex);
+        /**
 			 *
 			 */
-			ClosedSet getClosedSet() const;
-			/**
+        ClosedSet getClosedSet() const;
+        /**
 			 *
 			 */
-			OpenSet getOpenSet() const;
-			/**
+        OpenSet getOpenSet() const;
+        /**
 			 *
 			 */
-			VertexMap getPredecessorMap() const;
+        VertexMap getPredecessorMap() const;
 
-		protected:
-			/**
+    protected:
+        /**
 			 *
 			 */
-			ClosedSet& getCS();
-			/**
+        ClosedSet& getCS();
+        /**
 			 *
 			 */
-			const ClosedSet& getCS() const;
-			/**
+        const ClosedSet& getCS() const;
+        /**
 			 *
 			 */
-			OpenSet& getOS();
-			/**
+        OpenSet& getOS();
+        /**
 			 *
 			 */
-			const OpenSet& getOS() const;
-			/**
+        const OpenSet& getOS() const;
+        /**
 			 *
 			 */
-			VertexMap& getPM();
-			/**
+        VertexMap& getPM();
+        /**
 			 *
 			 */
-			const VertexMap& getPM() const;
+        const VertexMap& getPM() const;
 
-		private:
-			/**
+    private:
+        /**
 			 *
 			 */
-			ClosedSet closedSet;
-			/**
+        ClosedSet closedSet;
+        /**
 			 *
 			 */
-			OpenSet openSet;
-			/**
+        OpenSet openSet;
+        /**
 			 *
 			 */
-			VertexMap predecessorMap;
-	}; // class AStar
-} // namespace PathAlgorithm
-#endif // ASTAR_HPP_
+        VertexMap predecessorMap;
+    };// class AStar
+}// namespace PathAlgorithm
+#endif// ASTAR_HPP_

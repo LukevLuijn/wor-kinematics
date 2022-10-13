@@ -94,6 +94,6 @@ namespace Utils
     private:
         [[maybe_unused]] static std::string getFileName(Path path);
     };
-}// namespace utils
+}// namespace Utils
 
 #endif// FILEIO_FILEIO_H

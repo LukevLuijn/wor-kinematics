@@ -46,17 +46,37 @@ namespace Model
     class CompassSensor : public AbstractSensor, NoisySensor
     {
     public:
+        /**
+         *
+         */
         CompassSensor();
+        /**
+         *
+         */
         explicit CompassSensor(Robot* aRobot);
-
+        /**
+         *
+         */
         ~CompassSensor() override = default;
-
+        /**
+         *
+         */
         AbstractStimulusPtr getStimulus() const override;
+        /**
+         *
+         */
         AbstractPerceptPtr getPerceptFor(AbstractStimulusPtr aStimulus) override;
-
+        /**
+         *
+         */
         std::string asString() const override;
+        /**
+         *
+         */
         std::string asDebugString() const override;
-
+        /**
+         *  Reset sensor standard deviation to configured value.
+         */
         void recalibrate() override;
     };
 }// namespace Model

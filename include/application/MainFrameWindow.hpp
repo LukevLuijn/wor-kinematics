@@ -67,6 +67,28 @@ namespace Application
 
     protected:
     private:
+        void OnQuit(CommandEvent& anEvent);
+        void OnWidgetTraceFunction(CommandEvent& anEvent);
+        void OnStdOutTraceFunction(CommandEvent& anEvent);
+        void OnFileTraceFunction(CommandEvent& anEvent);
+        void OnAbout(CommandEvent& anEvent);
+
+        void OnStartRobot(CommandEvent& anEvent);
+        void OnStopRobot(CommandEvent& anEvent);
+        void OnPopulate(CommandEvent& anEvent);
+        void OnUnpopulate(CommandEvent& anEvent);
+        void OnKalmanToggle(CommandEvent& anEvent);
+        void OnParticleToggle(CommandEvent& anEvent);
+
+        void OnSliderCompass(CommandEvent& anEvent);
+        void OnSliderOdometer(CommandEvent& anEvent);
+        void OnSliderLidar(CommandEvent& anEvent);
+
+        void OnResetSliderCompass(CommandEvent& anEvent);
+        void OnResetSliderOdometer(CommandEvent& anEvent);
+        void OnResetSliderLidar(CommandEvent& anEvent);
+
+    private:
         Panel* clientPanel;
         MenuBar* menuBar;
         SplitterWindow* splitterWindow;
@@ -88,27 +110,6 @@ namespace Application
         double compassConfigValue;
         double odometerConfigValue;
         double lidarConfigValue;
-
-        void OnQuit(CommandEvent& anEvent);
-        void OnWidgetTraceFunction(CommandEvent& anEvent);
-        void OnStdOutTraceFunction(CommandEvent& anEvent);
-        void OnFileTraceFunction(CommandEvent& anEvent);
-        void OnAbout(CommandEvent& anEvent);
-
-        void OnStartRobot(CommandEvent& anEvent);
-        void OnStopRobot(CommandEvent& anEvent);
-        void OnPopulate(CommandEvent& anEvent);
-        void OnUnpopulate(CommandEvent& anEvent);
-        void OnKalmanToggle(CommandEvent& anEvent);
-        void OnParticleToggle(CommandEvent& anEvent);
-
-        void OnSliderCompass(CommandEvent& anEvent);
-        void OnSliderOdometer(CommandEvent& anEvent);
-        void OnSliderLidar(CommandEvent& anEvent);
-
-        void OnResetSliderCompass(CommandEvent& anEvent);
-        void OnResetSliderOdometer(CommandEvent& anEvent);
-        void OnResetSliderLidar(CommandEvent& anEvent);
     };
     //	class MainFrameWindow
 }//namespace Application

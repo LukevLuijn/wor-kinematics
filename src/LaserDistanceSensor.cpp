@@ -1,11 +1,11 @@
 #include "LaserDistanceSensor.hpp"
 
 #include "Logger.hpp"
+#include "MathUtils.hpp"
 #include "Robot.hpp"
 #include "RobotWorld.hpp"
-#include "Wall.hpp"
 #include "Shape2DUtils.hpp"
-#include "MathUtils.hpp"
+#include "Wall.hpp"
 #include "Widgets.hpp"
 
 namespace Model
@@ -34,34 +34,35 @@ namespace Model
 	 */
     std::shared_ptr<AbstractStimulus> LaserDistanceSensor::getStimulus() const
     {
-        std::vector< WallPtr > walls = RobotWorld::getRobotWorld().getWalls();
+        std::vector<WallPtr> walls = RobotWorld::getRobotWorld().getWalls();
 
-        for (std::shared_ptr< Wall > wall : walls)
+        for (std::shared_ptr<Wall> wall : walls)
         {
             Point wallPoint1 = wall->getPoint1();
             Point wallPoint2 = wall->getPoint2();
 
             Robot* robot = dynamic_cast<Robot*>(agent);
-            if(robot)
+            if (robot)
             {
                 Point robotLocation = robot->getPosition();
 
-                double angle = Utils::Shape2DUtils::getAngle( robot->getFront()) + 0.5 * Utils::PI;
+                double angle = Utils::Shape2DUtils::getAngle(robot->getFront()) + 0.5 * Utils::PI;
 
-                Point laserEndpoint{ static_cast<int>(robotLocation.x + std::cos( angle - 0.5 * Utils::PI) * 1024),
-                                     static_cast<int>(robotLocation.y + std::sin( angle - 0.5 * Utils::PI) * 1024)};
+                Point laserEndpoint{static_cast<int>(robotLocation.x + std::cos(angle - 0.5 * Utils::PI) * 1024),
+                                    static_cast<int>(robotLocation.y + std::sin(angle - 0.5 * Utils::PI) * 1024)};
 
-                Point interSection = Utils::Shape2DUtils::getIntersection( wallPoint1, wallPoint2, robotLocation, laserEndpoint);
+                Point interSection =
+                        Utils::Shape2DUtils::getIntersection(wallPoint1, wallPoint2, robotLocation, laserEndpoint);
 
-                if(interSection != DefaultPosition)
+                if (interSection != DefaultPosition)
                 {
-                    double distance = Utils::Shape2DUtils::distance(robotLocation,interSection);
-                    return std::shared_ptr< AbstractStimulus >( new DistanceStimulus( angle,distance));
+                    double distance = Utils::Shape2DUtils::distance(robotLocation, interSection);
+                    return std::shared_ptr<AbstractStimulus>(new DistanceStimulus(angle, distance));
                 }
             }
         }
 
-        std::shared_ptr< AbstractStimulus > distanceStimulus( new DistanceStimulus( 666,666));
+        std::shared_ptr<AbstractStimulus> distanceStimulus(new DistanceStimulus(666, 666));
         return distanceStimulus;
     }
     /**

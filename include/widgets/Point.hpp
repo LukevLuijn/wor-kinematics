@@ -14,12 +14,12 @@
 
 namespace Widgets
 {
-	/**
+    /**
 	 * @see http://docs.wxwidgets.org/stable/classwx_point
 	 */
-	typedef wxPoint Point;
-} // namespace Widgets
+    typedef wxPoint Point;
+}// namespace Widgets
 using namespace Widgets;
 
 
-#endif // POINT_HPP_
+#endif// POINT_HPP_

@@ -1,0 +1,4 @@
+compass;2.0;    # [degrees]     # Compass sensor standard deviation.
+odometer;1.0;   # [pixels]      # Odometer sensor standard deviation.
+lidar;10.0;     # [pixels]      # Lidar sensor standard deviation (per beam).
+particle;32;    # [particles]   # 32^2 particles takes aprox 100ms per update, any higher and the program will stutter.

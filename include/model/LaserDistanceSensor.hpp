@@ -7,100 +7,101 @@
 
 namespace Model
 {
-	/**
+    /**
 	 *
 	 */
-	class DistanceStimulus : public AbstractStimulus
-	{
-		public:
-			DistanceStimulus( 	double anAngle,
-								double aDistance) :
-				angle(anAngle),
-				distance( aDistance)
-		{
-		}
+    class DistanceStimulus : public AbstractStimulus
+    {
+    public:
+        DistanceStimulus(double anAngle, double aDistance) : angle(anAngle), distance(aDistance)
+        {
+        }
 
-        std::string asString() override { return "DistanceStimulus";}
+        std::string asString() override
+        {
+            return "DistanceStimulus";
+        }
 
-		double angle;
-		double distance;
-	};
-	// class DistanceStimulus
+        double angle;
+        double distance;
+    };
+    // class DistanceStimulus
 
-	/**
+    /**
 	 *
 	 */
-	class DistancePercept : public AbstractPercept
-	{
-		public:
-			explicit DistancePercept( const DistanceStimulus& aDistanceStimulus) :
-				angle(aDistanceStimulus.angle),
-				distance( aDistanceStimulus.distance)
-		{
-		}
-		DistancePercept(double anAngle,
-						double aDistance) :
-			angle(anAngle),
-			distance( aDistance)
-		{
-		}
+    class DistancePercept : public AbstractPercept
+    {
+    public:
+        explicit DistancePercept(const DistanceStimulus& aDistanceStimulus)
+            : angle(aDistanceStimulus.angle), distance(aDistanceStimulus.distance)
+        {
+        }
+        DistancePercept(double anAngle, double aDistance) : angle(anAngle), distance(aDistance)
+        {
+        }
 
-        std::string asString() override { return "DistancePercept";}
+        std::string asString() override
+        {
+            return "DistancePercept";
+        }
 
-		double angle;
-		double distance;
-	};
-	//	class DistancePercept
+        double angle;
+        double distance;
+    };
+    //	class DistancePercept
 
-	class Robot;
-	typedef std::shared_ptr<Robot> RobotPtr;
+    class Robot;
+    typedef std::shared_ptr<Robot> RobotPtr;
 
-	/**
+    /**
 	 *
 	 */
-	class LaserDistanceSensor : public AbstractSensor
-	{
-		public:
-			/**
+    class LaserDistanceSensor : public AbstractSensor
+    {
+    public:
+        /**
 			 *
 			 */
-			LaserDistanceSensor();
-			/**
+        LaserDistanceSensor();
+        /**
 			 *
 			 */
-			explicit LaserDistanceSensor( Robot* aRobot);
-			/**
+        explicit LaserDistanceSensor(Robot* aRobot);
+        /**
 			 *
 			 */
-			virtual ~LaserDistanceSensor();
-			/**
+        virtual ~LaserDistanceSensor();
+        /**
 			 *
 			 */
-			virtual std::shared_ptr< AbstractStimulus > getStimulus() const override;
-			/**
+        virtual std::shared_ptr<AbstractStimulus> getStimulus() const override;
+        /**
 			 *
 			 */
-			virtual std::shared_ptr< AbstractPercept > getPerceptFor( std::shared_ptr< AbstractStimulus > anAbstractStimulus) override;
-			/**
+        virtual std::shared_ptr<AbstractPercept>
+        getPerceptFor(std::shared_ptr<AbstractStimulus> anAbstractStimulus) override;
+        /**
 			 * @name Debug functions
 			 */
-			//@{
-			/**
+        //@{
+        /**
 			 * Returns a 1-line description of the object
 			 */
-			virtual std::string asString() const override;
-			/**
+        virtual std::string asString() const override;
+        /**
 			 * Returns a description of the object with all data of the object usable for debugging
 			 */
-			virtual std::string asDebugString() const override;
-            /**
+        virtual std::string asDebugString() const override;
+        /**
              *
              */
-            void recalibrate() override {}
-			//@}
-		protected:
-		private:
-
-	};
-} // namespace Model
+        void recalibrate() override
+        {
+        }
+        //@}
+    protected:
+    private:
+    };
+}// namespace Model
 #endif /* LASERDISTANCESENSOR_HPP_ */

@@ -2,46 +2,45 @@
 
 namespace View
 {
-	ViewObject::ViewObject() : objectId(Base::ObjectId::newObjectId())
-	{
-	}
+    ViewObject::ViewObject() : objectId(Base::ObjectId::newObjectId())
+    {
+    }
 
-	ViewObject::ViewObject(Model::ModelObjectPtr aModelObject) :
-								objectId(Base::ObjectId::newObjectId()),
-								modelObject(aModelObject)
-	{
-		if(modelObject)
-		{
-			handleNotificationsFor(*modelObject);
-		}
-	}
+    ViewObject::ViewObject(Model::ModelObjectPtr aModelObject)
+        : objectId(Base::ObjectId::newObjectId()), modelObject(aModelObject)
+    {
+        if (modelObject)
+        {
+            handleNotificationsFor(*modelObject);
+        }
+    }
 
-	ViewObject::~ViewObject()
-	{
-	}
+    ViewObject::~ViewObject()
+    {
+    }
 
-	/**
+    /**
 	 *
 	 */
-	const Base::ObjectId& ViewObject::getObjectId() const
-	{
-		return objectId;
-	}
-	/**
+    const Base::ObjectId& ViewObject::getObjectId() const
+    {
+        return objectId;
+    }
+    /**
 	 *
 	 */
-	Model::ModelObjectPtr ViewObject::getModelObject() const
-	{
-		return modelObject;
-	}
-	/**
+    Model::ModelObjectPtr ViewObject::getModelObject() const
+    {
+        return modelObject;
+    }
+    /**
 	 *
 	 */
-	void ViewObject::setModelObject(Model::ModelObjectPtr aModelObject)
-	{
-		rebindModelObject(aModelObject);
-	}
-	/**
+    void ViewObject::setModelObject(Model::ModelObjectPtr aModelObject)
+    {
+        rebindModelObject(aModelObject);
+    }
+    /**
 	 * This function will call ModelObject::addReference.
 	 * It will stop handling the notifications for the old object,
 	 * start handling the notifications for the new object
@@ -49,20 +48,18 @@ namespace View
 	 *
 	 * See ViewObject::resetViewObject
 	 */
-	void ViewObject::rebindModelObject(Model::ModelObjectPtr aModelObject)
-	{
-		if(modelObject)
-		{
-			stopHandlingNotificationsFor(*modelObject);
-		}
+    void ViewObject::rebindModelObject(Model::ModelObjectPtr aModelObject)
+    {
+        if (modelObject)
+        {
+            stopHandlingNotificationsFor(*modelObject);
+        }
 
-		modelObject = aModelObject;
+        modelObject = aModelObject;
 
-		if(modelObject)
-		{
-			handleNotificationsFor(*modelObject);
-		}
-	}
-} // namespace View
-
-
+        if (modelObject)
+        {
+            handleNotificationsFor(*modelObject);
+        }
+    }
+}// namespace View

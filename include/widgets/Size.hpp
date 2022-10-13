@@ -13,12 +13,12 @@
 
 namespace Widgets
 {
-	/**
+    /**
 	 * @see http://docs.wxwidgets.org/stable/classwx_size
 	 */
-	typedef wxSize Size;
-} // namespace Widgets
+    typedef wxSize Size;
+}// namespace Widgets
 using namespace Widgets;
 
 
-#endif // SIZE_HPP_
+#endif// SIZE_HPP_

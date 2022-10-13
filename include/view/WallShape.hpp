@@ -9,86 +9,83 @@
 
 namespace View
 {
-	/**
+    /**
 	 *
 	 */
-	class WallShape : public LineShape
-	{
-		public:
-			/**
+    class WallShape : public LineShape
+    {
+    public:
+        /**
 			 *
 			 */
-			explicit WallShape( Model::WallPtr aWall);
-			/**
+        explicit WallShape(Model::WallPtr aWall);
+        /**
 			 *
 			 */
-			WallShape( 	Model::WallPtr aWall,
-						RectangleShapePtr aRectangleShape1,
-						RectangleShapePtr aRectangleShape2);
-			/**
+        WallShape(Model::WallPtr aWall, RectangleShapePtr aRectangleShape1, RectangleShapePtr aRectangleShape2);
+        /**
 			 *
 			 */
-			virtual ~WallShape();
-			/**
+        virtual ~WallShape();
+        /**
 			 * @name Type safe accessors and mutators
 			 */
-			//@{
-			/**
+        //@{
+        /**
 			 * Type safe accessor
 			 */
-			Model::WallPtr getWall() const;
-			/**
+        Model::WallPtr getWall() const;
+        /**
 			 * Type safe mutator
 			 */
-			void setWall( Model::WallPtr aWall);
-			//@}
+        void setWall(Model::WallPtr aWall);
+        //@}
 
-			/**
+        /**
 			 *
 			 */
-			virtual void setSelectedAt( const Point& aPoint = DefaultPosition,
-										bool aSelected = true) override;
-			/**
+        virtual void setSelectedAt(const Point& aPoint = DefaultPosition, bool aSelected = true) override;
+        /**
 			 * Return nullptr if the point is inside an end point
 			 */
-			RectangleShapePtr hasEndPointAt( const Point& aPoint);
-			/**
+        RectangleShapePtr hasEndPointAt(const Point& aPoint);
+        /**
 			 *
 			 */
-			bool hasEndPoint( RectangleShapePtr aRectangleShape);
-			/**
+        bool hasEndPoint(RectangleShapePtr aRectangleShape);
+        /**
 			 *
 			 */
-			void updateEndPoint( RectangleShapePtr aRectangleShape);
-			/**
+        void updateEndPoint(RectangleShapePtr aRectangleShape);
+        /**
 			 * @name Pure virtual abstract Shape functions
 			 */
-			//@{
-			/**
+        //@{
+        /**
 			 *
 			 */
-			virtual void draw( wxDC& dc) override;
-			/**
+        virtual void draw(wxDC& dc) override;
+        /**
 			 *
 			 * @param aPoint
 			 * @return True if the point is in the shape
 			 */
-			virtual bool occupies( const Point& aPoint) const override;
-			//@}
-			/**
+        virtual bool occupies(const Point& aPoint) const override;
+        //@}
+        /**
 			 * @name Debug functions
 			 */
-			//@{
-			/**
+        //@{
+        /**
 			 * Returns a 1-line description of the object
 			 */
-			virtual std::string asString() const override;
-			/**
+        virtual std::string asString() const override;
+        /**
 			 * Returns a description of the object with all data of the object usable for debugging
 			 */
-			virtual std::string asDebugString() const override;
-			//@}
-		private:
-	};
-} // namespace View
-#endif // WALLSHAPE_HPP_
+        virtual std::string asDebugString() const override;
+        //@}
+    private:
+    };
+}// namespace View
+#endif// WALLSHAPE_HPP_

@@ -8,170 +8,166 @@
 
 namespace Model
 {
-	/**
+    /**
 	 *
 	 */
-	double BoundedVector::getMagnitude()
-	{
-		return std::sqrt( x * x + y * y);
-	}
-	/**
+    double BoundedVector::getMagnitude()
+    {
+        return std::sqrt(x * x + y * y);
+    }
+    /**
 	 *
 	 */
-	void BoundedVector::normalise()
-	{
-		double magnitude = getMagnitude();
+    void BoundedVector::normalise()
+    {
+        double magnitude = getMagnitude();
 
-		if (magnitude <= Utils::ALMOST_ZERO) magnitude = 1;
-		x /= magnitude;
-		y /= magnitude;
+        if (magnitude <= Utils::ALMOST_ZERO)
+            magnitude = 1;
+        x /= magnitude;
+        y /= magnitude;
 
-		if (std::fabs( x) < Utils::ALMOST_ZERO) x = 0.0;
-		if (std::fabs( y) < Utils::ALMOST_ZERO) y = 0.0;
+        if (std::fabs(x) < Utils::ALMOST_ZERO)
+            x = 0.0;
+        if (std::fabs(y) < Utils::ALMOST_ZERO)
+            y = 0.0;
+    }
+    /**
+	 *
+	 */
+    // cppcheck-suppress unusedFunction
+    BoundedVector BoundedVector::getNormalised()
+    {
+        BoundedVector polarCoord(*this);
+        polarCoord.normalise();
+        return polarCoord;
+    }
+    /**
+	 *
+	 */
+    // cppcheck-suppress unusedFunction
+    void BoundedVector::reverse()
+    {
+        x = -x;
+        y = -y;
+    }
+    /**
+	 *
+	 */
+    BoundedVector& BoundedVector::operator=(const BoundedVector& aVector)
+    {
+        if (this != &aVector)
+        {
+            x = aVector.x;
+            y = aVector.y;
+        }
+        return *this;
+    }
+    /**
+	 *
+	 */
+    BoundedVector& BoundedVector::operator+=(const BoundedVector& aVector)
+    {
+        x += aVector.x;
+        y += aVector.y;
 
-	}
-	/**
+        return *this;
+    }
+    /**
 	 *
 	 */
-	// cppcheck-suppress unusedFunction
-	BoundedVector BoundedVector::getNormalised()
-	{
-		BoundedVector polarCoord( *this);
-		polarCoord.normalise();
-		return polarCoord;
-	}
-	/**
-	 *
-	 */
-	// cppcheck-suppress unusedFunction
-	void BoundedVector::reverse()
-	{
-		x = -x;
-		y = -y;
-	}
-	/**
-	 *
-	 */
-	BoundedVector& BoundedVector::operator=( const BoundedVector& aVector)
-	{
-		if(this != &aVector)
-		{
-			x = aVector.x;
-			y = aVector.y;
-		}
-		return *this;
-	}
-	/**
-	 *
-	 */
-	BoundedVector& BoundedVector::operator+=( const BoundedVector& aVector)
-	{
-		x += aVector.x;
-		y += aVector.y;
+    BoundedVector& BoundedVector::operator-=(const BoundedVector& aVector)
+    {
+        x -= aVector.x;
+        y -= aVector.y;
 
-		return *this;
-	}
-	/**
+        return *this;
+    }
+    /**
 	 *
 	 */
-	BoundedVector& BoundedVector::operator-=( const BoundedVector& aVector)
-	{
-		x -= aVector.x;
-		y -= aVector.y;
+    BoundedVector& BoundedVector::operator*=(float aScalar)
+    {
+        x *= aScalar;
+        y *= aScalar;
 
-		return *this;
-	}
-	/**
+        return *this;
+    }
+    /**
 	 *
 	 */
-	BoundedVector& BoundedVector::operator*=( float aScalar)
-	{
-		x *= aScalar;
-		y *= aScalar;
+    BoundedVector& BoundedVector::operator/=(float aScalar)
+    {
+        x /= aScalar;
+        y /= aScalar;
 
-		return *this;
-	}
-	/**
+        return *this;
+    }
+    /**
 	 *
 	 */
-	BoundedVector& BoundedVector::operator/=( float aScalar)
-	{
-		x /= aScalar;
-		y /= aScalar;
+    BoundedVector BoundedVector::operator-()
+    {
+        return BoundedVector(-x, -y);
+    }
+    /**
+	 *
+	 */
+    std::string BoundedVector::asString() const
+    {
+        std::ostringstream os;
 
-		return *this;
-	}
-	/**
-	 *
-	 */
-	BoundedVector BoundedVector::operator-()
-	{
-		return BoundedVector( -x, -y);
-	}
-	/**
-	 *
-	 */
-	std::string BoundedVector::asString() const
-	{
-		std::ostringstream os;
+        os << "(" << x << "," << y << ")";
 
-		os << "(" << x << "," << y << ")";
-
-		return os.str();
-	}
-	/**
+        return os.str();
+    }
+    /**
 	 *
 	 */
-	std::string BoundedVector::asDebugString() const
-	{
-		return asString();
-	}
-} // namespace Model
+    std::string BoundedVector::asDebugString() const
+    {
+        return asString();
+    }
+}// namespace Model
 /**
  *
  */
-Model::BoundedVector operator+( const Model::BoundedVector& lhs,
-								const Model::BoundedVector& rhs)
+Model::BoundedVector operator+(const Model::BoundedVector& lhs, const Model::BoundedVector& rhs)
 {
-	return Model::BoundedVector( lhs.x + rhs.x, lhs.y + rhs.y);
+    return Model::BoundedVector(lhs.x + rhs.x, lhs.y + rhs.y);
 }
 /**
  *
  */
-Model::BoundedVector operator-( const Model::BoundedVector& lhs,
-								const Model::BoundedVector& rhs)
+Model::BoundedVector operator-(const Model::BoundedVector& lhs, const Model::BoundedVector& rhs)
 {
-	return Model::BoundedVector( lhs.x - rhs.x, lhs.y - rhs.y);
+    return Model::BoundedVector(lhs.x - rhs.x, lhs.y - rhs.y);
 }
 /**
  *
  */
-double operator*(	const Model::BoundedVector& lhs,
-					const Model::BoundedVector& rhs)
+double operator*(const Model::BoundedVector& lhs, const Model::BoundedVector& rhs)
 {
-	return (lhs.x * rhs.x) + (lhs.y * rhs.y);
+    return (lhs.x * rhs.x) + (lhs.y * rhs.y);
 }
 /**
  *
  */
-Model::BoundedVector operator*( float s,
-								const Model::BoundedVector& rhs)
+Model::BoundedVector operator*(float s, const Model::BoundedVector& rhs)
 {
-	return rhs * s;
+    return rhs * s;
 }
 /**
  *
  */
-Model::BoundedVector operator*( const Model::BoundedVector& lhs,
-								float s)
+Model::BoundedVector operator*(const Model::BoundedVector& lhs, float s)
 {
-	return Model::BoundedVector( lhs.x * s, lhs.y * s);
+    return Model::BoundedVector(lhs.x * s, lhs.y * s);
 }
 /**
  *
  */
-Model::BoundedVector operator/( const Model::BoundedVector& lhs,
-								float s)
+Model::BoundedVector operator/(const Model::BoundedVector& lhs, float s)
 {
-	return Model::BoundedVector( lhs.x / s, lhs.y / s);
+    return Model::BoundedVector(lhs.x / s, lhs.y / s);
 }

@@ -141,7 +141,7 @@ namespace Model
         /**
               *
               */
-        void populate( const std::vector<Filters_e>& activeFilters, int aNumberOfWalls = 2);
+        void populate(const std::vector<Filters_e>& activeFilters, int aNumberOfWalls = 2);
         /**
 			 *
 			 */

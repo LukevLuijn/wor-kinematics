@@ -43,7 +43,6 @@ namespace Model
         explicit LidarPercept(const LidarStimulus& stimulus) : measurements(stimulus.measurements)
         {
         }
-
         std::string asString() override
         {
             return "LidarPercept";
@@ -56,19 +55,41 @@ namespace Model
     class LidarSensor : public AbstractSensor, NoisySensor
     {
     public:
+        /**
+         *
+         */
         LidarSensor();
+        /**
+         *
+         */
         explicit LidarSensor(Robot* robot);
-
+        /**
+         *
+         */
         ~LidarSensor() override = default;
-
+        /**
+         *
+         */
         AbstractStimulusPtr getStimulus() const override;
+        /**
+         *
+         */
         AbstractPerceptPtr getPerceptFor(AbstractStimulusPtr aStimulus) override;
-
+        /**
+         *
+         */
         static LidarData getReadingFromLocation(const Point& location, double orientation);
-
+        /**
+         *
+         */
         std::string asString() const override;
+        /**
+         *
+         */
         std::string asDebugString() const override;
-
+        /**
+         * Reset sensor standard deviation to configured value.
+         */
         void recalibrate() override;
     };
 }// namespace Model

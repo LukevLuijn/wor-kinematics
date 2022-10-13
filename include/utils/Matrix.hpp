@@ -223,43 +223,43 @@ namespace Utils
     };
 
 
-/**
+    /**
  *
  */
-template<typename T, std::size_t M, std::size_t N>
-inline bool operator==(const Matrix<T, M, N>& lhs, const Matrix<T, M, N>& rhs)
-{
-    return lhs.matrix == rhs.matrix;
-}
-/**
+    template<typename T, std::size_t M, std::size_t N>
+    inline bool operator==(const Matrix<T, M, N>& lhs, const Matrix<T, M, N>& rhs)
+    {
+        return lhs.matrix == rhs.matrix;
+    }
+    /**
  *
  */
-template<typename T, std::size_t M, std::size_t N>
-inline std::ostream& operator<<(std::ostream& stream, const Matrix<T, M, N>& aMatrix)
-{
-    return stream << aMatrix.to_string();
-}
+    template<typename T, std::size_t M, std::size_t N>
+    inline std::ostream& operator<<(std::ostream& stream, const Matrix<T, M, N>& aMatrix)
+    {
+        return stream << aMatrix.to_string();
+    }
 
-/**
+    /**
  * Compare two row vectors using a aPrecision and a factor. The actual used precision is aPrecission*aFactor.
  *
  */
-template<typename T, const std::size_t N>
-bool equals(const Matrix<T, 1, N>& lhs, const Matrix<T, 1, N>& rhs,
-            const T aPrecision = std::numeric_limits<T>::epsilon(), const unsigned long aFactor = 1);
-/**
+    template<typename T, const std::size_t N>
+    bool equals(const Matrix<T, 1, N>& lhs, const Matrix<T, 1, N>& rhs,
+                const T aPrecision = std::numeric_limits<T>::epsilon(), const unsigned long aFactor = 1);
+    /**
  * Compare two column vectors using a aPrecision and a factor. The actual used precision is aPrecission*aFactor.
  */
-template<typename T, const std::size_t M>
-bool equals(const Matrix<T, M, 1>& lhs, const Matrix<T, M, 1>& rhs,
-            const T aPrecision = std::numeric_limits<T>::epsilon(), const unsigned long aFactor = 1);
-/**
+    template<typename T, const std::size_t M>
+    bool equals(const Matrix<T, M, 1>& lhs, const Matrix<T, M, 1>& rhs,
+                const T aPrecision = std::numeric_limits<T>::epsilon(), const unsigned long aFactor = 1);
+    /**
  * Compare two matrices using a Precision and a factor. The actual used  precision is aPrecission*aFactor.
  * If all rows are equal according this aPrecission*aFactor true is returned, false otherwise
  */
-template<typename T, const std::size_t M, const std::size_t N>
-bool equals(const Matrix<T, M, N>& lhs, const Matrix<T, M, N>& rhs,
-            const T aPrecision = std::numeric_limits<T>::epsilon(), const unsigned long aFactor = 1);
+    template<typename T, const std::size_t M, const std::size_t N>
+    bool equals(const Matrix<T, M, N>& lhs, const Matrix<T, M, N>& rhs,
+                const T aPrecision = std::numeric_limits<T>::epsilon(), const unsigned long aFactor = 1);
 
 }// namespace Utils
 

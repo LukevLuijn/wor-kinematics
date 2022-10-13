@@ -7,66 +7,65 @@
 
 namespace View
 {
-	/**
+    /**
 	 *
 	 */
-	GoalShape::GoalShape( Model::GoalPtr aGoal) :
-								WayPointShape( std::dynamic_pointer_cast<Model::WayPoint>(aGoal))
-	{
-	}
-	/**
+    GoalShape::GoalShape(Model::GoalPtr aGoal) : WayPointShape(std::dynamic_pointer_cast<Model::WayPoint>(aGoal))
+    {
+    }
+    /**
 	 *
 	 */
-	GoalShape::~GoalShape()
-	{
-	}
-	/**
+    GoalShape::~GoalShape()
+    {
+    }
+    /**
 	 *
 	 */
-	Model::GoalPtr GoalShape::getGoal() const
-	{
-		return std::dynamic_pointer_cast<Model::Goal>(getModelObject());
-	}
-	/**
+    Model::GoalPtr GoalShape::getGoal() const
+    {
+        return std::dynamic_pointer_cast<Model::Goal>(getModelObject());
+    }
+    /**
 	 *
 	 */
-	// cppcheck-suppress unusedFunction
-	void GoalShape::setGoal( Model::GoalPtr aGoal)
-	{
-		setModelObject(std::dynamic_pointer_cast<Model::ModelObject>(aGoal));
-	}
-	/**
+    // cppcheck-suppress unusedFunction
+    void GoalShape::setGoal(Model::GoalPtr aGoal)
+    {
+        setModelObject(std::dynamic_pointer_cast<Model::ModelObject>(aGoal));
+    }
+    /**
 	 *
 	 */
-	void GoalShape::handleNotification()
-	{
-	}
-	/**
+    void GoalShape::handleNotification()
+    {
+    }
+    /**
 	 *
 	 */
-	std::string GoalShape::asString() const
-	{
-		std::ostringstream os;
+    std::string GoalShape::asString() const
+    {
+        std::ostringstream os;
 
-		os << "GoalShape " << WayPointShape::asString();
+        os << "GoalShape " << WayPointShape::asString();
 
-		return os.str();
-	}
-	/**
+        return os.str();
+    }
+    /**
 	 *
 	 */
-	std::string GoalShape::asDebugString() const
-	{
-		std::ostringstream os;
+    std::string GoalShape::asDebugString() const
+    {
+        std::ostringstream os;
 
-		os << "GoalShape:\n";
-		os << WayPointShape::asDebugString() << "\n";
-		// Goal has not use in this version so we do not print it
-		//	if(getGoal())
-		//	{
-		//		os << getGoal()->asDebugString();
-		//	}
+        os << "GoalShape:\n";
+        os << WayPointShape::asDebugString() << "\n";
+        // Goal has not use in this version so we do not print it
+        //	if(getGoal())
+        //	{
+        //		os << getGoal()->asDebugString();
+        //	}
 
-		return os.str();
-	}
-} // namespace View
+        return os.str();
+    }
+}// namespace View

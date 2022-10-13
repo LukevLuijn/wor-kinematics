@@ -11,45 +11,43 @@
 
 namespace Model
 {
-	class Goal;
-	typedef std::shared_ptr<Goal> GoalPtr;
+    class Goal;
+    typedef std::shared_ptr<Goal> GoalPtr;
 
-	class Goal : public WayPoint
-	{
-		public:
-			/**
+    class Goal : public WayPoint
+    {
+    public:
+        /**
 			 *
 			 */
-			Goal();
-			/**
+        Goal();
+        /**
 			 *
 			 */
-			explicit Goal( const std::string& aName);
-			/**
+        explicit Goal(const std::string& aName);
+        /**
 			 *
 			 */
-			Goal(	const std::string& aName,
-					const Point& aPosition);
-			/**
+        Goal(const std::string& aName, const Point& aPosition);
+        /**
 			 *
 			 */
-			virtual ~Goal();
-			/**
+        virtual ~Goal();
+        /**
 			 * @name Debug functions
 			 */
-			//@{
-			/**
+        //@{
+        /**
 			 * Returns a 1-line description of the object
 			 */
-			virtual std::string asString() const override;
-			/**
+        virtual std::string asString() const override;
+        /**
 			 * Returns a description of the object with all data of the object usable for debugging
 			 */
-			virtual std::string asDebugString() const override;
-			//@}
-		protected:
-		private:
-
-	};
-} // namespace Model
-#endif // GOAL_HPP_
+        virtual std::string asDebugString() const override;
+        //@}
+    protected:
+    private:
+    };
+}// namespace Model
+#endif// GOAL_HPP_

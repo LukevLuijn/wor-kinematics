@@ -369,8 +369,7 @@ namespace Utils
                 }
             }
             --pivotRowCol;
-        }
-        while(pivotRowCol < max);
+        } while (pivotRowCol < max);
 
         return result;
     }

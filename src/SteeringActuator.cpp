@@ -50,7 +50,7 @@ namespace Model
                     P(2, 2),
             };
 
-            std::uniform_int_distribution distribution(0ul, targetList.size()-1);
+            std::uniform_int_distribution distribution(0ul, targetList.size() - 1);
             Point offsetPoint = targetList[distribution(generator)];
             actualPosition.x = command->relativePositionRequest.x + offsetPoint.x;
             actualPosition.y = command->relativePositionRequest.y + offsetPoint.y;

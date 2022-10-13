@@ -216,4 +216,4 @@ namespace Utils
         return std::string(path.begin() + static_cast<long>(path.rfind('/')) + 1, path.end());
     }
 
-}// namespace utils
+}// namespace Utils

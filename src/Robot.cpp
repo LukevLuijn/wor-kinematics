@@ -43,11 +43,12 @@ namespace Model
         attachSensors();
         attachActuators();
 
-//        addFilter(Filters_e::KALMAN_FILTER);
-//        addFilter(Filters_e::PARTICLE_FILTER);
+        //        addFilter(Filters_e::KALMAN_FILTER);
+        //        addFilter(Filters_e::PARTICLE_FILTER);
 
         filters.emplace_back(new KalmanFilter(getPosition()));
-        filters.emplace_back(new ParticleFilter(getPosition()));
+        //        filters.emplace_back(new ParticleFilter(getPosition()));
+        filters.emplace_back(new ParticleFilter);
     }
     /**
 	 *
@@ -59,11 +60,12 @@ namespace Model
         attachSensors();
         attachActuators();
 
-//        addFilter(Filters_e::KALMAN_FILTER);
-//        addFilter(Filters_e::PARTICLE_FILTER);
+        //        addFilter(Filters_e::KALMAN_FILTER);
+        //        addFilter(Filters_e::PARTICLE_FILTER);
 
         filters.emplace_back(new KalmanFilter(getPosition()));
-        filters.emplace_back(new ParticleFilter(getPosition()));
+        //        filters.emplace_back(new ParticleFilter(getPosition()));
+        filters.emplace_back(new ParticleFilter);
     }
     /**
 	 *
@@ -75,11 +77,12 @@ namespace Model
         attachSensors();
         attachActuators();
 
-//        addFilter(Filters_e::KALMAN_FILTER);
-//        addFilter(Filters_e::PARTICLE_FILTER);
+        //        addFilter(Filters_e::KALMAN_FILTER);
+        //        addFilter(Filters_e::PARTICLE_FILTER);
 
         filters.emplace_back(new KalmanFilter(getPosition()));
-        filters.emplace_back(new ParticleFilter(getPosition()));
+        //        filters.emplace_back(new ParticleFilter(getPosition()));
+        filters.emplace_back(new ParticleFilter);
     }
     /**
 	 *
@@ -222,10 +225,9 @@ namespace Model
      */
     void Robot::resetSensor(const std::string& sensorName)
     {
-        auto it = std::find_if(sensors.begin(), sensors.end(), [&sensorName](AbstractSensorPtr& sensor)
-                               {
-                                    return sensor->asString() == sensorName;
-                               });
+        auto it = std::find_if(sensors.begin(), sensors.end(), [&sensorName](AbstractSensorPtr& sensor) {
+            return sensor->asString() == sensorName;
+        });
 
         if (it != sensors.end())
         {
@@ -424,7 +426,7 @@ namespace Model
         }
     }
     /**
-	 * TODO odometer needs speed parameter for error.
+	 *
 	 */
     void Robot::setSpeed(float aNewSpeed, bool aNotifyObservers /*= true*/)
     {
@@ -735,7 +737,7 @@ namespace Model
     {
         std::string filterName = "undefined";
 
-        switch(filter)
+        switch (filter)
         {
             case Filters_e::KALMAN_FILTER:
                 filterName = "Belief-kalman";

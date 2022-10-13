@@ -27,7 +27,7 @@ namespace Model
 
         double distance = (std::sqrt(std::pow(distanceX, 2) + std::pow(distanceY, 2)));
 
-        return AbstractStimulusPtr(new OdometerStimulus(previousPosition, robotPosition, distance));
+        return AbstractStimulusPtr(new OdometerStimulus(/*previousPosition,*/ robotPosition, distance));
     }
     AbstractPerceptPtr OdometerSensor::getPerceptFor(AbstractStimulusPtr aStimulus)
     {

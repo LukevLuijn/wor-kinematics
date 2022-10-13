@@ -181,9 +181,8 @@ namespace Application
             sizer->Add(robotWorldCanvas = new View::RobotWorldCanvas(lhsPanel),
                        GBPosition(1, 1),
                        GBSpan(1, 1) /*, EXPAND*/);
-            // TODO
-            //            robotWorldCanvas->SetMinSize( wxSize( 500, 500));
-            robotWorldCanvas->SetMinSize(wxSize(500 + 524, 500 + 524));
+
+            robotWorldCanvas->SetMinSize(wxSize(1024, 1024));
 
 
             sizer->Add(5, 5, GBPosition(2, 2), GBSpan(1, 1), EXPAND);
@@ -257,6 +256,7 @@ namespace Application
         {
             compassConfigValue = std::stoi(MainApplication::getArg("-compass").value);
             compassSlider->SetValue(static_cast<int32_t>(compassConfigValue));
+            compassSlider->SetMax(static_cast<int32_t>(compassConfigValue * 100));
         }
 
 
@@ -267,6 +267,8 @@ namespace Application
         {
             odometerConfigValue = std::stoi(MainApplication::getArg("-odometer").value);
             odometerSlider->SetValue(static_cast<int32_t>(odometerConfigValue));
+            odometerSlider->SetMax(static_cast<int32_t>(odometerConfigValue * 100));
+
         }
 
 
@@ -277,6 +279,7 @@ namespace Application
         {
             lidarConfigValue = std::stoi(MainApplication::getArg("-lidar").value);
             lidarSlider->SetValue(static_cast<int32_t>(lidarConfigValue));
+            lidarSlider->SetMax(static_cast<int32_t>(lidarConfigValue * 100));
         }
 
 
@@ -413,7 +416,7 @@ namespace Application
         }
         else
         {
-            LOG("Starting robot..");
+            LOG("Starting robot, this can take a while");
             robot->startActing();
         }
     }

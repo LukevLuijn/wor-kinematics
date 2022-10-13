@@ -13,111 +13,106 @@
 
 namespace Messaging
 {
-	class Server;
-	typedef std::shared_ptr< Server > ServerPtr;
+    class Server;
+    typedef std::shared_ptr<Server> ServerPtr;
 
-	/*
+    /*
 	 *
 	 */
-	class CommunicationService
-	{
-		public:
-			/**
+    class CommunicationService
+    {
+    public:
+        /**
 			 *
 			 */
-			static CommunicationService& getCommunicationService();
-			/**
+        static CommunicationService& getCommunicationService();
+        /**
 			 * This function is public because otherwise it the classes Session, Server and Client
 			 * have to be friends
 			 */
-			boost::asio::io_context& getIOContext()
-			{
-				return io_context;
-			}
-			/**
+        boost::asio::io_context& getIOContext()
+        {
+            return io_context;
+        }
+        /**
 			 *
 			 */
-			void registerServer(ServerPtr aServer,
-								bool start = true);
-			/**
+        void registerServer(ServerPtr aServer, bool start = true);
+        /**
 			 *
 			 */
-			void startServer(	ServerPtr aServer);
-			/**
+        void startServer(ServerPtr aServer);
+        /**
 			 *
 			 */
-			void startServer(	unsigned short aPort);
-			/**
+        void startServer(unsigned short aPort);
+        /**
 			 *
 			 */
-			void stopServer(ServerPtr aServer,
-							bool deregister = true);
-			/**
+        void stopServer(ServerPtr aServer, bool deregister = true);
+        /**
 			 *
 			 */
-			void stopServer(unsigned short aPort,
-							bool deregister = true);
-			/**
+        void stopServer(unsigned short aPort, bool deregister = true);
+        /**
 			 *
 			 */
-			void deregisterServer(	ServerPtr aServer);
-			/**
+        void deregisterServer(ServerPtr aServer);
+        /**
 			 *
 			 */
-			void deregisterServer(	unsigned short aPort);
-			/**
+        void deregisterServer(unsigned short aPort);
+        /**
 			 *
 			 */
-			void stop();
-			/**
+        void stop();
+        /**
 			 *
 			 */
-			bool isStopped();
-			/**
+        bool isStopped();
+        /**
 			 *
 			 */
-			void restart();
-			/**
+        void restart();
+        /**
 			 *
 			 */
-			void wait();
+        void wait();
 
-		private:
-			/**
+    private:
+        /**
 			 *
 			 */
-			CommunicationService();
-			/**
+        CommunicationService();
+        /**
 			 *
 			 */
-			virtual ~CommunicationService();
-			/**
+        virtual ~CommunicationService();
+        /**
 			 *
 			 */
-			void start_io_context_thread();
-			/**
+        void start_io_context_thread();
+        /**
 			 *
 			 */
-			void run_io_context();
-			/**
+        void run_io_context();
+        /**
 			 *
 			 */
-			boost::asio::io_context io_context;
-			/**
+        boost::asio::io_context io_context;
+        /**
 			 *
 			 */
-			std::thread io_contextThread;
-			/**
+        std::thread io_contextThread;
+        /**
 			 *
 			 */
-			std::map<unsigned short, ServerPtr > servers;
-			/**
+        std::map<unsigned short, ServerPtr> servers;
+        /**
 			 *
 			 */
-			boost::asio::deadline_timer timer;
+        boost::asio::deadline_timer timer;
+    };
+}// namespace Messaging
 
-
-	};
-} /* namespace Base */
-
-#endif // COMMUNICATIONSERVICE_HPP_ 
+#endif// COMMUNICATIONSERVICE_HPP_

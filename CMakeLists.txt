@@ -40,7 +40,6 @@ set(HEADERS_APPLICATION
         include/application/MainApplication.hpp
         include/application/MainFrameWindow.hpp
         include/application/WidgetTraceFunction.hpp
-
         include/application/ToggleButton.h
         include/application/Slider.h
         )
@@ -82,7 +81,6 @@ set(HEADERS_MODEL
         include/model/SteeringActuator.hpp
         include/model/Wall.hpp
         include/model/WayPoint.hpp
-
         include/model/NoisySensor.h
         include/model/CompassSensor.h
         include/model/LidarSensor.h
@@ -100,7 +98,6 @@ set(HEADERS_UTILS
         include/utils/TimeStamp.hpp
         include/utils/TypeInfo.hpp
         include/utils/Matrix.hpp
-
         include/utils/FileIO.h
         include/utils/StringUtils.h
         )
@@ -114,7 +111,6 @@ set(HEADERS_VIEW
         include/view/ViewObject.hpp
         include/view/WallShape.hpp
         include/view/WayPointShape.hpp
-
         include/view/PathShape.h
         )
 set(HEADERS_WIDGETS
@@ -175,7 +171,6 @@ set(SOURCES
         src/WayPointShape.cpp
         src/Widgets.cpp
         src/WidgetTraceFunction.cpp
-
         src/NoisySensor.cpp
         src/CompassSensor.cpp
         src/LidarSensor.cpp

@@ -459,7 +459,6 @@ namespace Application
             filters.emplace_back(Model::Filters_e::PARTICLE_FILTER);
         }
 
-
         // clear previous instances
         robotWorldCanvas->unpopulate();
         robotWorldCanvas->populate(filters, 4);

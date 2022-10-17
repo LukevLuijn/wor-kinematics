@@ -29,7 +29,7 @@ Uitvoeren van de applicatie in de standaard opstelling.
 
 Uitvoeren van de applicatie met een aangepaste configuratie file. Deze file moet in de config map geplaatst zijn.
 
-> **```note```** zie config/sensor_noise_config.txt
+> **```note```** zie config/config.txt
 
 ```bash
 ./robotworld -config="name_of_config_file.txt"
@@ -37,7 +37,7 @@ Uitvoeren van de applicatie met een aangepaste configuratie file. Deze file moet
 
 Uitvoeren van de applicatie met een aangepaste configuratie file buiten de map van de applicatie.
 
-> **```note```** zie config/sensor_noise_config.txt
+> **```note```** zie config/config.txt
 
 ```bash
 ./robotworld -fromRoot -config="path/from/root/name_of_config_file.txt"

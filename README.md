@@ -16,8 +16,32 @@ cd build
 cmake ..
 make -j4 2>$1 | tee build.log
 ```
+> **```note```** Mochten er problemen zijn met het ```cmake ..``` commando (zie onderstaand: 'CMake error') moet het alternative CMake commando uitgevoerd worden.
 
 > **```note```** Het onderdeel ```'-j4'``` staat voor het aantal gebruikte cores van de CPU voor het compileren van de applicatie. Dit getal kan aangepast worden naar het aantal gewenste cores.
+
+<details>
+    <summary> CMake error </summary>
+
+### CMake error
+
+```bash
+CMake Error at /usr/share/cmake-3.24/Modules/FindPackageHandleStandardArgs.cmake:230 (message):
+  Could NOT find wxWidgets (missing: wxWidgets_LIBRARIES
+  wxWidgets_INCLUDE_DIRS)
+```
+
+### Oplossing
+
+```bash
+mkdir build
+cd build
+cmake .. -DwxWidgets_ROOT_DIR:PATH=<path/to/wxWidgets/directory>
+make -j4 2>$1 | tee build.log
+```
+
+</details>
+
 
 ### Uitvoeren van de executable
 
